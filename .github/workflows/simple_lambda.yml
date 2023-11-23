@@ -1,0 +1,23 @@
+# This is an advanced workflow to show you how to use cache to accelerate CI job run
+name: simple_lambda
+
+# Controls when the action will run.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  with_pip_cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Install CDK in Node
+        run: |
+          npm install -g aws-cdk@2.86.0
+          which cdk
+          cdk --version
