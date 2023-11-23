@@ -1,0 +1,65 @@
+{
+    "python_version_major": 3,
+    "python_version_minor": 9,
+    "cross_account_permission_deploy_name": "monorepo-aws-cross-account-permission",
+    "devops_aws_account": {
+        "aws_profile": "bmt_app_dev_us_east_1",
+        "grantee": {
+            "type": "user",
+            "kwargs": {
+                "name": "sanhe"
+            }
+        },
+        "grantee_policy_name": "monorepo_aws-devops-us-east-1"
+    },
+    "environment_aws_accounts": [
+        {
+            "env_name": "sbx",
+            "aws_profile": "bmt_app_dev_us_east_1",
+            "owner_role_name": "monorepo_aws-sbx-deployer-us-east-1",
+            "owner_policy_name": "monorepo_aws-sbx-deployer-us-east-1",
+            "owner_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": "*",
+                        "Resource": "*"
+                    }
+                ]
+            }
+        },
+        {
+            "env_name": "tst",
+            "aws_profile": "bmt_app_test_us_east_1",
+            "owner_role_name": "monorepo_aws-tst-deployer-us-east-1",
+            "owner_policy_name": "monorepo_aws-tst-deployer-us-east-1",
+            "owner_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": "*",
+                        "Resource": "*"
+                    }
+                ]
+            }
+        },
+        {
+            "env_name": "prd",
+            "aws_profile": "bmt_app_prod_us_east_1",
+            "owner_role_name": "monorepo_aws-prd-deployer-us-east-1",
+            "owner_policy_name": "monorepo_aws-prd-deployer-us-east-1",
+            "owner_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": "*",
+                        "Resource": "*"
+                    }
+                ]
+            }
+        }
+    ]
+}
