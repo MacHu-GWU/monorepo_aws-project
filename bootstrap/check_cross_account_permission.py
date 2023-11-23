@@ -15,7 +15,7 @@ for environment_aws_account in config.environment_aws_accounts:
     print(f"the {environment_aws_account.env_name!r} environment deployer IAM entity:")
     bsm_assume_role = bsm.assume_role(
         role_arn=IamRoleArn(
-            account=environment_aws_account.account_id,
+            account=environment_aws_account.aws_account_id,
             name=environment_aws_account.owner_role_name,
         ).arn,
         duration_seconds=900,
