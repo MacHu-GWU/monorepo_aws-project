@@ -20,4 +20,4 @@ for environment_aws_account in config.environment_aws_accounts:
         ).arn,
         duration_seconds=900,
     )
-    print_account_info(bsm)
+    print_account_info(bsm_assume_role)
