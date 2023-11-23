@@ -1,6 +1,5 @@
 .. I am trying to explain the purpose of this folder
 
-
 Bootstrap the monorepo AWS project
 ==============================================================================
 Scripts in this folder are used to setup the necessary AWS resources for monorepo AWS project.
@@ -15,7 +14,6 @@ There are two types of setups:
 
 .. code-block:: bash
 
-    virtualenv -p python3.9 .venv
-    source .venv/bin/activate
-    pip install -r requirements.txt
-
+    python s1_setup_venv.py
+    python s2_cdk_bootstrap.py
+    python s3_setup_cross_account_permission.py

@@ -18,7 +18,6 @@ from ..cross_account_iam_role_access_manager import (
 )
 
 
-
 def main():
     _mapper = {
         "root": IamRootArn,
@@ -29,7 +28,9 @@ def main():
 
     grantee_bsm = BotoSesManager(profile_name=config.devops_aws_account.aws_profile)
     klass: T_IAM_ARN = _mapper[config.devops_aws_account.grantee.type]
-    iam_arn = klass(account=grantee_bsm.aws_account_id, **config.devops_aws_account.grantee.kwargs)
+    iam_arn = klass(
+        account=grantee_bsm.aws_account_id, **config.devops_aws_account.grantee.kwargs
+    )
     grantee = Grantee(
         bsm=grantee_bsm,
         iam_arn=iam_arn,
@@ -67,10 +68,7 @@ def main():
     )
 
     # delete(
-    #     grantee_list=[grantee_1],
-    #     owner_list=[owner_1],
-    #     deploy_name=deploy_name,
+    #     grantee_list=[grantee],
+    #     owner_list=owner_list,
+    #     deploy_name=config.cross_account_permission_deploy_name,
     # )
-
-    # for aws_account in config.aws_accounts:
-

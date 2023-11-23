@@ -5,7 +5,6 @@ import subprocess
 import boto3
 
 from ..config_init import config
-from ..paths import dir_venv, dir_bootstrap, bin_venv_pip
 
 
 def bootstrap_one_aws_account(aws_profile: str):
