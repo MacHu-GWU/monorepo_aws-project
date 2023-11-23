@@ -16,8 +16,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-      - name: Install CDK in Node
+      - name: 💾 Install CDK in Node
         run: |
           npm install -g aws-cdk@2.86.0
           which cdk
           cdk --version
+      - name: sbx
+        env:
+          ENV_NAME: sbx
+        run: |
+          echo $ENV_NAME
+          env
+      - name: test
+        env:
+          ENV_NAME: test
+        run: |
+          echo $ENV_NAME
+          env
