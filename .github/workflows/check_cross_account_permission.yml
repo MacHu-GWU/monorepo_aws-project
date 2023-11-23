@@ -17,9 +17,9 @@ jobs:
           # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'pip'
           cache-dependency-path: bootstrap/requirements.txt
-      - name: install python dependencies
+      - name: 💾 install python dependencies
         run: pip install -r bootstrap/requirements.txt
-      - name: check cross account permission
+      - name: 🔦 check cross account permission
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
