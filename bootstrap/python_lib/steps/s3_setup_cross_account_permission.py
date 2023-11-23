@@ -41,6 +41,11 @@ def main():
     owner_list = list()
     for environment_aws_account in config.environment_aws_accounts:
         owner_bsm = BotoSesManager(profile_name=environment_aws_account.aws_profile)
+        if owner_bsm.aws_account_id != environment_aws_account.aws_account_id:
+            raise ValueError(
+                f"the aws account id of aws profile {environment_aws_account.aws_profile!r} "
+                f"doesn't match aws account id {environment_aws_account.aws_account_id!r}"
+            )
         owner = Owner(
             bsm=owner_bsm,
             role_name=environment_aws_account.owner_role_name,

@@ -60,6 +60,7 @@ class EnvironmentAwsAccount:
     :param env_name: the name of the environment (sbx, tst, prd)
     :param aws_profile: the aws profile to create necessary resources for
         cross account deployment
+    :param aws_account_id: the aws account id of the deployment target account
     :param owner_role_name: the assumed role name for cross account deployment
     :param owner_policy_name: the assumed role policy name for cross account deployment
     :param owner_policy_document: the assumed role policy document for cross account
@@ -68,6 +69,7 @@ class EnvironmentAwsAccount:
 
     env_name: str = dataclasses.field()
     aws_profile: str = dataclasses.field()
+    aws_account_id: str = dataclasses.field()
     owner_role_name: str = dataclasses.field()
     owner_policy_name: str = dataclasses.field()
     owner_policy_document: dict = dataclasses.field()

@@ -16,6 +16,7 @@
         {
             "env_name": "sbx",
             "aws_profile": "bmt_app_dev_us_east_1",
+            "aws_account_id": "878625312159",
             "owner_role_name": "monorepo_aws-sbx-deployer-us-east-1",
             "owner_policy_name": "monorepo_aws-sbx-deployer-us-east-1",
             "owner_policy_document": {
@@ -32,6 +33,7 @@
         {
             "env_name": "tst",
             "aws_profile": "bmt_app_test_us_east_1",
+            "aws_account_id": "794368046103",
             "owner_role_name": "monorepo_aws-tst-deployer-us-east-1",
             "owner_policy_name": "monorepo_aws-tst-deployer-us-east-1",
             "owner_policy_document": {
@@ -48,6 +50,7 @@
         {
             "env_name": "prd",
             "aws_profile": "bmt_app_prod_us_east_1",
+            "aws_account_id": "216242137773",
             "owner_role_name": "monorepo_aws-prd-deployer-us-east-1",
             "owner_policy_name": "monorepo_aws-prd-deployer-us-east-1",
             "owner_policy_document": {

@@ -460,6 +460,16 @@ def get_account_info(bsm: BotoSesManager) -> T.Tuple[str, str, str]:
     return account_id, account_alias, arn
 
 
+def print_account_info(bsm: BotoSesManager):
+    """
+    Display the account ID, account alias and ARN of the given boto session.
+    """
+    account_id, account_alias, arn = get_account_info(bsm)
+    print(
+        f"now we are on account {account_id} ({account_alias}), using principal {arn}"
+    )
+
+
 def validate(
     grantee_list: T.List[Grantee],
     call_api: T.Callable,
