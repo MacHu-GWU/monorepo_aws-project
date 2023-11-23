@@ -1,0 +1,362 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Automation CLI tool.
+
+Usage::
+
+    python ./bin/cli venv_create
+    python ./bin/cli venv_remove
+    python ./bin/cli install
+    python ./bin/cli install_dev
+    python ./bin/cli install_test
+    python ./bin/cli install_doc
+    python ./bin/cli install_automation
+    python ./bin/cli install_all
+    python ./bin/cli poetry_export
+    python ./bin/cli poetry_lock
+    python ./bin/cli info
+    python ./bin/cli show_env_info
+    python ./bin/cli test
+    python ./bin/cli test_only
+    python ./bin/cli cov
+    python ./bin/cli cov_only
+    python ./bin/cli int
+    python ./bin/cli int_only
+    python ./bin/cli build_doc
+    python ./bin/cli build_doc_only
+    python ./bin/cli view_doc
+    python ./bin/cli deploy_versioned_doc
+    python ./bin/cli deploy_latest_doc
+    python ./bin/cli view_latest_doc
+    python ./bin/cli deploy_config
+    python ./bin/cli delete_config
+    python ./bin/cli build_source
+    python ./bin/cli deploy_app
+    python ./bin/cli delete_app
+    python ./bin/cli create_git_tag
+    python ./bin/cli bump_version
+"""
+
+import fire
+
+from automation.pyproject import pyproject_ops
+from automation.venv import (
+    create_virtualenv,
+    remove_virtualenv,
+)
+from automation.deps import (
+    pip_install,
+    pip_install_dev,
+    pip_install_doc,
+    pip_install_test,
+    pip_install_automation,
+    pip_install_all,
+    poetry_export,
+    poetry_lock,
+)
+from automation.docs import (
+    build_doc,
+    deploy_latest_doc,
+    deploy_versioned_doc,
+    view_doc,
+    view_latest_doc,
+)
+from automation.tests import (
+    run_cov_test,
+    run_int_test,
+    run_unit_test,
+)
+from automation.project_info import (
+    show_project_info,
+    show_runtime_env_git_info,
+)
+from automation.build import (
+    build_lambda_source_only,
+    build_lambda_source,
+)
+from automation.config import (
+    deploy_config,
+    delete_config,
+)
+from automation.deploy import (
+    deploy_app,
+    delete_app,
+)
+from automation.git import (
+    GIT_COMMIT_ID,
+    create_git_tag,
+    bump_version,
+)
+
+try:
+    from simple_lambda.boto_ses import bsm
+    from simple_lambda.config.init import EnvEnum, Env, config
+    from simple_lambda.paths import dir_cdk
+except ImportError:
+    pass
+except Exception:
+    pass
+
+
+class Command:
+    def venv_create(self):
+        """
+        ** Create Virtual Environment
+        """
+        create_virtualenv()
+
+    def venv_remove(self):
+        """
+        ** Remove Virtual Environment
+        """
+        remove_virtualenv()
+
+    def install(self):
+        """
+        ** Install main dependencies and Package itself
+        """
+        pip_install()
+
+    def install_dev(self):
+        """
+        Install Development Dependencies
+        """
+        pip_install_dev()
+
+    def install_test(self):
+        """
+        Install Test Dependencies
+        """
+        pip_install_test()
+
+    def install_doc(self):
+        """
+        Install Document Dependencies
+        """
+        pip_install_doc()
+
+    def install_automation(self):
+        """
+        Install Dependencies for Automation Script
+        """
+        pip_install_automation()
+
+    def install_all(self):
+        """
+        ** Install All Dependencies
+        """
+        pip_install_all()
+
+    def poetry_export(self):
+        """
+        Export requirements-*.txt from poetry.lock file
+        """
+        poetry_export()
+
+    def poetry_lock(self):
+        """
+        ** Resolve dependencies using poetry, update poetry.lock file
+        """
+        poetry_lock()
+
+    def info(selfself):
+        """
+        ** Show Project Information
+        """
+        show_project_info()
+
+    def show_env_info(self):
+        """
+        Show Runtime, Environment and Git info
+        """
+        show_runtime_env_git_info()
+
+    def test(self):
+        """
+        ** Run test
+        """
+        pip_install()
+        pip_install_test()
+        self.test_only()
+
+    def test_only(self):
+        """
+        Run test without checking test dependencies
+        """
+        build_lambda_source_only(verbose=False)
+        run_unit_test(check=True)
+
+    def cov(self):
+        """
+        ** Run code coverage test
+        """
+        pip_install()
+        pip_install_test()
+        self.cov_only()
+
+    def cov_only(self):
+        """
+        Run code coverage test without checking test dependencies
+        """
+        build_lambda_source_only(verbose=False)
+        run_cov_test(check=True)
+
+    def int(self):
+        """
+        ** Run integration test
+        """
+        pip_install()
+        pip_install_test()
+        self.int_only()
+
+    def int_only(self):
+        """
+        Run integration test without checking test dependencies
+        """
+        build_lambda_source_only(verbose=False)
+        run_int_test(
+            prod_env_name=EnvEnum.prd.value,
+            env_name=config.env.env_name,
+            check=True,
+        )
+
+    def build_doc(self):
+        """
+        ** Build documentation website locally
+        """
+        pip_install()
+        pip_install_doc()
+        build_doc(check=True)
+
+    def build_doc_only(self):
+        """
+        Build documentation website locally without checking doc dependencies
+        """
+        build_doc(check=True)
+
+    def view_doc(self):
+        """
+        ** View documentation website locally
+        """
+        view_doc()
+
+    def deploy_versioned_doc(self):
+        """
+        Deploy Documentation Site To S3 as Versioned Doc
+        """
+        deploy_versioned_doc(check=True)
+
+    def deploy_latest_doc(self):
+        """
+        Deploy Documentation Site To S3 as Latest Doc
+        """
+        deploy_latest_doc(check=True)
+
+    def view_latest_doc(self):
+        """
+        View latest documentation website on S3
+        """
+        view_latest_doc()
+
+    def deploy_config(self):
+        """
+        Deploy versioned config data to parameter store backend.
+        """
+        deploy_config(
+            config=config,
+            bsm=bsm,
+            check=True,
+        )
+
+    def delete_config(self):
+        """
+        Delete config data from parameter store backend.
+        """
+        delete_config(
+            config=config,
+            bsm=bsm,
+            check=True,
+        )
+
+    def build_source(self):
+        """
+        Build Lambda source artifacts
+        """
+        build_lambda_source(
+            bsm=bsm,
+            s3dir_lambda=config.env.s3dir_lambda,
+            tags=config.env.aws_tags,
+            verbose=False,
+        )
+
+    def deploy_app(self, env_name: str):
+        """
+        ** Deploy Lambda app via CDK deploy
+        """
+        env: "Env" = config.get_env(env_name=env_name)
+        deploy_app(
+            bsm=bsm,
+            config=config,
+            s3dir_lambda=env.s3dir_lambda,
+            tags=env.aws_tags,
+            dir_cdk=dir_cdk,
+            stack_name=env.cloudformation_stack_name,
+            prod_env_name=EnvEnum.prd.value,
+            env_name=env_name,
+            check=True,
+        )
+
+    def delete_app(self, env_name: str):
+        """
+        Delete Lambda app via CDK destroy
+        """
+        env: "Env" = config.get_env(env_name=env_name)
+        delete_app(
+            bsm=bsm,
+            dir_cdk=dir_cdk,
+            stack_name=env.cloudformation_stack_name,
+            prod_env_name=EnvEnum.prd.value,
+            env_name=env_name,
+            check=True,
+        )
+
+    def create_git_tag(self):
+        """
+        Create a new git tag after releasing to production.
+        """
+        create_git_tag(
+            tag_name=f"{pyproject_ops.package_name}-{pyproject_ops.package_version}",
+            commit_id=GIT_COMMIT_ID,
+            env_name=config.env.env_name,
+            prod_env_name=EnvEnum.prd.value,
+            check=True,
+        )
+
+    def bump_version(
+        self,
+        major: bool = False,
+        minor: bool = False,
+        patch: bool = False,
+    ):
+        """
+        Bump the version. Only one and exact one of the three options can be set to True.
+
+        :param major: 1.2.3 -> 2.0.0
+        :param minor: 1.2.3 -> 1.3.0
+        :param patch: 1.2.3 -> 1.2.4
+        """
+        bump_version(
+            major=major,
+            minor=minor,
+            patch=patch,
+        )
+
+
+def run():
+    fire.Fire(Command)
+
+
+if __name__ == "__main__":
+    run()

@@ -1,0 +1,47 @@
+{
+    "_shared": {
+        "*.project_name": "simple_lambda",
+        "*.s3bucket_docs": "awshsh-app-dev-us-east-1-doc-host",
+        "*.s3uri_artifacts": "s3://807388292768-us-east-1-artifacts/projects/simple_lambda/",
+        "*.s3uri_data": "s3://807388292768-us-east-1-data/projects/simple_lambda/",
+        // please read the :class:`simple_lambda.config.define.lbd_func.LambdaFunction` class for more details
+        "*.lambda_functions.*.layers": [
+            "arn:aws:lambda:us-east-1:807388292768:layer:simple_lambda:1"
+        ],
+        "*.lambda_functions.s3sync.timeout": 60,
+        "*.lambda_functions.*.timeout": 3,
+        "*.lambda_functions.*.memory": 128,
+        "*.lambda_functions.*.iam_role": null,
+        "*.lambda_functions.*.subnet_ids": null,
+        "*.lambda_functions.*.security_group_ids": null,
+        "*.lambda_functions.*.reserved_concurrency": null,
+        "*.lambda_functions.*.live_version1": null,
+        "*.lambda_functions.*.live_version2": null,
+        "*.lambda_functions.*.live_version2_percentage": null,
+        "*.lambda_functions.hello.handler": "hello_handler",
+        "*.lambda_functions.s3sync.handler": "s3sync_handler"
+    },
+    "sbx": {
+        "username": "sbx.user",
+        "lambda_functions": {
+            "hello": {
+                "live_version1": "1"
+            },
+            "s3sync": {}
+        }
+    },
+    "tst": {
+        "username": "tst.user",
+        "lambda_functions": {
+            "hello": {},
+            "s3sync": {}
+        }
+    },
+    "prd": {
+        "username": "prd.user",
+        "lambda_functions": {
+            "hello": {},
+            "s3sync": {}
+        }
+    }
+}
