@@ -7,6 +7,27 @@ import dataclasses
 from pathlib import Path
 
 
+@dataclasses.dataclass
+class GitHubActionOpenIdConnection:
+    """
+    The OpenID Connect (OIDC) identity provider that allows the GitHub Actions
+    to assume the role in the target account.
+
+    :param aws_profile: the aws profile to set up the OpenID Connect (OIDC)
+        identity provider in the target account.
+    :param stack_name: the cloudformation stack name to set up the OpenID Connect
+    :param github_org: the GitHub organization name trusted by the IAM role
+    :param github_repo: the GitHub repository name trusted by the IAM role,
+        could be "*"
+    :param role_name: the IAM role name to be assumed by the GitHub Actions
+    """
+    aws_profile: str = dataclasses.field()
+    stack_name: str = dataclasses.field()
+    github_org: str = dataclasses.field()
+    github_repo: str = dataclasses.field()
+    role_name: str = dataclasses.field()
+
+
 class EnvNameEnum(str, enum.Enum):
     sbx = "sbx"
     tst = "tst"
@@ -79,6 +100,7 @@ class EnvironmentAwsAccount:
 class Config:
     python_version_major: int = dataclasses.field()
     python_version_minor: int = dataclasses.field()
+    github_action_open_id_connection: GitHubActionOpenIdConnection = dataclasses.field()
     cross_account_permission_deploy_name: str = dataclasses.field()
     devops_aws_account: DevOpsAwsAccount = dataclasses.field()
     environment_aws_accounts: T.List[EnvironmentAwsAccount] = dataclasses.field()
@@ -86,6 +108,9 @@ class Config:
     @classmethod
     def load(cls, path: Path):
         data = json.loads(path.read_text())
+        data["github_action_open_id_connection"] = GitHubActionOpenIdConnection(
+            **data["github_action_open_id_connection"]
+        )
         data["devops_aws_account"]["grantee"] = Grantee(
             **data["devops_aws_account"]["grantee"]
         )

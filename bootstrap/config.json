@@ -1,6 +1,13 @@
 {
     "python_version_major": 3,
     "python_version_minor": 9,
+    "github_action_open_id_connection": {
+        "aws_profile": "bmt_app_dev_us_east_1",
+        "stack_name": "monorepo-aws-github-open-id-connection",
+        "github_org": "MacHu-GWU",
+        "github_repo": "monorepo_aws-project",
+        "role_name": "monorepo-aws-github-open-id-connection"
+    },
     "cross_account_permission_deploy_name": "monorepo-aws-cross-account-permission",
     "devops_aws_account": {
         "aws_profile": "bmt_app_dev_us_east_1",

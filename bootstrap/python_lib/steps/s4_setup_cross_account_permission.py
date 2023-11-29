@@ -55,11 +55,11 @@ def main():
         owner.grant(grantee)
         owner_list.append(owner)
 
-    deploy(
-        grantee_list=[grantee],
-        owner_list=owner_list,
-        deploy_name=config.cross_account_permission_deploy_name,
-    )
+    # deploy(
+    #     grantee_list=[grantee],
+    #     owner_list=owner_list,
+    #     deploy_name=config.cross_account_permission_deploy_name,
+    # )
 
     def call_api(bsm: BotoSesManager):
         account_id, account_alias, arn = get_account_info(bsm)
@@ -67,13 +67,13 @@ def main():
             f"    now we are on account {account_id} ({account_alias}), using principal {arn}"
         )
 
-    validate(
-        grantee_list=[grantee],
-        call_api=call_api,
-    )
-
-    # delete(
+    # validate(
     #     grantee_list=[grantee],
-    #     owner_list=owner_list,
-    #     deploy_name=config.cross_account_permission_deploy_name,
+    #     call_api=call_api,
     # )
+
+    delete(
+        grantee_list=[grantee],
+        owner_list=owner_list,
+        deploy_name=config.cross_account_permission_deploy_name,
+    )
