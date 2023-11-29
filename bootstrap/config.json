@@ -8,68 +8,73 @@
         "github_repo": "monorepo_aws-project",
         "role_name": "monorepo-aws-github-open-id-connection"
     },
-    "cross_account_permission_deploy_name": "monorepo-aws-cross-account-permission",
-    "devops_aws_account": {
-        "aws_profile": "bmt_app_dev_us_east_1",
-        "grantee": {
-            "type": "user",
-            "kwargs": {
-                "name": "sanhe"
-            }
-        },
-        "grantee_policy_name": "monorepo_aws-devops-us-east-1"
-    },
-    "environment_aws_accounts": [
-        {
-            "env_name": "sbx",
+    "cross_account_iam_permission": {
+        "devops_aws_account": {
             "aws_profile": "bmt_app_dev_us_east_1",
-            "aws_account_id": "878625312159",
-            "owner_role_name": "monorepo_aws-sbx-deployer-us-east-1",
-            "owner_policy_name": "monorepo_aws-sbx-deployer-us-east-1",
-            "owner_policy_document": {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Action": "*",
-                        "Resource": "*"
-                    }
-                ]
-            }
+            "stack_name": "monorepo-aws-devops-deployer-us-east-1",
+            "grantee": {
+                "type": "role",
+                "kwargs": {
+                    "name": "monorepo-aws-github-open-id-connection"
+                }
+            },
+            "grantee_policy_name": "monorepo_aws-devops-us-east-1"
         },
-        {
-            "env_name": "tst",
-            "aws_profile": "bmt_app_test_us_east_1",
-            "aws_account_id": "794368046103",
-            "owner_role_name": "monorepo_aws-tst-deployer-us-east-1",
-            "owner_policy_name": "monorepo_aws-tst-deployer-us-east-1",
-            "owner_policy_document": {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Action": "*",
-                        "Resource": "*"
-                    }
-                ]
+        "workload_aws_accounts": [
+            {
+                "env_name": "sbx",
+                "aws_profile": "bmt_app_dev_us_east_1",
+                "aws_account_id": "878625312159",
+                "stack_name": "monorepo-aws-sbx-deployer-us-east-1",
+                "owner_role_name": "monorepo_aws-sbx-deployer-us-east-1",
+                "owner_policy_name": "monorepo_aws-sbx-deployer-us-east-1",
+                "owner_policy_document": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "*",
+                            "Resource": "*"
+                        }
+                    ]
+                }
+            },
+            {
+                "env_name": "tst",
+                "aws_profile": "bmt_app_dev_us_east_1",
+                "aws_account_id": "878625312159",
+                "stack_name": "monorepo-aws-tst-deployer-us-east-1",
+                "owner_role_name": "monorepo_aws-tst-deployer-us-east-1",
+                "owner_policy_name": "monorepo_aws-tst-deployer-us-east-1",
+                "owner_policy_document": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "*",
+                            "Resource": "*"
+                        }
+                    ]
+                }
+            },
+            {
+                "env_name": "prd",
+                "aws_profile": "bmt_app_dev_us_east_1",
+                "aws_account_id": "878625312159",
+                "stack_name": "monorepo-aws-prd-deployer-us-east-1",
+                "owner_role_name": "monorepo_aws-prd-deployer-us-east-1",
+                "owner_policy_name": "monorepo_aws-prd-deployer-us-east-1",
+                "owner_policy_document": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "*",
+                            "Resource": "*"
+                        }
+                    ]
+                }
             }
-        },
-        {
-            "env_name": "prd",
-            "aws_profile": "bmt_app_prod_us_east_1",
-            "aws_account_id": "216242137773",
-            "owner_role_name": "monorepo_aws-prd-deployer-us-east-1",
-            "owner_policy_name": "monorepo_aws-prd-deployer-us-east-1",
-            "owner_policy_document": {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Action": "*",
-                        "Resource": "*"
-                    }
-                ]
-            }
-        }
-    ]
+        ]
+    }
 }

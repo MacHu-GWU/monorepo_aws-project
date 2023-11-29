@@ -186,12 +186,16 @@ class Grantee(AwsContext):
 
     :param bsm: the boto session manager for this AWS context, it is used to
         provision necessary AWS resources for cross account access via CloudFormation.
+    :param stack_name: cloudformation stack name to set up necessary resource
+        for this grantee.
+    :param bsm: the boto session manager for this AWS context, it is used to
+        provision necessary AWS resources for cross account access via CloudFormation.
     :param policy_name: the name of the IAM policy to attach to the grantee,
         which allows the grantee to assume the owner's IAM role.
     :param test_bsm: optional, the boto session manager represents the grantee
         for cross account access testing.
     """
-
+    stack_name: str = dataclasses.field()
     iam_arn: T_IAM_ARN = dataclasses.field()
     policy_name: str = dataclasses.field()
     test_bsm: T.Optional[BotoSesManager] = dataclasses.field(default=None)
@@ -272,6 +276,8 @@ class Owner(AwsContext):
 
     :param bsm: the boto session manager for this AWS context, it is used to
         provision necessary AWS resources for cross account access via CloudFormation.
+    :param stack_name: cloudformation stack name to set up necessary resource
+        for this owner.
     :param role_name: the name of the IAM role to be assumed by the IAM entity
         from another AWS account.
     :param policy_name: the name of the IAM policy to attach to the IAM role,
@@ -280,7 +286,7 @@ class Owner(AwsContext):
     :param policy_document: the policy document that defines the permissions
         that the IAM entity from another AWS account can perform on this AWS account.
     """
-
+    stack_name: str = dataclasses.field()
     role_name: str = dataclasses.field()
     policy_name: str = dataclasses.field()
     policy_document: dict = dataclasses.field()
@@ -392,7 +398,6 @@ def ensure_no_duplicate_accounts(
 def deploy(
     grantee_list: T.List[Grantee],
     owner_list: T.List[Owner],
-    deploy_name: str,
     tags: T.Optional[T.Dict[str, str]] = None,
     verbose: bool = True,
 ):
@@ -401,13 +406,11 @@ def deploy(
 
     :param grantee_list: The list of :class:`Grantee`.
     :param owner_list: The list of :class:`Owner`.
-    :param deploy_name: this name will be used as part of the cloudformation stack
-        naming convention.
     :param tags: The tags to be attached to the cloudformation stack, it will be
         propagated to the IAM role and IAM policy.
     :param verbose: Whether to print verbose information.
     """
-    ensure_no_duplicate_accounts(grantee_list, owner_list)
+    # ensure_no_duplicate_accounts(grantee_list, owner_list)
     if tags is None:
         tags = {"meta:created_by": "cross-account-iam-role-access-manager"}
     else:
@@ -417,7 +420,7 @@ def deploy(
         if grantee.is_need_deploy():
             deploy_stack(
                 bsm=grantee.bsm,
-                stack_name=f"{deploy_name}-grantee",
+                stack_name=grantee.stack_name,
                 template=json.dumps(grantee.cft),
                 include_iam=True,
                 include_named_iam=True,
@@ -434,7 +437,7 @@ def deploy(
         if owner.is_need_deploy():
             deploy_stack(
                 bsm=owner.bsm,
-                stack_name=f"{deploy_name}-owner",
+                stack_name=owner.stack_name,
                 template=json.dumps(owner.cft),
                 include_iam=True,
                 include_named_iam=True,
@@ -502,7 +505,6 @@ def validate(
 def delete(
     grantee_list: T.List[Grantee],
     owner_list: T.List[Owner],
-    deploy_name: str,
     verbose: bool = True,
 ):
     """
@@ -517,7 +519,7 @@ def delete(
     for grantee in grantee_list:
         remove_stack(
             bsm=grantee.bsm,
-            stack_name=f"{deploy_name}-grantee",
+            stack_name=grantee.stack_name,
             skip_prompt=True,
             wait=True,
             timeout=60,
@@ -527,7 +529,7 @@ def delete(
     for owner in owner_list:
         remove_stack(
             bsm=owner.bsm,
-            stack_name=f"{deploy_name}-owner",
+            stack_name=owner.stack_name,
             skip_prompt=True,
             wait=True,
             timeout=60,
@@ -540,11 +542,11 @@ if __name__ == "__main__":
     # Example 1. grantee are IAM account
     # --------------------------------------------------------------------------
     prefix = "a1b2-"
-    deploy_name = f"{prefix}cross-account-deployer"
 
     grantee_1_bsm = BotoSesManager(profile_name="bmt_app_dev_us_east_1")
     grantee_1 = Grantee(
         bsm=grantee_1_bsm,
+        stack_name=f"{prefix}cross-account-deployer",
         iam_arn=IamRootArn(account=grantee_1_bsm.aws_account_id),
         policy_name=f"{prefix}cross_account_deployer_policy",
         test_bsm=grantee_1_bsm,
@@ -553,8 +555,9 @@ if __name__ == "__main__":
     owner_1_bsm = BotoSesManager(profile_name="bmt_app_prod_us_east_1")
     owner_1 = Owner(
         bsm=owner_1_bsm,
-        role_name=f"{prefix}cross_account_deployer_role",
-        policy_name=f"{prefix}cross_account_deployer_policy",
+        stack_name=f"{prefix}production-account-deployer",
+        role_name=f"{prefix}production_account_deployer_role",
+        policy_name=f"{prefix}production_account_deployer_policy",
         policy_document={
             "Version": "2012-10-17",
             "Statement": [
@@ -572,7 +575,6 @@ if __name__ == "__main__":
     deploy(
         grantee_list=[grantee_1],
         owner_list=[owner_1],
-        deploy_name=deploy_name,
     )
 
     def call_api(bsm: BotoSesManager):
@@ -589,18 +591,17 @@ if __name__ == "__main__":
     # delete(
     #     grantee_list=[grantee_1],
     #     owner_list=[owner_1],
-    #     deploy_name=deploy_name,
     # )
 
     # --------------------------------------------------------------------------
     # Example 2. grantee are IAM User
     # --------------------------------------------------------------------------
     # prefix = "a1b2-"
-    # deploy_name = f"{prefix}cross-account-deployer"
     #
     # grantee_1_bsm = BotoSesManager(profile_name="bmt_app_dev_us_east_1")
     # grantee_1 = Grantee(
     #     bsm=grantee_1_bsm,
+    #     stack_name=f"{prefix}cross-account-deployer",
     #     iam_arn=IamUserArn(account=grantee_1_bsm.aws_account_id, name="sanhe"),
     #     policy_name=f"{prefix}cross_account_deployer_policy",
     #     test_bsm=grantee_1_bsm,
@@ -609,8 +610,9 @@ if __name__ == "__main__":
     # owner_1_bsm = BotoSesManager(profile_name="bmt_app_prod_us_east_1")
     # owner_1 = Owner(
     #     bsm=owner_1_bsm,
-    #     role_name=f"{prefix}cross_account_deployer_role",
-    #     policy_name=f"{prefix}cross_account_deployer_policy",
+    #     stack_name=f"{prefix}production-account-deployer",
+    #     role_name=f"{prefix}production_account_deployer_role",
+    #     policy_name=f"{prefix}production_account_deployer_policy",
     #     policy_document={
     #         "Version": "2012-10-17",
     #         "Statement": [
@@ -628,7 +630,6 @@ if __name__ == "__main__":
     # deploy(
     #     grantee_list=[grantee_1],
     #     owner_list=[owner_1],
-    #     deploy_name=deploy_name,
     # )
     #
     # def call_api(bsm: BotoSesManager):
@@ -645,19 +646,18 @@ if __name__ == "__main__":
     # delete(
     #     grantee_list=[grantee_1],
     #     owner_list=[owner_1],
-    #     deploy_name=deploy_name,
     # )
 
     # --------------------------------------------------------------------------
     # Example 3. grantee are IAM Role
     # --------------------------------------------------------------------------
     # prefix = "a1b2-"
-    # deploy_name = f"{prefix}cross-account-deployer"
     #
     # grantee_1_bsm = BotoSesManager(profile_name="bmt_app_dev_us_east_1")
     # iam_role_arn = IamRoleArn(account=grantee_1_bsm.aws_account_id, name="project-boto_session_manager")
     # grantee_1 = Grantee(
     #     bsm=grantee_1_bsm,
+    #     stack_name=f"{prefix}cross-account-deployer",
     #     iam_arn=iam_role_arn,
     #     policy_name=f"{prefix}cross_account_deployer_policy",
     #     test_bsm=grantee_1_bsm.assume_role(role_arn=iam_role_arn.arn),
@@ -666,8 +666,9 @@ if __name__ == "__main__":
     # owner_1_bsm = BotoSesManager(profile_name="bmt_app_prod_us_east_1")
     # owner_1 = Owner(
     #     bsm=owner_1_bsm,
-    #     role_name=f"{prefix}cross_account_deployer_role",
-    #     policy_name=f"{prefix}cross_account_deployer_policy",
+    #     stack_name=f"{prefix}production-account-deployer",
+    #     role_name=f"{prefix}production_account_deployer_role",
+    #     policy_name=f"{prefix}production_account_deployer_policy",
     #     policy_document={
     #         "Version": "2012-10-17",
     #         "Statement": [
@@ -685,9 +686,8 @@ if __name__ == "__main__":
     # deploy(
     #     grantee_list=[grantee_1],
     #     owner_list=[owner_1],
-    #     deploy_name=deploy_name,
     # )
-
+    #
     # def call_api(bsm: BotoSesManager):
     #     account_id, account_alias, arn = get_account_info(bsm)
     #     print(
@@ -702,5 +702,4 @@ if __name__ == "__main__":
     # delete(
     #     grantee_list=[grantee_1],
     #     owner_list=[owner_1],
-    #     deploy_name=deploy_name,
     # )

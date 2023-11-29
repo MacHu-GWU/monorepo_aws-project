@@ -8,7 +8,17 @@ from pathlib import Path
 
 
 @dataclasses.dataclass
-class GitHubActionOpenIdConnection:
+class Base:
+    @classmethod
+    def from_dict(cls, dct: dict):
+        return cls(**dct)
+
+    def to_dict(self) -> dict:
+        return dataclasses.asdict(self)
+
+
+@dataclasses.dataclass
+class GitHubActionOpenIdConnection(Base):
     """
     The OpenID Connect (OIDC) identity provider that allows the GitHub Actions
     to assume the role in the target account.
@@ -21,6 +31,7 @@ class GitHubActionOpenIdConnection:
         could be "*"
     :param role_name: the IAM role name to be assumed by the GitHub Actions
     """
+
     aws_profile: str = dataclasses.field()
     stack_name: str = dataclasses.field()
     github_org: str = dataclasses.field()
@@ -35,7 +46,7 @@ class EnvNameEnum(str, enum.Enum):
 
 
 @dataclasses.dataclass
-class Grantee:
+class Grantee(Base):
     """
     The IAM principal to grant cross account permission for the deployment,
     usually it is the IAM principal of the CI/CD.
@@ -57,24 +68,32 @@ class Grantee:
 
 
 @dataclasses.dataclass
-class DevOpsAwsAccount:
+class DevOpsAwsAccount(Base):
     """
     Represents an AWS account for the devops works, usually it is the account
     that runs the CI/CD and deploy the application to other AWS accounts.
 
     :param aws_profile: the aws profile to create necessary resources for
         cross account deployment
+    :param stack_name: cloudformation stack name to set up necessary resource
+        for the devops AWS account.
     :param grantee: see :class:`Grantee`
     :param grantee_policy_name: the grantee policy name for cross account deployment
     """
 
     aws_profile: str = dataclasses.field()
+    stack_name: str = dataclasses.field()
     grantee: Grantee = dataclasses.field()
     grantee_policy_name: str = dataclasses.field()
 
+    @classmethod
+    def from_dict(cls, dct: dict):
+        dct["grantee"] = Grantee.from_dict(dct["grantee"])
+        return cls(**dct)
+
 
 @dataclasses.dataclass
-class EnvironmentAwsAccount:
+class WorkloadAwsAccount:
     """
     Represents an AWS account for a specific environment (sbx, tst, prd).
 
@@ -82,6 +101,8 @@ class EnvironmentAwsAccount:
     :param aws_profile: the aws profile to create necessary resources for
         cross account deployment
     :param aws_account_id: the aws account id of the deployment target account
+    :param stack_name: cloudformation stack name to set up necessary resource
+        for the workload AWS account.
     :param owner_role_name: the assumed role name for cross account deployment
     :param owner_policy_name: the assumed role policy name for cross account deployment
     :param owner_policy_document: the assumed role policy document for cross account
@@ -91,9 +112,33 @@ class EnvironmentAwsAccount:
     env_name: str = dataclasses.field()
     aws_profile: str = dataclasses.field()
     aws_account_id: str = dataclasses.field()
+    stack_name: str = dataclasses.field()
     owner_role_name: str = dataclasses.field()
     owner_policy_name: str = dataclasses.field()
     owner_policy_document: dict = dataclasses.field()
+
+
+@dataclasses.dataclass
+class CrossAccountIamPermission:
+    """
+    Represents the cross account IAM permission for the deployment.
+
+    :param devops_aws_account: see :class:`DevOpsAwsAccount`
+    :param env_aws_accounts: see :class:`EnvironmentAwsAccount`
+    """
+
+    devops_aws_account: DevOpsAwsAccount = dataclasses.field()
+    workload_aws_accounts: T.List[WorkloadAwsAccount] = dataclasses.field()
+
+    @classmethod
+    def from_dict(cls, dct: dict):
+        dct["devops_aws_account"] = DevOpsAwsAccount.from_dict(
+            dct["devops_aws_account"]
+        )
+        dct["workload_aws_accounts"] = [
+            WorkloadAwsAccount(**data) for data in dct["workload_aws_accounts"]
+        ]
+        return cls(**dct)
 
 
 @dataclasses.dataclass
@@ -101,22 +146,21 @@ class Config:
     python_version_major: int = dataclasses.field()
     python_version_minor: int = dataclasses.field()
     github_action_open_id_connection: GitHubActionOpenIdConnection = dataclasses.field()
-    cross_account_permission_deploy_name: str = dataclasses.field()
-    devops_aws_account: DevOpsAwsAccount = dataclasses.field()
-    environment_aws_accounts: T.List[EnvironmentAwsAccount] = dataclasses.field()
+    cross_account_iam_permission: CrossAccountIamPermission = dataclasses.field()
+
+    @classmethod
+    def from_dict(cls, dct: dict):
+        dct[
+            "github_action_open_id_connection"
+        ] = GitHubActionOpenIdConnection.from_dict(
+            dct["github_action_open_id_connection"]
+        )
+        dct["cross_account_iam_permission"] = CrossAccountIamPermission.from_dict(
+            dct["cross_account_iam_permission"]
+        )
+        return cls(**dct)
 
     @classmethod
     def load(cls, path: Path):
         data = json.loads(path.read_text())
-        data["github_action_open_id_connection"] = GitHubActionOpenIdConnection(
-            **data["github_action_open_id_connection"]
-        )
-        data["devops_aws_account"]["grantee"] = Grantee(
-            **data["devops_aws_account"]["grantee"]
-        )
-        data["devops_aws_account"] = DevOpsAwsAccount(**data["devops_aws_account"])
-        data["environment_aws_accounts"] = [
-            EnvironmentAwsAccount(**dct)
-            for dct in data.get("environment_aws_accounts", [])
-        ]
-        return cls(**data)
+        return cls.from_dict(data)
