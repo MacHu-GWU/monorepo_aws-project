@@ -38,7 +38,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: 🧪 Test Cross Account IAM permission
         env:
-          DEV_AWS_ACCOUNT_ID: ${{ secrets.SBX_AWS_ACCOUNT_ID }}
-          TEST_AWS_ACCOUNT_ID: ${{ secrets.TST_AWS_ACCOUNT_ID }}
-          PROD_AWS_ACCOUNT_ID: ${{ secrets.PRD_AWS_ACCOUNT_ID }}
+          SBX_AWS_ACCOUNT_ID: ${{ secrets.SBX_AWS_ACCOUNT_ID }}
+          TST_AWS_ACCOUNT_ID: ${{ secrets.TST_AWS_ACCOUNT_ID }}
+          PRD_AWS_ACCOUNT_ID: ${{ secrets.PRD_AWS_ACCOUNT_ID }}
         run: python bootstrap/test_check_cross_account_permission.py

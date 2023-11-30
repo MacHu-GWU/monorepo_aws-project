@@ -104,10 +104,6 @@ class DevOpsAwsAccount(Base, AwsAccountMixin):
         dct["grantee"] = Grantee.from_dict(dct["grantee"])
         return cls(**dct)
 
-    @property
-    def aws_account_id(self) -> str:
-        return self.grantee.kwargs["name"]
-
 
 @dataclasses.dataclass
 class WorkloadAwsAccount(Base, AwsAccountMixin):
