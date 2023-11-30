@@ -52,3 +52,4 @@ jobs:
           PRD_AWS_ACCOUNT_ID: ${{ secrets.PRD_AWS_ACCOUNT_ID }}
         run: python bootstrap/test_check_cross_account_permission.py
       - name: === 🛑 END OF THE JOB ===
+        run: echo "END OF THE JOB"
