@@ -5,6 +5,9 @@ import json
 import enum
 import dataclasses
 from pathlib import Path
+from functools import cached_property
+
+from boto_session_manager import BotoSesManager
 
 
 @dataclasses.dataclass
@@ -67,8 +70,18 @@ class Grantee(Base):
     kwargs: dict = dataclasses.field()
 
 
+class AwsAccountMixin:
+    @cached_property
+    def bsm(self) -> BotoSesManager:
+        return BotoSesManager(profile_name=self.aws_profile)
+
+    @property
+    def aws_account_id(self) -> str:
+        return self.bsm.aws_account_id
+
+
 @dataclasses.dataclass
-class DevOpsAwsAccount(Base):
+class DevOpsAwsAccount(Base, AwsAccountMixin):
     """
     Represents an AWS account for the devops works, usually it is the account
     that runs the CI/CD and deploy the application to other AWS accounts.
@@ -91,16 +104,19 @@ class DevOpsAwsAccount(Base):
         dct["grantee"] = Grantee.from_dict(dct["grantee"])
         return cls(**dct)
 
+    @property
+    def aws_account_id(self) -> str:
+        return self.grantee.kwargs["name"]
+
 
 @dataclasses.dataclass
-class WorkloadAwsAccount:
+class WorkloadAwsAccount(Base, AwsAccountMixin):
     """
     Represents an AWS account for a specific environment (sbx, tst, prd).
 
     :param env_name: the name of the environment (sbx, tst, prd)
     :param aws_profile: the aws profile to create necessary resources for
         cross account deployment
-    :param aws_account_id: the aws account id of the deployment target account
     :param stack_name: cloudformation stack name to set up necessary resource
         for the workload AWS account.
     :param owner_role_name: the assumed role name for cross account deployment
@@ -111,7 +127,6 @@ class WorkloadAwsAccount:
 
     env_name: str = dataclasses.field()
     aws_profile: str = dataclasses.field()
-    aws_account_id: str = dataclasses.field()
     stack_name: str = dataclasses.field()
     owner_role_name: str = dataclasses.field()
     owner_policy_name: str = dataclasses.field()

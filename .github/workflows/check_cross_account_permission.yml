@@ -10,8 +10,18 @@ jobs:
   with_pip_cache:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: 🔐 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          # this role name has to match the ``github_action_open_id_connection.role_name`` field
+          # in ``bootstrap/config.json`` file
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
+          role-session-name: sample_role_session
+          aws-region: ${{ env.AWS_REGION }}
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           # ref: https://github.com/actions/setup-python#caching-packages-dependencies
@@ -19,9 +29,9 @@ jobs:
           cache-dependency-path: bootstrap/requirements.txt
       - name: 💾 install python dependencies
         run: pip install -r bootstrap/requirements.txt
-      - name: 🔦 check cross account permission
+      - name: 🧪 check cross account permission
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        run: python bootstrap/tests/test_check_cross_account_permission.py
+          DEV_AWS_ACCOUNT_ID: ${{ secrets.SBX_AWS_ACCOUNT_ID }}
+          TEST_AWS_ACCOUNT_ID: ${{ secrets.TST_AWS_ACCOUNT_ID }}
+          PROD_AWS_ACCOUNT_ID: ${{ secrets.PRD_AWS_ACCOUNT_ID }}
+        run: python bootstrap/test_check_cross_account_permission.py

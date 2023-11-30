@@ -22,6 +22,6 @@ def bootstrap_one_aws_account(aws_profile: str):
 
 
 def main():
-    bootstrap_one_aws_account(config.devops_aws_account.aws_profile)
-    for environment_aws_account in config.environment_aws_accounts:
-        bootstrap_one_aws_account(environment_aws_account.aws_profile)
+    bootstrap_one_aws_account(config.cross_account_iam_permission.devops_aws_account.aws_profile)
+    for workload_aws_account in config.cross_account_iam_permission.workload_aws_accounts:
+        bootstrap_one_aws_account(workload_aws_account.aws_profile)
