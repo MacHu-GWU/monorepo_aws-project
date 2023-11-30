@@ -14,19 +14,11 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  with_pip_cache:
+  check_cross_account_permission:
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
-      - name: 🔐 Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          # this role name has to match the ``github_action_open_id_connection.role_name`` field
-          # in ``bootstrap/config.json`` file
-          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
-          role-session-name: sample_role_session
-          aws-region: ${{ env.AWS_REGION }}
       - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
@@ -34,9 +26,17 @@ jobs:
           # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'pip'
           cache-dependency-path: bootstrap/requirements.txt
-      - name: 💾 install python dependencies
+      - name: 💾 Install Dependencies
         run: pip install -r bootstrap/requirements.txt
-      - name: 🧪 check cross account permission
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          # this role name has to match the ``github_action_open_id_connection.role_name`` field
+          # in ``bootstrap/config.json`` file
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
+          role-session-name: sample_role_session
+          aws-region: ${{ env.AWS_REGION }}
+      - name: 🧪 Test Cross Account IAM permission
         env:
           DEV_AWS_ACCOUNT_ID: ${{ secrets.SBX_AWS_ACCOUNT_ID }}
           TEST_AWS_ACCOUNT_ID: ${{ secrets.TST_AWS_ACCOUNT_ID }}
