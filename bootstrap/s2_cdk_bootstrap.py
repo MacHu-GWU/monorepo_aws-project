@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from python_lib.steps.s2_cdk_bootstrap import main
+from python_lib.run_step import run_step
 
-main()
+run_step("s2_cdk_bootstrap")

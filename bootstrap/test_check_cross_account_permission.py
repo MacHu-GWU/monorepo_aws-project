@@ -2,6 +2,8 @@
 
 """
 This script test the cross account IAM permission in GitHub Action using OIDC.
+It is used in GitHub action only, it won't work on local machine because it cannot
+assume the GitHub Action OIDC principal.
 """
 
 import os

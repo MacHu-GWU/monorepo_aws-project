@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from python_lib.steps.s4_setup_cross_account_permission import main
+from python_lib.run_step import run_step
 
-main()
+run_step("s4_setup_cross_account_permission")

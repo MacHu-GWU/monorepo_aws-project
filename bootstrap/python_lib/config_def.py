@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module should be zero dependency, so that it can be used in bootstrap.
+"""
+
 import typing as T
 import json
 import enum
@@ -7,7 +11,10 @@ import dataclasses
 from pathlib import Path
 from functools import cached_property
 
-from boto_session_manager import BotoSesManager
+try:
+    from boto_session_manager import BotoSesManager
+except ImportError:
+    pass
 
 
 @dataclasses.dataclass
@@ -72,7 +79,7 @@ class Grantee(Base):
 
 class AwsAccountMixin:
     @cached_property
-    def bsm(self) -> BotoSesManager:
+    def bsm(self) -> "BotoSesManager":
         return BotoSesManager(profile_name=self.aws_profile)
 
     @property
