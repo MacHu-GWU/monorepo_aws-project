@@ -15,6 +15,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# Set common environment for all jobs and all steps
 env:
   AWS_REGION: "us-east-1"
 

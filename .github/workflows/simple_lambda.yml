@@ -2,34 +2,84 @@
 name: simple_lambda
 
 # Controls when the action will run.
+# Reference:
+# - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+# - Events that trigger workflows: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on:
-  # Allows you to run this workflow manually from the Actions tab
+  # To enable a workflow to be triggered manually, you need to configure the workflow_dispatch event.
+  # - workflow_dispatch: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+  # - Manually running a workflow: https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow
+  # Allows you to run this workflow manually from the GitHub Actions tab
   workflow_dispatch:
+  push:
+    branches:
+      - 'simple_lambda/feature*'
+
+# Set common environment for all jobs and all steps
+env:
+  AWS_REGION: "us-east-1"
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
 
 jobs:
-  with_pip_cache:
+  sandbox:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          # this role name has to match the ``github_action_open_id_connection.role_name`` field
+          # in ``bootstrap/config.json`` file
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
+          role-session-name: sample_role_session
+          aws-region: ${{ env.AWS_REGION }}
       # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
-      - name: Set up Node
+      - name: 🛠 Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
       - name: 💾 Install CDK in Node
         run: |
-          npm install -g aws-cdk@2.86.0
+          npm install -g aws-cdk@2.111.0
           which cdk
           cdk --version
-      - name: sbx
-        env:
-          ENV_NAME: sbx
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
+          cache: 'poetry'
+          cache-dependency-path: projects/simple_lambda/poetry.lock
+      - name: 💾 Install Automation Dependencies
         run: |
-          echo $ENV_NAME
-          env
-      - name: test
-        env:
-          ENV_NAME: test
+          pip install -r ./projects/simple_lambda-project/requirements-automation.txt --quiet --disable-pip-version-check
+      - name: 🐍 Create Virtual Environment
         run: |
-          echo $ENV_NAME
-          env
+          python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
+      - name: 💾 Export resolved dependencies to req-***.txt file
+        run: |
+          python ./projects/simple_lambda-project/bin/s02_07_poetry_export.py
+      - name: 💾 Install automation dependencies
+        run: |
+          python ./projects/simple_lambda-project/bin/s02_05_pip_install_automation.py
+      - name: 💾 Install main dependencies and Package itself
+        run: |
+          python ./projects/simple_lambda-project/bin/s02_01_pip_install.py
+      - name: 💾 Install dev dependencies
+        run: |
+          python ./projects/simple_lambda-project/bin/s02_02_pip_install_dev.py
+      - name: 💾 Install test dependencies
+        run: |
+          python ./projects/simple_lambda-project/bin/s02_03_pip_install_test.py
+          
+
+#      - name: sbx
+#        env:
+#          ENV_NAME: sbx
+#        run: |
+#          echo $ENV_NAME
+#          env
