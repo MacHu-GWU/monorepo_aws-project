@@ -18,7 +18,9 @@
                     "name": "monorepo-aws-github-oidc"
                 }
             },
-            "grantee_policy_name": "monorepo_aws-devops-us-east-1"
+            "grantee_policy_name": "monorepo_aws-devops-us-east-1",
+            "s3bucket_artifacts": "bmt-app-devops-us-east-1-artifacts",
+            "s3bucket_docs": "bmt-app-devops-us-east-1-doc-host"
         },
         "workload_aws_accounts": [
             {

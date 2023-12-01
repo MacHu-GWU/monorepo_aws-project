@@ -105,6 +105,8 @@ class DevOpsAwsAccount(Base, AwsAccountMixin):
     stack_name: str = dataclasses.field()
     grantee: Grantee = dataclasses.field()
     grantee_policy_name: str = dataclasses.field()
+    s3bucket_artifacts: str = dataclasses.field()
+    s3bucket_docs: str = dataclasses.field()
 
     @classmethod
     def from_dict(cls, dct: dict):

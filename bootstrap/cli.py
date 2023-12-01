@@ -12,6 +12,7 @@ from python_lib.steps import s1_setup_venv
 from python_lib.steps import s2_cdk_bootstrap
 from python_lib.steps import s3_setup_github_action_oidc
 from python_lib.steps import s4_setup_cross_account_permission
+from python_lib.steps import s5_setup_cross_account_s3_bucket_permission
 
 
 class Command:
@@ -32,6 +33,9 @@ class Command:
 
     def s4_setup_cross_account_permission(self):
         s4_setup_cross_account_permission.main()
+
+    def s5_setup_cross_account_s3_bucket_permission(self):
+        s5_setup_cross_account_s3_bucket_permission.main()
 
 
 fire.Fire(Command())
