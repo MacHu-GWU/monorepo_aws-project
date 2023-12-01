@@ -56,9 +56,13 @@ jobs:
           # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'pip'
           cache-dependency-path: projects/simple_lambda-project/requirements-automation.txt
-      - name: 💾 Install Automation Dependencies
+      - name: 💾 Install virtualenv, poetry Dependencies
         run: |
-          pip install -r ./projects/simple_lambda-project/requirements-automation.txt --quiet --disable-pip-version-check
+          pip install virtualenv==20.25.0
+          pip install poetry==1.6.1
+      #-------------------------------------------------------------------------
+      #
+      #-------------------------------------------------------------------------
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
@@ -69,9 +73,6 @@ jobs:
       - name: 🐍 Create Virtual Environment
         run: |
           python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
-      - name: 💾 Export resolved dependencies to req-***.txt file
-        run: |
-          python ./projects/simple_lambda-project/bin/s02_07_poetry_export.py
       - name: 💾 Install all dependencies
         run: |
           python ./projects/simple_lambda-project/bin/s02_10_pip_install_all_in_ci.py
