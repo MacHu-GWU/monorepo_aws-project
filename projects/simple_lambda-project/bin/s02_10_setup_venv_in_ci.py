@@ -8,11 +8,12 @@ from pathlib import Path
 dir_here = Path(__file__).absolute().parent
 dir_project_root = dir_here.parent
 dir_venv = dir_project_root / ".venv"
+path_venv_bin_poetry = dir_venv / "bin" / "poetry"
 path_venv_bin_pip = dir_venv / "bin" / "pip"
 
 os.chdir(f"{dir_project_root}")
 
-if dir_venv.exists() is False:
+if path_venv_bin_poetry.exists() is False:
     subprocess.run(
         [
             "virtualenv",
