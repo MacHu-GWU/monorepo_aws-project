@@ -47,16 +47,23 @@ jobs:
           npm install -g aws-cdk@2.111.0
           which cdk
           cdk --version
-      - name: 🐍 Setup Python
+      - name: 🐍 Setup Python with pip cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
+          cache: 'pip'
+          cache-dependency-path: projects/simple_lambda-project/requirements-automation.txt
+      - name: 💾 Install Automation Dependencies
+        run: |
+          pip install -r ./projects/simple_lambda-project/requirements-automation.txt --quiet --disable-pip-version-check
+      - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'poetry'
           cache-dependency-path: projects/simple_lambda-project/poetry.lock
-      - name: 💾 Install Automation Dependencies
-        run: |
-          pip install -r ./projects/simple_lambda-project/requirements-automation.txt --quiet --disable-pip-version-check
       - name: 🐍 Create Virtual Environment
         run: |
           python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
