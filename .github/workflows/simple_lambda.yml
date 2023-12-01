@@ -72,18 +72,9 @@ jobs:
       - name: 💾 Export resolved dependencies to req-***.txt file
         run: |
           python ./projects/simple_lambda-project/bin/s02_07_poetry_export.py
-      - name: 💾 Install automation dependencies
+      - name: 💾 Install all dependencies
         run: |
-          python ./projects/simple_lambda-project/bin/s02_05_pip_install_automation.py
-      - name: 💾 Install main dependencies and Package itself
-        run: |
-          python ./projects/simple_lambda-project/bin/s02_01_pip_install.py
-      - name: 💾 Install dev dependencies
-        run: |
-          python ./projects/simple_lambda-project/bin/s02_02_pip_install_dev.py
-      - name: 💾 Install test dependencies
-        run: |
-          python ./projects/simple_lambda-project/bin/s02_03_pip_install_test.py
+          python ./projects/simple_lambda-project/bin/s02_06_pip_install_all.py
       - name: 🪜 Build Lambda Source Artifacts
         run: |
           ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
