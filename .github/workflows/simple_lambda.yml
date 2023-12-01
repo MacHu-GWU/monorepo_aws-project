@@ -68,7 +68,7 @@ jobs:
           cache-dependency-path: projects/simple_lambda-project/poetry.lock
       - name: 🐍 Create Virtual Environment
         run: |
-          [ ! -d "projects/simple_lambda-project/.venv" ] && python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
+          [ ! -d "projects/simple_lambda-project/.venv" ] && echo "hello"
       - name: 💾 Export resolved dependencies to req-***.txt file
         run: |
           python ./projects/simple_lambda-project/bin/s02_07_poetry_export.py
