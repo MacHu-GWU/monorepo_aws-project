@@ -39,7 +39,7 @@ emoji_mapper = {
 
 # In this project, we use Codebuild as the CI build environment
 # See https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
-if "CODEBUILD_CI" in os.environ:
+if "CI" in os.environ:
     CURRENT_RUNTIME = RuntimeEnum.ci
     IS_CI = True
     IS_LOCAL = False

@@ -57,18 +57,19 @@ if IS_LOCAL:
     GIT_COMMIT_ID: str = get_git_commit_id_from_git_cli(dir_repo)
     GIT_COMMIT_MESSAGE: str = get_commit_message_by_commit_id(dir_repo, GIT_COMMIT_ID)
 elif IS_CI:
-    GIT_BRANCH_NAME: str = os.environ["USER_GIT_BRANCH_NAME"]
-    GIT_COMMIT_ID: str = os.environ["USER_GIT_COMMIT_ID"]
+    GIT_BRANCH_NAME: str = os.environ["GITHUB_REF_NAME"]
+    GIT_COMMIT_ID: str = os.environ["GITHUB_SHA"]
 
     from boto_session_manager import BotoSesManager
 
     bsm = BotoSesManager()
-    GIT_REPO_NAME = os.environ["USER_GIT_REPO_NAME"]
-    GIT_COMMIT_MESSAGE = better_boto.get_commit(
-        bsm=bsm,
-        repo_name=GIT_REPO_NAME,
-        commit_id=GIT_COMMIT_ID,
-    ).message
+    GIT_REPO_NAME = os.environ["GITHUB_REPOSITORY"].split("/", 1)[1]
+    # GIT_COMMIT_MESSAGE = better_boto.get_commit(
+    #     bsm=bsm,
+    #     repo_name=GIT_REPO_NAME,
+    #     commit_id=GIT_COMMIT_ID,
+    # ).message
+    GIT_COMMIT_MESSAGE = "unknown"
 else:
     raise NotImplementedError
 

@@ -37,7 +37,7 @@ if "AWS_LAMBDA_FUNCTION_NAME" in os.environ:  # pragma: no cover
     CURRENT_RUNTIME = RunTimeEnum.awslambda.value
 # if you use AWS CodeBuild for CI/CD
 # ref: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
-elif "CODEBUILD_CI" in os.environ:  # pragma: no cover
+elif "CI" in os.environ:  # pragma: no cover
     IS_CI = True
     CURRENT_RUNTIME = RunTimeEnum.ci.value
 # if you use GitHub CI for CI/CD
