@@ -53,7 +53,7 @@ jobs:
           python-version: '3.9'
           # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'poetry'
-          cache-dependency-path: projects/simple_lambda/poetry.lock
+          cache-dependency-path: projects/simple_lambda-project/poetry.lock
       - name: 💾 Install Automation Dependencies
         run: |
           pip install -r ./projects/simple_lambda-project/requirements-automation.txt --quiet --disable-pip-version-check
