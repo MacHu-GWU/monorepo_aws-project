@@ -2,7 +2,7 @@
     "python_version_major": 3,
     "python_version_minor": 9,
     "github_action_open_id_connection": {
-        "aws_profile": "bmt_app_dev_us_east_1",
+        "aws_profile": "bmt_app_devops_us_east_1",
         "stack_name": "monorepo-aws-github-oidc",
         "github_org": "MacHu-GWU",
         "github_repo": "monorepo_aws-project",
@@ -10,7 +10,7 @@
     },
     "cross_account_iam_permission": {
         "devops_aws_account": {
-            "aws_profile": "bmt_app_dev_us_east_1",
+            "aws_profile": "bmt_app_devops_us_east_1",
             "stack_name": "monorepo-aws-devops-deployer-us-east-1",
             "grantee": {
                 "type": "role",
@@ -40,7 +40,7 @@
             },
             {
                 "env_name": "tst",
-                "aws_profile": "bmt_app_dev_us_east_1",
+                "aws_profile": "bmt_app_test_us_east_1",
                 "stack_name": "monorepo-aws-tst-deployer-us-east-1",
                 "owner_role_name": "monorepo_aws-tst-deployer-us-east-1",
                 "owner_policy_name": "monorepo_aws-tst-deployer-us-east-1",
@@ -57,7 +57,7 @@
             },
             {
                 "env_name": "prd",
-                "aws_profile": "bmt_app_dev_us_east_1",
+                "aws_profile": "bmt_app_prod_us_east_1",
                 "stack_name": "monorepo-aws-prd-deployer-us-east-1",
                 "owner_role_name": "monorepo_aws-prd-deployer-us-east-1",
                 "owner_policy_name": "monorepo_aws-prd-deployer-us-east-1",
