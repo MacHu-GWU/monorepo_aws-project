@@ -26,6 +26,8 @@ permissions:
 jobs:
   sandbox:
     runs-on: ubuntu-latest
+    env:
+      USER_ENV_NAME: sbx
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
@@ -90,10 +92,3 @@ jobs:
           ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s03_02_run_cov_test.py
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
-
-#      - name: sbx
-#        env:
-#          ENV_NAME: sbx
-#        run: |
-#          echo $ENV_NAME
-#          env
