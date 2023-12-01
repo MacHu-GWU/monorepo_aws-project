@@ -158,3 +158,17 @@ def pip_install_automation():
 )
 def pip_install_all():
     pyproject_ops.pip_install_all(quiet=quiet)
+
+
+@logger.start_and_end(
+    msg="Install all dependencies",
+    start_emoji=Emoji.install,
+    error_emoji=f"{Emoji.failed} {Emoji.install}",
+    end_emoji=f"{Emoji.succeeded} {Emoji.install}",
+    pipe=Emoji.install,
+)
+def pip_install_all_in_ci():
+    if pyproject_ops.path_venv_bin_pytest.exists() is False:
+        pyproject_ops.pip_install_all(quiet=quiet)
+    else:
+        logger.info("dependencies are already installed, do nothing")

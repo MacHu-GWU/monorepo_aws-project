@@ -74,7 +74,7 @@ jobs:
           python ./projects/simple_lambda-project/bin/s02_07_poetry_export.py
       - name: 💾 Install all dependencies
         run: |
-          [ ! -d "projects/simple_lambda-project/.venv/lib/python3.9/site-packages/boto3" ] && python ./projects/simple_lambda-project/bin/s02_06_pip_install_all.py
+          python ./projects/simple_lambda-project/bin/s02_10_pip_install_all_in_ci.py
       - name: 🪜 Build Lambda Source Artifacts
         run: |
           ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
