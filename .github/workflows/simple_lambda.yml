@@ -70,12 +70,9 @@ jobs:
           # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'poetry'
           cache-dependency-path: projects/simple_lambda-project/poetry.lock
-      - name: 🐍 Create Virtual Environment
+      - name: 🐍 💾 Create Virtual Environment and Install all dependencies
         run: |
-          python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
-      - name: 💾 Install all dependencies
-        run: |
-          python ./projects/simple_lambda-project/bin/s02_10_pip_install_all_in_ci.py
+          python ./projects/simple_lambda-project/bin/s02_10_setup_venv_in_ci.py
       - name: 🪜 Build Lambda Source Artifacts
         run: |
           ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
