@@ -82,7 +82,14 @@ jobs:
       - name: 💾 Install test dependencies
         run: |
           python ./projects/simple_lambda-project/bin/s02_03_pip_install_test.py
-          
+      - name: 🪜 Build Lambda Source Artifacts
+        run: |
+          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
+      - name: 🧪 Run Code Coverage Test
+        run: |
+          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s03_02_run_cov_test.py
+      - name: === 🛑 END OF THE JOB ===
+        run: echo "END OF THE JOB"
 
 #      - name: sbx
 #        env:
