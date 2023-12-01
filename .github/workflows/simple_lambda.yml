@@ -68,13 +68,13 @@ jobs:
           cache-dependency-path: projects/simple_lambda-project/poetry.lock
       - name: 🐍 Create Virtual Environment
         run: |
-          python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
+          [ ! -d "./projects/simple_lambda-project/.venv" ] && python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
       - name: 💾 Export resolved dependencies to req-***.txt file
         run: |
           python ./projects/simple_lambda-project/bin/s02_07_poetry_export.py
       - name: 💾 Install all dependencies
         run: |
-          python ./projects/simple_lambda-project/bin/s02_06_pip_install_all.py
+          [ ! -d "./projects/simple_lambda-project/.venv/lib/python3.9/site-packages/boto3" ] && python ./projects/simple_lambda-project/bin/s02_06_pip_install_all.py
       - name: 🪜 Build Lambda Source Artifacts
         run: |
           ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
