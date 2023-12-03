@@ -22,6 +22,7 @@ class Emoji:
     build = "🪜"
     deploy = "🚀"
     delete = "🗑"
+    config = "🔯"
     tada = "🎉"
 
     cloudformation = "🐑"

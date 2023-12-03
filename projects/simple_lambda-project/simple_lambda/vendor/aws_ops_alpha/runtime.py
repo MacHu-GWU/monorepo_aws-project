@@ -9,15 +9,11 @@ This module can detect the current runtime information using LAZY LOAD technique
 
 Requirements: Python>=3.8
 
-Dependencies:
-
-.. code-block:: python
+Dependencies::
 
     cached-property>=1.5.2; python_version < '3.8'
 
-Usage example:
-
-.. code-block:: python
+Usage example::
 
     from runtime import runtime
 """

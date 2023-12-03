@@ -6,7 +6,6 @@ This module implements the Git branch strategy related automation.
 
 import typing as T
 import os
-import enum
 import dataclasses
 from pathlib import Path
 from functools import cached_property
@@ -18,19 +17,9 @@ from .vendor.git_cli import (
     get_commit_message_by_commit_id,
 )
 
+from .constants import AwsOpsSemanticBranchEnum
 from .runtime import runtime
 from .logger import logger
-
-
-class AwsOpsSemanticBranchEnum(str, enum.Enum):
-    lbd = "new"
-    awslambda = "lambda"
-    layer = "layer"
-    ecr = "ecr"
-    ami = "ami"
-    glue = "glue"
-    sfn = "sfn"
-    airflow = "airflow"
 
 
 @dataclasses.dataclass
