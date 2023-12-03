@@ -5,12 +5,12 @@ import json
 from config_patterns.jsonutils import json_loads
 
 from ..paths import path_config_json, path_config_secret_json
-from ..runtime import IS_LOCAL, IS_CI, IS_LAMBDA
+from ..runtime import runtime
 from ..boto_ses import bsm
 
 from .define import EnvEnum, Env, Config
 
-if IS_LOCAL:
+if runtime.is_local:
     # ensure that the config-secret.json file exists
     # it should be at the ${HOME}/.projects/simple_lambda/config-secret.json
     # this code block is only used to onboard first time user of this
@@ -37,7 +37,7 @@ if IS_LOCAL:
         path_config=path_config_json.abspath,
         path_secret_config=path_config_secret_json.abspath,
     )
-elif IS_CI:
+elif runtime.is_ci:
     # read non-sensitive config from local file system
     # and then figure out what is the parameter name
     config = Config(
@@ -56,7 +56,7 @@ elif IS_CI:
         parameter_name=config.parameter_name,
         parameter_with_encryption=True,
     )
-elif IS_LAMBDA:
+elif runtime.is_aws_lambda:
     # read the parameter name from environment variable
     parameter_name = os.environ["PARAMETER_NAME"]
     # read config from parameter store

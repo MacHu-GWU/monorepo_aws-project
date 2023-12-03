@@ -15,7 +15,7 @@ from ...paths import (
     dir_lambda_deploy,
     path_source_zip,
 )
-from ...git import git_commit_id
+from ...git import git_repo
 from ..._version import __version__
 
 if T.TYPE_CHECKING:
@@ -64,7 +64,7 @@ class LambdaMixin:
                     "PROJECT_NAME": self.env.project_name,
                     "ENV_NAME": self.env.env_name,
                     "SOURCE_SHA256": source_sha256,
-                    "GIT_COMMIT_ID": git_commit_id,
+                    "GIT_COMMIT_ID": git_repo.git_commit_id,
                     "PACKAGE_VERSION": __version__,
                     "CONFIG_VERSION": self.config.version,
                 },

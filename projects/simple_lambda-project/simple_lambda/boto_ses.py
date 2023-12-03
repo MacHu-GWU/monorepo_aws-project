@@ -4,7 +4,7 @@ import dataclasses
 
 from s3pathlib import context
 
-from .vendor.aws_ops_alpha.api import Config, runtime, BotoSesFactory
+from aws_ops_alpha.api import Config, runtime, BotoSesFactory
 
 aws_ops_alpha_config = Config(
     env_aws_profile_mapper={

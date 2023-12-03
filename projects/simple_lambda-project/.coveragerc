@@ -3,6 +3,7 @@
 [run]
 omit =
     simple_lambda/tests/*
+    simple_lambda/vendor/*
     simple_lambda/config/init.py
     simple_lambda/iac/exports.py
     simple_lambda/_version.py
