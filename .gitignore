@@ -3,6 +3,7 @@ tmp/
 cdk.out/
 *.drawio.bkp
 *.dtmp
+*_backup
 .cloc-list-file
 
 # Byte-compiled / optimized / DLL files
