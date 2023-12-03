@@ -4,6 +4,7 @@ cdk.out/
 *.drawio.bkp
 *.dtmp
 *_backup
+*_backup.py
 .cloc-list-file
 
 # Byte-compiled / optimized / DLL files
