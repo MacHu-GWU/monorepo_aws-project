@@ -105,10 +105,14 @@ class GitRepo:
         else:
             return parts[-1]
 
-    def print_git_info(self):
-        logger.info(f"Current git branch is 🔀 {self.git_branch_name!r}")
-        logger.info(f"Current git commit is # {self.git_commit_id!r}")
-        logger.info(f"Current git commit message is 📜 {self.git_commit_message!r}")
+    def print_git_info(
+        self,
+        verbose: bool = True,
+    ):
+        if verbose:
+            logger.info(f"Current git branch is 🔀 {self.git_branch_name!r}")
+            logger.info(f"Current git commit is # {self.git_commit_id!r}")
+            logger.info(f"Current git commit message is 📜 {self.git_commit_message!r}")
 
     # --------------------------------------------------------------------------
     # Identify common semantic branch type

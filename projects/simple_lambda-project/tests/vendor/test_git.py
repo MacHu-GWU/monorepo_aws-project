@@ -26,7 +26,7 @@ class TestGitRepo:
         _ = git_repo.is_sfn_branch
         _ = git_repo.is_airflow_branch
 
-        git_repo.print_git_info()
+        git_repo.print_git_info(verbose=False)
 
 
 if __name__ == "__main__":
