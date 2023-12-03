@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from pathlib_mate import Path
-from .runtime import IS_LOCAL
+
+from .runtime import runtime
 
 dir_here = Path.dir_here(__file__)
 PACKAGE_NAME = dir_here.basename
@@ -9,7 +10,7 @@ PACKAGE_NAME = dir_here.basename
 dir_project_root = Path.dir_here(__file__).parent
 dir_home = Path.home() # ${HOME}
 dir_home_project_root = dir_home / ".projects" / PACKAGE_NAME
-if IS_LOCAL:
+if runtime.is_local:
     dir_home_project_root.mkdir_if_not_exists()
 
 # ------------------------------------------------------------------------------

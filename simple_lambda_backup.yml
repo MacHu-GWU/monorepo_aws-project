@@ -1,0 +1,85 @@
+# This is an advanced workflow to show you how to use cache to accelerate CI job run
+name: simple_lambda
+
+# Controls when the action will run.
+# Reference:
+# - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+# - Events that trigger workflows: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+on:
+  # To enable a workflow to be triggered manually, you need to configure the workflow_dispatch event.
+  # - workflow_dispatch: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+  # - Manually running a workflow: https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow
+  # Allows you to run this workflow manually from the GitHub Actions tab
+  workflow_dispatch:
+  push:
+    branches:
+      - 'simple_lambda/feature*'
+
+# Set common environment for all jobs and all steps
+env:
+  AWS_REGION: "us-east-1"
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  sandbox:
+    runs-on: ubuntu-latest
+    env:
+      USER_ENV_NAME: sbx
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          # this role name has to match the ``github_action_open_id_connection.role_name`` field
+          # in ``bootstrap/config.json`` file
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
+          role-session-name: sample_role_session
+          aws-region: ${{ env.AWS_REGION }}
+      # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+      - name: 🛠 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: 💾 Install CDK in Node
+        run: |
+          npm install -g aws-cdk@2.111.0
+          which cdk
+          cdk --version
+      - name: 🐍 Setup Python with pip cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
+          cache: 'pip'
+          cache-dependency-path: projects/simple_lambda-project/requirements-automation.txt
+      - name: 💾 Install Automation Dependencies
+        run: |
+          pip install -r ./projects/simple_lambda-project/requirements-automation.txt --quiet --disable-pip-version-check
+      - name: 🐍 Setup Python with poetry cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
+          cache: 'poetry'
+          cache-dependency-path: projects/simple_lambda-project/poetry.lock
+      - name: 🐍 Create Virtual Environment
+        run: |
+          python ./projects/simple_lambda-project/bin/s01_01_venv_create.py
+      - name: 💾 Export resolved dependencies to req-***.txt file
+        run: |
+          python ./projects/simple_lambda-project/bin/s02_07_poetry_export.py
+      - name: 💾 Install all dependencies
+        run: |
+          python ./projects/simple_lambda-project/bin/s02_10_pip_install_all_in_ci.py
+      - name: 🪜 Build Lambda Source Artifacts
+        run: |
+          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
+      - name: 🧪 Run Code Coverage Test
+        run: |
+          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s03_02_run_cov_test.py
+      - name: === 🛑 END OF THE JOB ===
+        run: echo "END OF THE JOB"
