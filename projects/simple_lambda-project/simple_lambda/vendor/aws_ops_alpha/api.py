@@ -18,4 +18,4 @@ from .runtime import RunTimeEnum
 from .runtime import runtime
 from .env_var import get_devops_aws_account_id_in_ci
 from .env_var import get_workload_aws_account_id_in_ci
-from .boto_ses import BotoSes
+from .boto_ses import BotoSesFactory

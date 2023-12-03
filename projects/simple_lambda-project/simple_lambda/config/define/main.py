@@ -9,7 +9,7 @@ from config_patterns.patterns.multi_env_json.api import (
     BaseConfig,
 )
 
-from ...runtime import IS_LOCAL, IS_CI, IS_LAMBDA
+from ...runtime import runtime
 from ...compat import cached_property
 
 
@@ -68,15 +68,15 @@ class Config(BaseConfig):
         # you can uncomment this line to force to use certain env
         # from your local laptop to run application code, tests, ...
         # return EnvEnum.sbx.value
-        if IS_LOCAL:
+        if runtime.is_local:
             if "USER_ENV_NAME" in os.environ:
                 return os.environ["USER_ENV_NAME"]
             return EnvEnum.sbx.value
-        elif IS_CI:
+        elif runtime.is_ci:
             env_name = os.environ["USER_ENV_NAME"]
             EnvEnum.ensure_is_valid_value(env_name)
             return env_name
-        elif IS_LAMBDA:
+        elif runtime.is_aws_lambda:
             env_name = os.environ["ENV_NAME"]
             EnvEnum.ensure_is_valid_value(env_name)
             return env_name

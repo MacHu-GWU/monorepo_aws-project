@@ -16,7 +16,10 @@ from .env_var import (
 
 
 @dataclasses.dataclass
-class BotoSes(abc.ABC):
+class BotoSesFactory(abc.ABC):
+    """
+    Manages creation of boto session manager.
+    """
     config: "Config" = dataclasses.field()
     runtime: "Runtime" = dataclasses.field()
 
