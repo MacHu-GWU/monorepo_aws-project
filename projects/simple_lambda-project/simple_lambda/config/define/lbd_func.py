@@ -10,7 +10,7 @@ import dataclasses
 from boto_session_manager import BotoSesManager
 from boltons.strutils import slugify, under2camel
 
-from ...vendor.better_lambda import LATEST, publish_version, deploy_alias
+from ...vendor.aws_lambda_version_and_alias import LATEST, publish_version, deploy_alias
 from ...constants import LIVE
 
 if T.TYPE_CHECKING:  # pragma: no cover
@@ -22,6 +22,7 @@ class LambdaFunction:
     """
     Represent a lambda function.
     """
+
     env: "Env" = dataclasses.field(init=False)
     short_name: T.Optional[str] = dataclasses.field(default=None)
     handler: T.Optional[str] = dataclasses.field(default=None)
@@ -80,7 +81,7 @@ class LambdaFunction:
     def publish_version(
         self,
         bsm: BotoSesManager,
-    ) -> T.Tuple[bool, str]:  # pragma: no cover
+    ) -> T.Tuple[bool, int]:  # pragma: no cover
         """
         Publish a new version. This API is idempotent, i.e. if the $LATEST
         version is already the latest published version, then nothing will happen.
@@ -88,7 +89,7 @@ class LambdaFunction:
         :return: a tuple of two items, first item is a boolean flag to indicate
             that if a new version is created. the second item is the version id.
         """
-        return publish_version(bsm, func_name=self.name)
+        return publish_version(bsm.lambda_client, func_name=self.name)
 
     def deploy_alias(
         self,

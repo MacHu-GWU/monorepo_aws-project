@@ -2,6 +2,7 @@
 
 import typing as T
 import dataclasses
+
 from s3pathlib import S3Path
 
 from ..._version import __version__

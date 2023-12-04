@@ -2,6 +2,7 @@
 
 import typing as T
 import dataclasses
+
 from s3pathlib import S3Path
 
 if T.TYPE_CHECKING:  # pragma: no cover

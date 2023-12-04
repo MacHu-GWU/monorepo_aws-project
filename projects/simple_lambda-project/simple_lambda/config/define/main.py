@@ -3,17 +3,14 @@
 import dataclasses
 import os
 
-from config_patterns.patterns.multi_env_json.api import (
-    BaseEnvEnum,
-    BaseEnv,
-    BaseConfig,
-)
+import aws_ops_alpha.api as aws_ops_alpha
+import config_patterns.api as config_patterns
 
 from ...runtime import runtime
 from ...compat import cached_property
 
 
-class EnvEnum(BaseEnvEnum):
+class EnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
     """
     In this project, we have three environment:
 
@@ -28,6 +25,16 @@ class EnvEnum(BaseEnvEnum):
     tst = "tst"
     prd = "prd"
 
+    @property
+    def emoji(self) -> str:
+        return env_emoji_mapper[self.value]
+
+
+env_emoji_mapper = {
+    EnvEnum.sbx.value: aws_ops_alpha.Emoji.sbx,
+    EnvEnum.tst.value: aws_ops_alpha.Emoji.tst,
+    EnvEnum.prd.value: aws_ops_alpha.Emoji.prd,
+}
 
 # You may have a long list of config field definition
 # put them in different module and use Mixin class
@@ -40,7 +47,7 @@ from .lbd_func import LambdaFunction, LambdaFunctionMixin
 
 @dataclasses.dataclass
 class Env(
-    BaseEnv,
+    config_patterns.multi_env_json.BaseEnv,
     AppMixin,
     NameMixin,
     DeployMixin,
@@ -62,9 +69,9 @@ class Env(
         return env
 
 
-class Config(BaseConfig):
+class Config(config_patterns.multi_env_json.BaseConfig):
     @classmethod
-    def get_current_env(cls) -> str: # pragma: no cover
+    def get_current_env(cls) -> str:  # pragma: no cover
         # you can uncomment this line to force to use certain env
         # from your local laptop to run application code, tests, ...
         # return EnvEnum.sbx.value
@@ -82,15 +89,15 @@ class Config(BaseConfig):
             return env_name
 
     @cached_property
-    def sbx(self) -> Env: # pragma: no cover
+    def sbx(self) -> Env:  # pragma: no cover
         return self.get_env(env_name=EnvEnum.sbx)
 
     @cached_property
-    def tst(self) -> Env: # pragma: no cover
+    def tst(self) -> Env:  # pragma: no cover
         return self.get_env(env_name=EnvEnum.tst)
 
     @cached_property
-    def prd(self) -> Env: # pragma: no cover
+    def prd(self) -> Env:  # pragma: no cover
         return self.get_env(env_name=EnvEnum.prd)
 
     @cached_property
