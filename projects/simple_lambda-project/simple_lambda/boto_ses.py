@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import typing as T
 import dataclasses
 from functools import cached_property
 
@@ -36,6 +37,14 @@ class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
     @cached_property
     def bsm_prd(self):
         return self.get_app_bsm(env_name=EnvEnum.prd.value)
+
+    @cached_property
+    def workload_bsm_list(self):
+        return [
+            self.bsm_sbx,
+            self.bsm_tst,
+            self.bsm_prd,
+        ]
 
 
 boto_ses_factory = BotoSesFactory(

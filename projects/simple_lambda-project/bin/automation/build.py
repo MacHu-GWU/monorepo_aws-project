@@ -10,14 +10,16 @@ from aws_lambda_layer.api import (
     publish_source_artifacts,
     SourceArtifactsDeployment,
     deploy_layer,
+    grant_layer_permission,
 )
+import aws_ops_alpha.api as aws_ops_alpha
 
 from .pyproject import pyproject_ops
 from .logger import logger
 from .emoji import Emoji
 from .git import GIT_BRANCH_NAME, IS_LAYER_BRANCH
 from .runtime import IS_CI
-from .build_rule import do_we_build_lambda_layer
+
 
 if T.TYPE_CHECKING:
     from boto_session_manager import BotoSesManager
@@ -113,7 +115,8 @@ def _build_lambda_layer(
     pipe=Emoji.awslambda,
 )
 def build_lambda_layer(
-    bsm: "BotoSesManager",
+    bsm_devops: "BotoSesManager",
+    workload_bsm_list: T.List["BotoSesManager"],
     layer_name: str,
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
@@ -121,7 +124,7 @@ def build_lambda_layer(
 ):
     if check:
         if (
-            do_we_build_lambda_layer(
+            aws_ops_alpha.simple_lambda.do_we_deploy_lambda_layer(
                 is_ci_runtime=IS_CI,
                 branch_name=GIT_BRANCH_NAME,
                 is_layer_branch=IS_LAYER_BRANCH,
@@ -131,7 +134,7 @@ def build_lambda_layer(
             return
 
     layer_deployment = _build_lambda_layer(
-        bsm=bsm,
+        bsm=bsm_devops,
         layer_name=layer_name,
         s3dir_lambda=s3dir_lambda,
         tags=tags,
@@ -146,8 +149,8 @@ def build_lambda_layer(
         logger.info(f"published a new layer version: {layer_deployment.layer_version}")
         logger.info(f"published layer arn: {layer_deployment.layer_version_arn}")
         layer_console_url = (
-            f"https://{bsm.aws_region}.console.aws.amazon.com/lambda"
-            f"/home?region={bsm.aws_region}#"
+            f"https://{bsm_devops.aws_region}.console.aws.amazon.com/lambda"
+            f"/home?region={bsm_devops.aws_region}#"
             f"/layers?fo=and&o0=%3A&v0={layer_name}"
         )
         logger.info(f"preview deployed layer at {layer_console_url}")
@@ -155,3 +158,11 @@ def build_lambda_layer(
         logger.info(f"preview layer.zip at {console_url}")
         console_url = layer_deployment.s3path_layer_requirements_txt.console_url
         logger.info(f"preview requirements.txt at {console_url}")
+
+        for bsm_workload in workload_bsm_list:
+            grant_layer_permission(
+                bsm=bsm_devops,
+                layer_name=layer_name,
+                version_number=layer_deployment.layer_version,
+                principal=bsm_workload.aws_account_id,
+            )

@@ -3,13 +3,11 @@
 
 from automation.build import build_lambda_source
 
-from simple_lambda.boto_ses import get_devops_bsm
+from simple_lambda.boto_ses import boto_ses_factory
 from simple_lambda.config.init import config
 
-bsm_devops = get_devops_bsm()
-
 build_lambda_source(
-    bsm=bsm_devops,
+    bsm=boto_ses_factory.bsm_devops,
     s3dir_lambda=config.env.s3dir_lambda,
     tags=config.env.aws_tags,
     verbose=False,
