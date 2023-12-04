@@ -595,13 +595,13 @@ test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 
 [[package]]
 name = "config-patterns"
-version = "1.0.3"
+version = "1.0.4"
 description = "Brings config management best practices for production-ready application."
 optional = false
 python-versions = "*"
 files = [
-    {file = "config_patterns-1.0.3-py2.py3-none-any.whl", hash = "sha256:299ef3d2c06f1e7701bbbeff0caf11825df4dc0392788c12292102cd459b3f30"},
-    {file = "config_patterns-1.0.3.tar.gz", hash = "sha256:7a06ecaef246f1dcf2bbf8165595fe4e262bc20a783669fa42e28c09c1ea50c8"},
+    {file = "config_patterns-1.0.4-py2.py3-none-any.whl", hash = "sha256:4d7b3071c23f77efae4e554f6c58c582502839367e835aff7e2115ed22bab2cc"},
+    {file = "config_patterns-1.0.4.tar.gz", hash = "sha256:ef45e70b475fd69b4b45f6770efa5d50eaa2c52f62b53988d75c9c518fce19b5"},
 ]
 
 [package.dependencies]
@@ -980,13 +980,13 @@ files = [
 
 [[package]]
 name = "importlib-metadata"
-version = "6.9.0"
+version = "7.0.0"
 description = "Read metadata from Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "importlib_metadata-6.9.0-py3-none-any.whl", hash = "sha256:1c8dc6839ddc9771412596926f24cb5a553bbd40624ee2c7e55e531542bed3b8"},
-    {file = "importlib_metadata-6.9.0.tar.gz", hash = "sha256:e8acb523c335a91822674e149b46c0399ec4d328c4d1f6e49c273da5ff0201b9"},
+    {file = "importlib_metadata-7.0.0-py3-none-any.whl", hash = "sha256:d97503976bb81f40a193d41ee6570868479c69d5068651eb039c40d850c59d67"},
+    {file = "importlib_metadata-7.0.0.tar.gz", hash = "sha256:7fc841f8b8332803464e5dc1c63a2e59121f46ca186c0e2e182e80bf8c1319f7"},
 ]
 
 [package.dependencies]
@@ -1610,13 +1610,13 @@ tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "pyproject-ops"
-version = "0.3.1"
+version = "0.4.1"
 description = "Python project Ops automation."
 optional = false
 python-versions = "*"
 files = [
-    {file = "pyproject_ops-0.3.1-py3-none-any.whl", hash = "sha256:48e4b698717f4b5a2b63d19e583f29048b8dab48893c5139dcdfee81f85b49d4"},
-    {file = "pyproject_ops-0.3.1.tar.gz", hash = "sha256:de5be89e43134437d5028e62eb335a17e99f1e892bfdc698972b7cae388603e3"},
+    {file = "pyproject_ops-0.4.1-py3-none-any.whl", hash = "sha256:f6332572a4d4ceb3f929b4378b5270afd71b617e1236eccbcd6bf1694f9347dd"},
+    {file = "pyproject_ops-0.4.1.tar.gz", hash = "sha256:b3b33259975f794f5af151405aca194d378bc60b4d9c59fb638620e522847a4a"},
 ]
 
 [package.dependencies]
@@ -2678,4 +2678,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "a325df38f03e1bb2a90d5c63f87d56041b80a72006a422769cb7970b7ed70176"
+content-hash = "ea57f716762faa5f7b9e78db5b3cb514566f803b840b0efd3d4abbccbf8ccf17"

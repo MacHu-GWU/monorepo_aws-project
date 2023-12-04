@@ -21,9 +21,9 @@ boto3==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
 botocore==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:ccf3d67fd046265ae73bc9862d1618c6e774a61a96beac832edb63d9a21fe1ba \
     --hash=sha256:e35526421fe8ee180b6aed3102929594aa51e4d60e3f29366a603707c37c0d52
-config-patterns==1.0.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:299ef3d2c06f1e7701bbbeff0caf11825df4dc0392788c12292102cd459b3f30 \
-    --hash=sha256:7a06ecaef246f1dcf2bbf8165595fe4e262bc20a783669fa42e28c09c1ea50c8
+config-patterns==1.0.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:4d7b3071c23f77efae4e554f6c58c582502839367e835aff7e2115ed22bab2cc \
+    --hash=sha256:ef45e70b475fd69b4b45f6770efa5d50eaa2c52f62b53988d75c9c518fce19b5
 fixa==0.11.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:30f8e573277f37d367c2464bcfc80ee376424547fb7184bfdb02fe68048364f5 \
     --hash=sha256:9366313efe0a8476eb54f05ce309b833397d90b26c28ed4c4ec567b081100856
