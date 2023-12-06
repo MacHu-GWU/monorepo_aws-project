@@ -49,6 +49,17 @@ class AppMixin:
         }
 
     @property
+    def devops_aws_tags(self: "Env") -> T.Dict[str, str]:
+        """
+        Common AWS resources tags for all resources in this environment.
+        """
+        return {
+            "tech:project_name": self.project_name,
+            "tech:env_name": "devops",
+            "tech:package_version": __version__,
+        }
+
+    @property
     def aws_tags(self: "Env") -> T.Dict[str, str]:
         """
         Common AWS resources tags for all resources in this environment.

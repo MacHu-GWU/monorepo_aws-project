@@ -10,10 +10,13 @@ from pathlib import Path
 import aws_lambda_layer.api as aws_lambda_layer
 import aws_ops_alpha.api as aws_ops_alpha
 
-from .pyproject import pyproject_ops
+from ..config.init import config
+from ..boto_ses import boto_ses_factory
 from ..logger import logger
 from ..runtime import runtime
 from ..git import git_repo
+
+from .pyproject import pyproject_ops
 
 if T.TYPE_CHECKING:
     from boto_session_manager import BotoSesManager
@@ -76,18 +79,14 @@ def _build_lambda_source(
     start_emoji=f"{Emoji.build} {Emoji.awslambda}",
     error_emoji=f"{Emoji.failed} {Emoji.build} {Emoji.awslambda}",
     end_emoji=f"{Emoji.succeeded} {Emoji.build} {Emoji.awslambda}",
+    pipe=Emoji.awslambda,
 )
-def build_lambda_source(
-    bsm: "BotoSesManager",
-    s3dir_lambda: "S3Path",
-    tags: T.Dict[str, str],
-    verbose: bool = False,
-):
+def build_lambda_source():
     source_artifacts_deployment = _build_lambda_source(
-        bsm=bsm,
-        s3dir_lambda=s3dir_lambda,
-        tags=tags,
-        verbose=verbose,
+        bsm=boto_ses_factory.bsm_devops,
+        s3dir_lambda=config.env.s3dir_lambda,
+        tags=config.env.devops_aws_tags,
+        verbose=False,
     )
     path = source_artifacts_deployment.path_source_zip
     logger.info(f"review source artifacts at local: {path}")
@@ -129,11 +128,6 @@ def _build_lambda_layer(
     pipe=Emoji.awslambda,
 )
 def build_lambda_layer(
-    bsm_devops: "BotoSesManager",
-    workload_bsm_list: T.List["BotoSesManager"],
-    layer_name: str,
-    s3dir_lambda: "S3Path",
-    tags: T.Dict[str, str],
     check=True,
 ):
     if check:
@@ -147,11 +141,13 @@ def build_lambda_layer(
         ):
             return
 
+    bsm_devops = boto_ses_factory.bsm_devops
+    layer_name = config.env.lambda_layer_name
     layer_deployment = _build_lambda_layer(
         bsm=bsm_devops,
         layer_name=layer_name,
-        s3dir_lambda=s3dir_lambda,
-        tags=tags,
+        s3dir_lambda=config.env.s3dir_lambda,
+        tags=config.env.devops_aws_tags,
     )
     if layer_deployment is None:
         logger.info(
@@ -173,7 +169,7 @@ def build_lambda_layer(
         console_url = layer_deployment.s3path_layer_requirements_txt.console_url
         logger.info(f"preview requirements.txt at {console_url}")
 
-        for bsm_workload in workload_bsm_list:
+        for bsm_workload in boto_ses_factory.workload_bsm_list:
             aws_lambda_layer.grant_layer_permission(
                 bsm=bsm_devops,
                 layer_name=layer_name,

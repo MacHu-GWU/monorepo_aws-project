@@ -74,7 +74,7 @@ def encode_pipe(pipe: str) -> str:
     elif len(pipe) == 2 and pipe[1] == " ":
         return pipe
     else:  # pragma: no cover
-        raise ValueError
+        raise ValueError("the pipe symbol must be one character.")
 
 
 DEFAULT_PIPE = encode_pipe("| ")

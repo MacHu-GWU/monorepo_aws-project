@@ -10,5 +10,6 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
-    better_lambda <better_lambda>
+    aws_lambda_version_and_alias <aws_lambda_version_and_alias>
+    nested_logger <nested_logger>
     

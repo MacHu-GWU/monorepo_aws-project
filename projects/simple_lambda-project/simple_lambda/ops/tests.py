@@ -10,11 +10,6 @@ from ..runtime import runtime
 from ..git import git_repo
 from ..env import get_current_env
 from .pyproject import pyproject_ops
-# from .emoji import Emoji
-# from .tests_rule import (
-#     do_we_run_unit_test,
-#     do_we_run_int_test,
-# )
 
 Emoji = aws_ops_alpha.Emoji
 

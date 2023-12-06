@@ -2,33 +2,30 @@
 
 import typing as T
 
+import aws_ops_alpha.api as aws_ops_alpha
+
+from ..logger import logger
+from ..runtime import runtime
+from ..git import git_repo
 from .pyproject import pyproject_ops
-from .runtime import IS_LOCAL, IS_CI
-from .git import IS_DOC_BRANCH, GIT_BRANCH_NAME
-from .logger import logger
-from .emoji import Emoji
-from .docs_rule import (
-    do_we_deploy_doc,
-)
+
+Emoji = aws_ops_alpha.Emoji
 
 
 def _do_we_deploy_doc() -> bool:
     """
     Code saver.
     """
-    return do_we_deploy_doc(
-        is_ci_runtime=IS_CI,
-        branch_name=GIT_BRANCH_NAME,
-        is_doc_branch=IS_DOC_BRANCH,
+    return aws_ops_alpha.simple_lambda.do_we_deploy_doc(
+        is_ci_runtime=runtime.is_ci,
+        branch_name=git_repo.git_branch_name,
+        is_doc_branch=git_repo.is_doc_branch,
     )
 
 
-@logger.start_and_end(
+@logger.emoji_block(
     msg="Build Documentation Site Locally",
-    start_emoji=Emoji.doc,
-    error_emoji=f"{Emoji.failed} {Emoji.doc}",
-    end_emoji=f"{Emoji.succeeded} {Emoji.doc}",
-    pipe=Emoji.doc,
+    emoji=Emoji.doc,
 )
 def build_doc(
     check: bool = True,
@@ -45,22 +42,19 @@ def view_doc():
 
 
 def _get_aws_cli_profile_arg() -> T.Optional[str]:
-    if IS_LOCAL:
-        from simple_lambda.boto_ses import bsm
+    if runtime.is_local:
+        from simple_lambda.boto_ses import boto_ses_factory
 
-        return bsm.profile_name
-    elif IS_CI:
+        return boto_ses_factory.bsm_devops.profile_name
+    elif runtime.is_ci:
         return None
     else:  # pragma: no cover
         raise NotImplementedError
 
 
-@logger.start_and_end(
+@logger.emoji_block(
     msg="Deploy Documentation Site To S3 as Versioned Doc",
-    start_emoji=Emoji.doc,
-    error_emoji=f"{Emoji.failed} {Emoji.doc}",
-    end_emoji=f"{Emoji.succeeded} {Emoji.doc}",
-    pipe=Emoji.doc,
+    emoji=Emoji.doc,
 )
 def deploy_versioned_doc(
     check: bool = True,
@@ -76,11 +70,9 @@ def deploy_versioned_doc(
     )
 
 
-@logger.start_and_end(
+@logger.emoji_block(
     msg="Deploy Documentation Site To S3 as Latest Doc",
-    start_emoji=Emoji.doc,
-    end_emoji=Emoji.doc,
-    pipe=Emoji.doc,
+    emoji=Emoji.doc,
 )
 def deploy_latest_doc(
     check: bool = True,
