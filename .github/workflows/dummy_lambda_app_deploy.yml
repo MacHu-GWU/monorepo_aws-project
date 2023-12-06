@@ -13,8 +13,9 @@ on:
   workflow_call:
     inputs:
       user_env_name:
-        required: true
+        type: string
         description: 'The user provided environment name'
+        required: true
 
 # Set common environment for all jobs and all steps
 env:
