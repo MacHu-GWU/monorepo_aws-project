@@ -80,9 +80,9 @@ jobs:
       #-------------------------------------------------------------------------
       - name: 🚀 Deploy Lambda App via CDK
         run: |
-          echo done
+          echo deploy lambda app to ${USER_ENV_NAME}
       - name: 🧪 Run Integration Test
         run: |
-          echo done
+          echo run integration test on ${USER_ENV_NAME}
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
