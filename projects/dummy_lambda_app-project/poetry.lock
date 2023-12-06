@@ -1,0 +1,10 @@
+[[package]]
+name = "aws-arns"
+version = "1.4.3"
+description = "Amazon Resource Names (ARNs) utilities."
+optional = false
+python-versions = "*"
+files = [
+    {file = "aws_arns-1.4.3-py2.py3-none-any.whl", hash = "sha256:414ee10a4425b392b3f0d286ead33b1febc5d4205782b8a2c0395250ada33096"},
+    {file = "aws_arns-1.4.3.tar.gz", hash = "sha256:bd5f9cba2553bb9e4c7cdc3bb5cf9010553df82a3a849b6b23d2f51e7eeeed81"},
+]

@@ -1,0 +1,2 @@
+virtualenv==20.25.0
+poetry==1.6.1

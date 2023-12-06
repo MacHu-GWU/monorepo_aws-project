@@ -1,23 +1,23 @@
-# This is an advanced workflow to show you how to use cache to accelerate CI job run
-name: simple_lambda
+# This workflow will be used for app deployment
+name: simple_lambda_deploy
 
 # Controls when the action will run.
+#
 # Reference:
+#
+# - Creating a reusable workflow: https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow
 # - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
-# - Events that trigger workflows: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on:
-  # To enable a workflow to be triggered manually, you need to configure the workflow_dispatch event.
-  # - workflow_dispatch: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
-  # - Manually running a workflow: https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow
-  # Allows you to run this workflow manually from the GitHub Actions tab
-  workflow_dispatch:
-  push:
-    branches:
-      - 'simple_lambda/feature*'
+  workflow_call:
+    inputs:
+      user_env_name:
+        required: true
+        description: 'The user provided environment name'
 
 # Set common environment for all jobs and all steps
 env:
   AWS_REGION: "us-east-1"
+  USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
 
 permissions:
   id-token: write # This is required for requesting the JWT
