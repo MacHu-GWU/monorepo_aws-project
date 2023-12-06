@@ -30,7 +30,7 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  build:
+  job_0_build:
     runs-on: ubuntu-latest
     env:
       USER_ENV_NAME: devops
@@ -67,9 +67,6 @@ jobs:
       - name: 💾 Install virtualenv, poetry Dependencies
         run: |
           pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
-      #-------------------------------------------------------------------------
-      #
-      #-------------------------------------------------------------------------
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
@@ -82,11 +79,21 @@ jobs:
         run: |
           virtualenv -p python3.9 .venv
           poetry install
-      - name: 🚀 Deploy Lambda App via CDK
+      #-------------------------------------------------------------------------
+      #
+      #-------------------------------------------------------------------------
+      # Some unit test requires lambda source artifacts, so we have to build it before unit test
+      - name: 🪜 Build Lambda Source Artifacts
         run: |
           echo done
-      - name: 🧪 Run Integration Test
+      - name: 🧪 Run Code Coverage Test
         run: |
           echo done
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
+
+  job_1_deploy_to_sbx:
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
+    with:
+      user_env_name: sbx
+    needs: job_0_build

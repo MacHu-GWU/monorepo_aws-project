@@ -63,9 +63,6 @@ jobs:
       - name: 💾 Install virtualenv, poetry Dependencies
         run: |
           pip install -r {{ env.DIR_PROJECT }}/requirements-automation.txt
-      #-------------------------------------------------------------------------
-      #
-      #-------------------------------------------------------------------------
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
@@ -74,13 +71,17 @@ jobs:
           cache: 'poetry'
           cache-dependency-path: ${{ env.DIR_PROJECT }}/poetry.lock
       - name: 🐍 💾 Create Virtual Environment and Install all dependencies
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          virtualenv -p python3.9 .venv
+          poetry install
+      #-------------------------------------------------------------------------
+      #
+      #-------------------------------------------------------------------------
+      - name: 🚀 Deploy Lambda App via CDK
         run: |
           echo done
-      # Some unit test requires lambda source artifacts, so we have to build it before unit test
-      - name: 🪜 Build Lambda Source Artifacts
-        run: |
-          echo done
-      - name: 🧪 Run Code Coverage Test
+      - name: 🧪 Run Integration Test
         run: |
           echo done
       - name: === 🛑 END OF THE JOB ===
