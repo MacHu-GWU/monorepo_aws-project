@@ -20,17 +20,17 @@ on:
 # Set common environment for all jobs and all steps
 env:
   AWS_REGION: "us-east-1"
-  USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
+  DIR_PROJECT: "projects/dummy_lambda_app-project"
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
 jobs:
-  sandbox:
+  deploy:
     runs-on: ubuntu-latest
     env:
-      USER_ENV_NAME: sbx
+      USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
           # in the ``bootstrap/config.json`` file
           # --------------------------------------------------------------------
           role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
-          role-session-name: sample_role_session
+          role-session-name: ${USER_ENV_NAME}_devops_role_session
           aws-region: ${{ env.AWS_REGION }}
       # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
       - name: 🛠 Set up Node.js

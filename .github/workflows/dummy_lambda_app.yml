@@ -45,7 +45,7 @@ jobs:
           # in the ``bootstrap/config.json`` file
           # --------------------------------------------------------------------
           role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
-          role-session-name: sample_role_session
+          role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
       # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
       - name: 🛠 Set up Node.js
