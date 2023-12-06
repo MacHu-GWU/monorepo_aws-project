@@ -1,36 +1,32 @@
-# This is an advanced workflow to show you how to use cache to accelerate CI job run
-name: aws_ops_alpha
+# This workflow will be used for app deployment
+name: dummy_lambda_app_deploy
 
 on:
-  # ----------------------------------------------------------------------------
-  # We automatically trigger CI job when there's a push event to the following branches
+  # ------------------------------------------------------------------------------
+  # This workflow will be called by other workflow to deploy the app to certain environment
   #
   # Reference:
-  # - Running your workflow only when a push to specific branches occurs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#running-your-workflow-only-when-a-push-to-specific-branches-occurs
-  # ----------------------------------------------------------------------------
-  workflow_dispatch:
-  push:
-    branches:
-      - 'dummy_lambda_app/feature*'
-      - 'dummy_lambda_app/feature*'
-      - 'dummy_lambda_app/fix*'
-      - 'dummy_lambda_app/doc*'
-      - 'dummy_lambda_app/layer*'
-      - 'dummy_lambda_app/lambda*'
-      - 'dummy_lambda_app/release/'
-      - 'dummy_lambda_app/cleanup*'
+  #
+  # - Creating a reusable workflow: https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow
+  # - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+  # ------------------------------------------------------------------------------
+  workflow_call:
+    inputs:
+      user_env_name:
+        required: true
+        description: 'The user provided environment name'
 
 # Set common environment for all jobs and all steps
 env:
   AWS_REGION: "us-east-1"
-  DIR_PROJECT: "projects/dummy_lambda_app-project"
+  USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
 jobs:
-  build:
+  sandbox:
     runs-on: ubuntu-latest
     env:
       USER_ENV_NAME: sbx
