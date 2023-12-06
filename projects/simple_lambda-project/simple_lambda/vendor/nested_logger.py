@@ -39,6 +39,7 @@ import contextlib
 from functools import wraps
 from datetime import datetime
 
+__version__ = "0.2.1"
 
 def create_logger(
     name: T.Optional[str] = None,
@@ -560,6 +561,8 @@ class NestedLogger:
             [User] | +----- End my_func2(), elapsed = 1.00 sec ----------------+
             [User] |
             [User] +----- End my_func1(), elapsed = 2.00 sec ------------------+
+
+        :return: a decorator that you can put on top of your function
         """
 
         @decohints
@@ -684,7 +687,8 @@ class NestedLogger:
         :param start_emoji: custom emoji for the start message
         :param end_emoji: custom emoji for the end message
         :param pipe: custom pipe character
-        :return:
+
+        :return: a decorator that you can put on top of your function
         """
         if start_emoji and (not start_emoji.endswith(" ")):
             start_emoji = start_emoji + " "
@@ -697,6 +701,51 @@ class NestedLogger:
             error_msg=f"⏰ {error_emoji}Error {msg!r}, elapsed = {{elapsed:.2f}} sec",
             end_msg=f"⏰ {end_emoji}End {msg!r}, elapsed = {{elapsed:.2f}} sec",
             pipe=pipe,
+        )
+
+    def emoji_block(
+        self,
+        msg: str,
+        emoji: str,
+    ):
+        """
+        A simplified version of the ``start_and_end`` decorator. Use emoji
+        to Visually print the function logic block
+
+        Example:
+
+        .. code-block:: python
+
+            @logger.emoji_block(
+                msg="Deploy app {app_name}",
+                emoji="🚀",
+            )
+            def deploy_app(app_name: str):
+                logger.info("working ...")
+                logger.info("done")
+
+            deploy_app(app_name="my_app")
+
+        The output looks like::
+
+            [User] +----- ⏱ 🚀 Start 'Deploy app my_app' ----------------------+
+            [User] 🚀
+            [User] 🚀 working ...
+            [User] 🚀 done
+            [User] 🚀
+            [User] +----- ⏰ ✅ 🚀 End 'Deploy app my_app', elapsed = 1.01 sec -+
+
+        :param msg: indicate the name of the function
+        :param emoji: custom emoji for the visual effect
+
+        :return: a decorator that you can put on top of your function
+        """
+        return self.start_and_end(
+            msg=msg,
+            start_emoji=emoji,
+            error_emoji=f"❌ {emoji}",
+            end_emoji=f"✅ {emoji}",
+            pipe=emoji,
         )
 
     @contextlib.contextmanager

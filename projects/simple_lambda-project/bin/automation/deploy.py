@@ -5,9 +5,11 @@ lambda app deployment automation script.
 """
 
 import typing as T
-from pathlib_mate import Path
 
-from .aws_console import get_aws_console
+from pathlib_mate import Path
+import aws_console_url.api as aws_console_url
+import aws_ops_alpha.api as aws_ops_alpha
+
 from .runtime import IS_CI
 from .git import (
     GIT_BRANCH_NAME,
@@ -46,6 +48,7 @@ def publish_lambda_version(
     """
     Publish a new lambda version from latest.
     """
+
     if env_name != prod_env_name:
         logger.info(
             f"{Emoji.red_circle} don't publish new version for {env_name!r} env,"
@@ -53,7 +56,7 @@ def publish_lambda_version(
         )
         return
     env: "Env" = config.get_env(env_name=env_name)
-    aws_console = get_aws_console(bsm=bsm)
+    aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm)
     url = aws_console.awslambda.filter_functions(f"{env.project_name}-{env.env_name}")
     logger.info(f"preview deployed lambda functions: {url}")
     for lambda_function in env.lambda_functions.values():
@@ -83,12 +86,12 @@ def deploy_app(
     logger.info(f"deploy app to {env_name!r} env ...")
     if check:
         if (
-            do_we_deploy_app(
+            aws_ops_alpha.simple_lambda.do_we_deploy_app(
                 env_name=env_name,
                 prod_env_name=prod_env_name,
-                is_ci_runtime=IS_CI,
+                is_local_runtime=IS_CI,
                 branch_name=GIT_BRANCH_NAME,
-                is_master_branch=IS_MASTER_BRANCH,
+                is_main_branch=IS_MASTER_BRANCH,
                 is_lambda_branch=IS_LAMBDA_BRANCH,
                 is_release_branch=IS_RELEASE_BRANCH,
             )

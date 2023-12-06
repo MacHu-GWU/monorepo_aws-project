@@ -10,7 +10,8 @@ This module automatically detect what environment we should use.
 
 import os
 
-from .runtime import IS_CI
+import aws_ops_alpha.api as aws_ops_alpha
+
 from .logger import logger
 
 
@@ -18,7 +19,7 @@ def find_env() -> str:
     """
     Find which environment we should deploy to.
     """
-    if IS_CI:
+    if aws_ops_alpha.runtime.is_ci:
         return os.environ["USER_ENV_NAME"]
     # if it is not in CI (on local laptop), it is always deploy to dev
     else:

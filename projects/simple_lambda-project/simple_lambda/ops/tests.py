@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 
+import typing as T
 import time
 
 import aws_ops_alpha.api as aws_ops_alpha
-from simple_lambda.git import git_repo
 
+from ..logger import logger
+from ..runtime import runtime
+from ..git import git_repo
+from ..env import get_current_env
 from .pyproject import pyproject_ops
-from .env import CURRENT_ENV
-from .logger import logger
-from .emoji import Emoji
-from .tests_rule import (
-    do_we_run_unit_test,
-    do_we_run_int_test,
-)
+# from .emoji import Emoji
+# from .tests_rule import (
+#     do_we_run_unit_test,
+#     do_we_run_int_test,
+# )
+
+Emoji = aws_ops_alpha.Emoji
 
 
 def _do_we_run_unit_test() -> bool:
@@ -20,7 +24,7 @@ def _do_we_run_unit_test() -> bool:
     Code saver.
     """
     return aws_ops_alpha.simple_lambda.do_we_run_unit_test(
-        is_ci_runtime=aws_ops_alpha.runtime.is_ci,
+        is_ci_runtime=runtime.is_ci,
         branch_name=git_repo.git_branch_name,
         is_main_branch=git_repo.is_main_branch,
         is_feature_branch=git_repo.is_feature_branch,
@@ -31,12 +35,9 @@ def _do_we_run_unit_test() -> bool:
     )
 
 
-@logger(
+@logger.emoji_block(
     msg="Run Code Coverage Test",
-    start_emoji=Emoji.test,
-    error_emoji=f"{Emoji.failed} {Emoji.test}",
-    end_emoji=f"{Emoji.succeeded} {Emoji.test}",
-    pipe=Emoji.test,
+    emoji=Emoji.test,
 )
 def run_unit_test(
     check: bool = True,
@@ -45,15 +46,12 @@ def run_unit_test(
         if _do_we_run_unit_test() is False:
             return
 
-    pyproject_ops.run_unit_test(verbose=True)
+    pyproject_ops.run_unit_test()
 
 
-@logger.start_and_end(
+@logger.emoji_block(
     msg="Run Code Coverage Test",
-    start_emoji=Emoji.test,
-    error_emoji=f"{Emoji.failed} {Emoji.test}",
-    end_emoji=f"{Emoji.succeeded} {Emoji.test}",
-    pipe=Emoji.test,
+    emoji=Emoji.test,
 )
 def run_cov_test(
     check: bool = True,
@@ -65,45 +63,37 @@ def run_cov_test(
     pyproject_ops.run_cov_test()
 
 
-@logger.start_and_end(
-    msg="View Code Coverage Test Result",
-    start_emoji=Emoji.test,
-    error_emoji=f"{Emoji.failed} {Emoji.test}",
-    end_emoji=f"{Emoji.succeeded} {Emoji.test}",
-    pipe=Emoji.test,
-)
 def view_cov():
     pyproject_ops.view_cov()
 
 
-@logger.start_and_end(
+@logger.emoji_block(
     msg="Run Integration Test",
-    start_emoji=Emoji.test,
-    error_emoji=f"{Emoji.failed} {Emoji.test}",
-    end_emoji=f"{Emoji.succeeded} {Emoji.test}",
-    pipe=Emoji.test,
+    emoji=Emoji.test,
 )
 def run_int_test(
     prod_env_name: str,
-    env_name: str = CURRENT_ENV,
+    env_name: T.Optional[str] = None,
     check: bool = True,
 ):
+    if env_name is None:
+        env_name = get_current_env()
     logger.info(f"Run integration test in {env_name!r} env...")
     if check:
         if (
-            do_we_run_int_test(
+            aws_ops_alpha.simple_lambda.do_we_run_int_test(
                 env_name=env_name,
                 prod_env_name=prod_env_name,
-                is_ci_runtime=IS_CI,
-                branch_name=GIT_BRANCH_NAME,
-                is_master_branch=IS_MASTER_BRANCH,
-                is_lambda_branch=IS_LAMBDA_BRANCH,
-                is_release_branch=IS_RELEASE_BRANCH,
+                is_ci_runtime=runtime.is_ci,
+                branch_name=git_repo.git_branch_name,
+                is_main_branch=git_repo.is_main_branch,
+                is_lambda_branch=git_repo.is_lambda_branch,
+                is_release_branch=git_repo.is_release_branch,
             )
             is False
         ):
             return
 
-    if IS_CI:  # in CI, wait 5 seconds for infrastructure as code taking effect
+    if runtime.is_ci:  # in CI, wait 5 seconds for infrastructure as code taking effect
         time.sleep(5)
     pyproject_ops.run_int_test()

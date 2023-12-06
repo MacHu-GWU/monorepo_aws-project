@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from automation.venv import create_virtualenv
+from automation.pyproject import pyproject_ops
 
-create_virtualenv()
+pyproject_ops.create_virtualenv(verbose=True)

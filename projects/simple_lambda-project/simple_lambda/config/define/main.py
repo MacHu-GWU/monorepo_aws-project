@@ -3,38 +3,11 @@
 import dataclasses
 import os
 
-import aws_ops_alpha.api as aws_ops_alpha
 import config_patterns.api as config_patterns
 
 from ...runtime import runtime
 from ...compat import cached_property
-
-
-class EnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
-    """
-    In this project, we have three environment:
-
-    - sbx: represent the developer's local laptop, and the sandbox environment
-        the change you made on your local laptop can be applied to sandbox.
-    - tst: a long living integration test environment. before releasing to
-        production, the app has to be deployed to test environment for QA.
-    - prd: the production environment. can only be deployed from release branch.
-    """
-
-    sbx = "sbx"
-    tst = "tst"
-    prd = "prd"
-
-    @property
-    def emoji(self) -> str:
-        return env_emoji_mapper[self.value]
-
-
-env_emoji_mapper = {
-    EnvEnum.sbx.value: aws_ops_alpha.Emoji.sbx,
-    EnvEnum.tst.value: aws_ops_alpha.Emoji.tst,
-    EnvEnum.prd.value: aws_ops_alpha.Emoji.prd,
-}
+from ...env import EnvEnum
 
 # You may have a long list of config field definition
 # put them in different module and use Mixin class

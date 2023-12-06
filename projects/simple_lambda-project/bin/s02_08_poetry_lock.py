@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from automation.deps import poetry_lock
+from automation.pyproject import pyproject_ops
 
-poetry_lock()
+pyproject_ops.poetry_lock(verbose=True)

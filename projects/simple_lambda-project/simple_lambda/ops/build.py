@@ -5,32 +5,36 @@ Build artifacts related automation.
 """
 
 import typing as T
-from aws_lambda_layer.api import (
-    build_source_artifacts,
-    publish_source_artifacts,
-    SourceArtifactsDeployment,
-    deploy_layer,
-    grant_layer_permission,
-)
+from pathlib import Path
+
+import aws_lambda_layer.api as aws_lambda_layer
 import aws_ops_alpha.api as aws_ops_alpha
 
 from .pyproject import pyproject_ops
-from .logger import logger
-from .emoji import Emoji
-from .git import GIT_BRANCH_NAME, IS_LAYER_BRANCH
-from .runtime import IS_CI
-
+from ..logger import logger
+from ..runtime import runtime
+from ..git import git_repo
 
 if T.TYPE_CHECKING:
     from boto_session_manager import BotoSesManager
     from s3pathlib import S3Path
 
+Emoji = aws_ops_alpha.Emoji
+
 
 def build_lambda_source_only(
     verbose: bool = True,
-):
+) -> T.Tuple[str, Path]:
+    """
+    Wrapper of ``aws_lambda_layer.api.build_source_artifacts``.
+
+    Build lambda source artifacts locally and return source code sha256 and zip file path.
+    It will NOT upload the artifacts to S3.
+
+    :return: tuple of two items: (source code sha256, zip file path)
+    """
     path_lambda_function = pyproject_ops.dir_lambda_app.joinpath("lambda_function.py")
-    source_sha256, path_source_zip = build_source_artifacts(
+    source_sha256, path_source_zip = aws_lambda_layer.build_source_artifacts(
         path_setup_py_or_pyproject_toml=pyproject_ops.path_pyproject_toml,
         package_name=pyproject_ops.package_name,
         path_lambda_function=path_lambda_function,
@@ -46,9 +50,14 @@ def _build_lambda_source(
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
     verbose: bool = True,
-) -> SourceArtifactsDeployment:
+) -> aws_lambda_layer.SourceArtifactsDeployment:
+    """
+    Publish lambda source artifacts to S3.
+
+    This function doesn't have any logging, it can make the final function shorter.
+    """
     path_lambda_function = pyproject_ops.dir_lambda_app.joinpath("lambda_function.py")
-    return publish_source_artifacts(
+    return aws_lambda_layer.publish_source_artifacts(
         bsm=bsm,
         path_setup_py_or_pyproject_toml=pyproject_ops.path_pyproject_toml,
         package_name=pyproject_ops.package_name,
@@ -91,8 +100,13 @@ def _build_lambda_layer(
     layer_name: str,
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
-):
-    return deploy_layer(
+) -> T.Optional[aws_lambda_layer.LayerDeployment]:
+    """
+    Publish lambda layer.
+
+    This function doesn't have any logging, it can make the final function shorter.
+    """
+    return aws_lambda_layer.deploy_layer(
         bsm=bsm,
         layer_name=layer_name,
         python_versions=[
@@ -125,9 +139,9 @@ def build_lambda_layer(
     if check:
         if (
             aws_ops_alpha.simple_lambda.do_we_deploy_lambda_layer(
-                is_ci_runtime=IS_CI,
-                branch_name=GIT_BRANCH_NAME,
-                is_layer_branch=IS_LAYER_BRANCH,
+                is_ci_runtime=runtime.is_ci,
+                branch_name=git_repo.git_branch_name,
+                is_layer_branch=git_repo.is_layer_branch,
             )
             is False
         ):
@@ -160,7 +174,7 @@ def build_lambda_layer(
         logger.info(f"preview requirements.txt at {console_url}")
 
         for bsm_workload in workload_bsm_list:
-            grant_layer_permission(
+            aws_lambda_layer.grant_layer_permission(
                 bsm=bsm_devops,
                 layer_name=layer_name,
                 version_number=layer_deployment.layer_version,

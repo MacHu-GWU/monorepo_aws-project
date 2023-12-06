@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from automation.venv import remove_virtualenv
+from automation.pyproject import pyproject_ops
 
-remove_virtualenv()
+pyproject_ops.remove_virtualenv(verbose=True)
