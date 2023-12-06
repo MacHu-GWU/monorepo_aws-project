@@ -1,0 +1,16 @@
+# Reference:
+# - The pyproject.toml file: https://python-poetry.org/docs/pyproject/
+# - Dependency specification: https://python-poetry.org/docs/dependency-specification/
+[tool.poetry]
+name = "dummy_lambda_app"
+version = "0.1.1"
+description = "A dummy lambda app"
+authors = ["Sanhe Hu <husanhe@gmail.com>"]
+
+# --- core dependencies for deployment
+[tool.poetry.dependencies]
+python = "3.9.*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -78,8 +78,10 @@ jobs:
           cache: 'poetry'
           cache-dependency-path: ${{ env.DIR_PROJECT }}/poetry.lock
       - name: 🐍 💾 Create Virtual Environment and Install all dependencies
+        working-directory: ${{ env.DIR_PROJECT }}
         run: |
-          echo done
+          virtualenv -p python3.9 .venv
+          poetry install
       - name: 🚀 Deploy Lambda App via CDK
         run: |
           echo done
