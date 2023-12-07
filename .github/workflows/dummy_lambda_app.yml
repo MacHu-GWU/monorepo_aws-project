@@ -101,4 +101,5 @@ jobs:
     uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
     with:
       user_env_name: sbx
+    secrets: inherit
     needs: job_0_build
