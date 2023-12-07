@@ -1,20 +1,33 @@
-# This workflow will be used for app deployment
+# ------------------------------------------------------------------------------
+# Overview
+# ------------------------------------------------------------------------------
+# This workflow and the dummy_lambda_app.yml workflow demonstrate
+# how to use GitHub Actions to deploy an AWS app to multi-environments
+# on multiple AWS accounts.
+#
+# This workflow will be called by the dummy_lambda_app.yml workflow,
+# it deploys the app to one environment and run integration test.
+# If the environment is a production environment, it requires manual approval
+# in GitHub Actions UI. In production, it also publishes a new immutable
+# Lambda function versions, create a snapshot of the configuration data,
+# and create a new immutable Git tag.
+# ------------------------------------------------------------------------------
 name: dummy_lambda_app_deploy
 
+# ------------------------------------------------------------------------------
+# This workflow will be called by other workflow to deploy the app to certain environment
+#
+# Reference:
+#
+# - Creating a reusable workflow: https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow
+# - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+# ------------------------------------------------------------------------------
 on:
-  # ------------------------------------------------------------------------------
-  # This workflow will be called by other workflow to deploy the app to certain environment
-  #
-  # Reference:
-  #
-  # - Creating a reusable workflow: https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow
-  # - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
-  # ------------------------------------------------------------------------------
   workflow_call:
     inputs:
       user_env_name:
         type: string
-        description: 'The user provided environment name'
+        description: 'The user defined environment name'
         required: true
 
 # Set common environment for all jobs and all steps
@@ -22,24 +35,42 @@ env:
   AWS_REGION: "us-east-1"
   DIR_PROJECT: "projects/dummy_lambda_app-project"
 
+# This is required for configuring aws credentials
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
 jobs:
   deploy:
+    name: 🚀 Deploy to ${{ inputs.user_env_name }}
     runs-on: ubuntu-latest
+    # --------------------------------------------------------------------------
+    # The ``environment:`` keyword creates a new environment, if it is prd,
+    # it requires manual approval in GitHub Actions UI.
+    #
+    # Reference:
+    # - Reviewing deployments: https://docs.github.com/en/actions/managing-workflow-runs/reviewing-deployments
+    # - Creating an environment: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#creating-an-environment
+    # - Using an environment: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#using-an-environment
+    # --------------------------------------------------------------------------
     environment:
       name: ${{ inputs.user_env_name }}
     env:
+      # Set the environment name to the environment variable
       USER_ENV_NAME: ${{ inputs.user_env_name }}
     steps:
-      - name: Git clone the repository
+      - name: Git Clone the Repository
         uses: actions/checkout@v4
-      - name: Check env var
-        run: |
-          echo ${{ env.USER_ENV_NAME }}
-          echo ${USER_ENV_NAME}
+      # ------------------------------------------------------------------------
+      # Configure AWS Credentials
+      # ------------------------------------------------------------------------
+      # configure-aws-credentials is the official GitHub Action to configure
+      # AWS Permission. In this project, we use GitHub OIDC to assume a role
+      # in AWS account.
+      #
+      # Reference:
+      # - configure-aws-credentials: https://github.com/aws-actions/configure-aws-credentials
+      # ------------------------------------------------------------------------
       - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -51,7 +82,12 @@ jobs:
           role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
           disable-retry: true
-      # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+      # ------------------------------------------------------------------------
+      # the following two steps install Node.js and AWS CDK in Node.js
+      #
+      # Reference:
+      # - Deploy to AWS with GitHub Actions and AWS CDK: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+      # ------------------------------------------------------------------------
       - name: 🛠 Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -61,16 +97,30 @@ jobs:
           npm install -g aws-cdk@2.111.0
           which cdk
           cdk --version
+      # ------------------------------------------------------------------------
+      # The following two steps install necessary tools to the global Python.
+      # We use pip cache to speed up the installation.
+      #
+      # Reference:
+      # - Caching packages dependencies: https://github.com/actions/setup-python#caching-packages-dependencies
+      # ------------------------------------------------------------------------
       - name: 🐍 Setup Python with pip cache
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'pip'
           cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 💾 Install virtualenv, poetry Dependencies
         run: |
           pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
+      # ------------------------------------------------------------------------
+      # The following two steps create the virtualenv for the project,
+      # and install all project dependencies.
+      # We use poetry cache to store the entire virtualenv in the cache.
+      #
+      # Reference:
+      # - Caching packages dependencies: https://github.com/actions/setup-python#caching-packages-dependencies
+      # ------------------------------------------------------------------------
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
@@ -83,14 +133,21 @@ jobs:
         run: |
           virtualenv -p python3.9 .venv
           poetry install
-      #-------------------------------------------------------------------------
-      #
-      #-------------------------------------------------------------------------
+      # ------------------------------------------------------------------------
+      # The following steps run unit test and build artifacts
+      # ------------------------------------------------------------------------
       - name: 🚀 Deploy Lambda App via CDK
         run: |
-          echo deploy lambda app to $${ env.USER_ENV_NAME}
+          echo deploy lambda app to $${ env.USER_ENV_NAME }}
       - name: 🧪 Run Integration Test
         run: |
-          echo run integration test on ${USER_ENV_NAME}
+          echo run integration test on $${ env.USER_ENV_NAME }}
+      - name: 🔯 Create Config Snapshot
+        if: ${{ env.USER_ENV_NAME == 'prd' }}
+        run: |
+          echo create config snapshot on $${ env.USER_ENV_NAME }}
+      - name: 🏷️ Create Git Tag
+        run: |
+          echo create git tag on $${ env.USER_ENV_NAME }}
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"

@@ -1,13 +1,24 @@
-# This is an advanced workflow to show you how to use cache to accelerate CI job run
+# ------------------------------------------------------------------------------
+# Overview
+# ------------------------------------------------------------------------------
+# This workflow and the dummy_lambda_app_deploy.yml workflow demonstrate
+# how to use GitHub Actions to deploy an AWS app to multi-environments
+# on multiple AWS accounts.
+#
+# This workflow runs unit test and build necessary artifacts for deployment
+# For example, in Lambda function project, artifacts are Lambda Source and Lambda Layer
+# ------------------------------------------------------------------------------
 name: dummy_lambda_app
 
+# ------------------------------------------------------------------------------
+# Trigger rules
+# ------------------------------------------------------------------------------
+# We automatically trigger CI job when there's a push event to the following branches
+#
+# Reference:
+# - Running your workflow only when a push to specific branches occurs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#running-your-workflow-only-when-a-push-to-specific-branches-occurs
+# ------------------------------------------------------------------------------
 on:
-  # ----------------------------------------------------------------------------
-  # We automatically trigger CI job when there's a push event to the following branches
-  #
-  # Reference:
-  # - Running your workflow only when a push to specific branches occurs: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#running-your-workflow-only-when-a-push-to-specific-branches-occurs
-  # ----------------------------------------------------------------------------
   workflow_dispatch:
   push:
     branches:
@@ -25,22 +36,30 @@ env:
   AWS_REGION: "us-east-1"
   DIR_PROJECT: "projects/dummy_lambda_app-project"
 
+# This is required for configuring aws credentials
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
 jobs:
   job_0_build:
+    name: 🧪️ 🏗 Unit Test and Build Artifacts
     runs-on: ubuntu-latest
     env:
       USER_ENV_NAME: devops
     steps:
-      - name: Git clone the repository
+      - name: Git Clone the Repository
         uses: actions/checkout@v4
       # ------------------------------------------------------------------------
+      # Configure AWS Credentials
+      # ------------------------------------------------------------------------
+      # configure-aws-credentials is the official GitHub Action to configure
+      # AWS Permission. In this project, we use GitHub OIDC to assume a role
+      # in AWS account.
+      #
       # Reference:
-      # - https://github.com/aws-actions/configure-aws-credentials
-
+      # - configure-aws-credentials: https://github.com/aws-actions/configure-aws-credentials
+      # ------------------------------------------------------------------------
       - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -52,7 +71,12 @@ jobs:
           role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
           disable-retry: true
-      # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+      # ------------------------------------------------------------------------
+      # the following two steps install Node.js and AWS CDK in Node.js
+      #
+      # Reference:
+      # - Deploy to AWS with GitHub Actions and AWS CDK: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+      # ------------------------------------------------------------------------
       - name: 🛠 Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -62,16 +86,30 @@ jobs:
           npm install -g aws-cdk@2.111.0
           which cdk
           cdk --version
+      # ------------------------------------------------------------------------
+      # The following two steps install necessary tools to the global Python.
+      # We use pip cache to speed up the installation.
+      #
+      # Reference:
+      # - Caching packages dependencies: https://github.com/actions/setup-python#caching-packages-dependencies
+      # ------------------------------------------------------------------------
       - name: 🐍 Setup Python with pip cache
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'pip'
           cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 💾 Install virtualenv, poetry Dependencies
         run: |
           pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
+      # ------------------------------------------------------------------------
+      # The following two steps create the virtualenv for the project,
+      # and install all project dependencies.
+      # We use poetry cache to store the entire virtualenv in the cache.
+      #
+      # Reference:
+      # - Caching packages dependencies: https://github.com/actions/setup-python#caching-packages-dependencies
+      # ------------------------------------------------------------------------
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
@@ -84,22 +122,48 @@ jobs:
         run: |
           virtualenv -p python3.9 .venv
           poetry install
-      #-------------------------------------------------------------------------
-      #
-      #-------------------------------------------------------------------------
+      # ------------------------------------------------------------------------
+      # The following steps run unit test and build artifacts
+      # ------------------------------------------------------------------------
       # Some unit test requires lambda source artifacts, so we have to build it before unit test
-      - name: 🪜 Build Lambda Source Artifacts
+      - name: 🏗️ Build Lambda Source Artifacts
         run: |
           echo done
+      # Ideally, we should reach >= 90% code coverage and add additional lint,
+      # security scan, sanity check, etc. In this sample project, we only run
+      # code coverage test
       - name: 🧪 Run Code Coverage Test
+        run: |
+          echo done
+      - name: 🏗️ Build Lambda Layer
+        run: |
+          echo done
+      - name: 📔 Publish Documentation Website
         run: |
           echo done
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
 
   job_1_deploy_to_sbx:
+    name: 🚀 Deploy App to 📦 sbx
     uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
     with:
       user_env_name: sbx
     secrets: inherit
     needs: job_0_build
+
+  job_2_deploy_to_tst:
+    name: 🚀 Deploy App to 🧪 tst
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
+    with:
+      user_env_name: tst
+    secrets: inherit
+    needs: job_1_deploy_to_sbx
+
+  job_3_deploy_to_prd:
+    name: 🚀 Deploy App to 🏭 prd
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
+    with:
+      user_env_name: prd
+    secrets: inherit
+    needs: job_2_deploy_to_tst
