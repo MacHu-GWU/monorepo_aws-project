@@ -37,6 +37,10 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
+      # ------------------------------------------------------------------------
+      # Reference:
+      # - https://github.com/aws-actions/configure-aws-credentials
+
       - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -44,9 +48,10 @@ jobs:
           # this role name has to match the ``github_action_open_id_connection.role_name`` field
           # in the ``bootstrap/config.json`` file
           # --------------------------------------------------------------------
-          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc123
           role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
+          disable-retry: true
       # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
       - name: 🛠 Set up Node.js
         uses: actions/setup-node@v3
@@ -92,8 +97,8 @@ jobs:
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
 
-  job_1_deploy_to_sbx:
-    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
-    with:
-      user_env_name: sbx
-    needs: job_0_build
+#  job_1_deploy_to_sbx:
+#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
+#    with:
+#      user_env_name: sbx
+#    needs: job_0_build
