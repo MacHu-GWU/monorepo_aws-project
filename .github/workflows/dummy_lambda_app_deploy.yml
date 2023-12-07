@@ -29,6 +29,8 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.user_env_name }}
     env:
       USER_ENV_NAME: ${{ inputs.user_env_name }}
     steps:
