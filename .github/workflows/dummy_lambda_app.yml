@@ -48,7 +48,7 @@ jobs:
           # this role name has to match the ``github_action_open_id_connection.role_name`` field
           # in the ``bootstrap/config.json`` file
           # --------------------------------------------------------------------
-          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc123
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
           role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
           disable-retry: true
