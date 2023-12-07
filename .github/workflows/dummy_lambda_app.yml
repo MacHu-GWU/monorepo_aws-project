@@ -97,8 +97,8 @@ jobs:
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
 
-#  job_1_deploy_to_sbx:
-#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
-#    with:
-#      user_env_name: sbx
-#    needs: job_0_build
+  job_1_deploy_to_sbx:
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
+    with:
+      user_env_name: sbx
+    needs: job_0_build
