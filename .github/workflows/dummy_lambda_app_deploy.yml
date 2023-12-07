@@ -59,8 +59,8 @@ jobs:
       # Set the environment name to the environment variable
       USER_ENV_NAME: ${{ inputs.user_env_name }}
     steps:
-      - name: === 💾 Preparation ===
-        run: echo "Preparation"
+      - name: === 💾 PREPARATION ===
+        run: echo "PREPARATION"
       - name: Git Clone the Repository
         uses: actions/checkout@v4
       # ------------------------------------------------------------------------
@@ -135,8 +135,8 @@ jobs:
         run: |
           virtualenv -p python3.9 .venv
           poetry install
-      - name: === ✅ Start Main Logics ===
-        run: echo "Start Main Logics"
+      - name: === ✅ START MAIN LOGICS ===
+        run: echo "START MAIN LOGICS"
       # ------------------------------------------------------------------------
       # The following steps run unit test and build artifacts
       # ------------------------------------------------------------------------

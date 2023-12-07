@@ -48,8 +48,8 @@ jobs:
     env:
       USER_ENV_NAME: devops
     steps:
-      - name: === 💾 Preparation ===
-        run: echo "Preparation"
+      - name: === 💾 PREPARATION ===
+        run: echo "PREPARATION"
       - name: Git Clone the Repository
         uses: actions/checkout@v4
       # ------------------------------------------------------------------------
@@ -124,8 +124,8 @@ jobs:
         run: |
           virtualenv -p python3.9 .venv
           poetry install
-      - name: === ✅ Start Main Logics ===
-        run: echo "Start Main Logics"
+      - name: === ✅ START MAIN LOGICS ===
+        run: echo "START MAIN LOGICS"
       # ------------------------------------------------------------------------
       # The following steps run unit test and build artifacts
       # ------------------------------------------------------------------------
@@ -157,6 +157,8 @@ jobs:
 
   job_2_deploy_to_tst:
     name: 🚀 Deploy App to 🧪 tst
+    # we only run this from release branch
+    if: ${{ startsWith(github.ref, 'refs/heads/dummy_lambda_app/release') || startsWith(github.ref, 'refs/heads/dummy_lambda_app/rls') }}
     uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
     with:
       user_env_name: tst
@@ -165,6 +167,8 @@ jobs:
 
   job_3_deploy_to_prd:
     name: 🚀 Deploy App to 🏭 prd
+    # we only run this from release branch
+    if: ${{ startsWith(github.ref, 'refs/heads/dummy_lambda_app/release') || startsWith(github.ref, 'refs/heads/dummy_lambda_app/rls') }}
     uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
     with:
       user_env_name: prd
