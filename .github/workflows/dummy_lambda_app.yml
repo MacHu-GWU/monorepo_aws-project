@@ -48,6 +48,8 @@ jobs:
     env:
       USER_ENV_NAME: devops
     steps:
+      - name: === 💾 Preparation ===
+        run: echo "Preparation"
       - name: Git Clone the Repository
         uses: actions/checkout@v4
       # ------------------------------------------------------------------------
@@ -122,6 +124,8 @@ jobs:
         run: |
           virtualenv -p python3.9 .venv
           poetry install
+      - name: === ✅ Start Main Logics ===
+        run: echo "Start Main Logics"
       # ------------------------------------------------------------------------
       # The following steps run unit test and build artifacts
       # ------------------------------------------------------------------------
@@ -143,7 +147,6 @@ jobs:
           echo done
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
-
   job_1_deploy_to_sbx:
     name: 🚀 Deploy App to 📦 sbx
     uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
