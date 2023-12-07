@@ -46,7 +46,7 @@ jobs:
           # in the ``bootstrap/config.json`` file
           # --------------------------------------------------------------------
           role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
-          role-session-name: ${{ env.USER_ENV_NAME }}_devops_role_session
+          role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
           disable-retry: true
       # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
@@ -68,7 +68,7 @@ jobs:
           cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 💾 Install virtualenv, poetry Dependencies
         run: |
-          pip install -r {{ env.DIR_PROJECT }}/requirements-automation.txt
+          pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
