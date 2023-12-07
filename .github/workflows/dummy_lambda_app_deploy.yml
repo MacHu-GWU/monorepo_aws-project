@@ -30,7 +30,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
+      USER_ENV_NAME: ${{ inputs.user_env_name }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
