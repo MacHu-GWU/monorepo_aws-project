@@ -33,7 +33,11 @@ jobs:
       USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v4
+          uses: actions/checkout@v4
+      - name: Check env var
+        run: |
+          echo ${{ env.USER_ENV_NAME }}
+          echo ${USER_ENV_NAME}
       - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -44,6 +48,7 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
           role-session-name: ${{ env.USER_ENV_NAME }}_devops_role_session
           aws-region: ${{ env.AWS_REGION }}
+          disable-retry: true
       # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
       - name: 🛠 Set up Node.js
         uses: actions/setup-node@v3
