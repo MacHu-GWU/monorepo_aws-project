@@ -33,7 +33,7 @@ jobs:
       USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
     steps:
       - name: Git clone the repository
-          uses: actions/checkout@v4
+        uses: actions/checkout@v4
       - name: Check env var
         run: |
           echo ${{ env.USER_ENV_NAME }}
