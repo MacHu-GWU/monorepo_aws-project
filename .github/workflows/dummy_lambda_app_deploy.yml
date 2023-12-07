@@ -42,7 +42,7 @@ jobs:
           # in the ``bootstrap/config.json`` file
           # --------------------------------------------------------------------
           role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
-          role-session-name: ${USER_ENV_NAME}_devops_role_session
+          role-session-name: ${{ env.USER_ENV_NAME }}_devops_role_session
           aws-region: ${{ env.AWS_REGION }}
       # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
       - name: 🛠 Set up Node.js
@@ -81,7 +81,7 @@ jobs:
       #-------------------------------------------------------------------------
       - name: 🚀 Deploy Lambda App via CDK
         run: |
-          echo deploy lambda app to ${USER_ENV_NAME}
+          echo deploy lambda app to $${ env.USER_ENV_NAME}
       - name: 🧪 Run Integration Test
         run: |
           echo run integration test on ${USER_ENV_NAME}
