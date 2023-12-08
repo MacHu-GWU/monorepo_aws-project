@@ -8,18 +8,18 @@ from s3pathlib import context
 
 import aws_ops_alpha.api as aws_ops_alpha
 
-from .config.define import EnvEnum
+from .env import EnvEnum
 from .runtime import runtime
 
-aws_ops_alpha_config = aws_ops_alpha.Config(
+aws_ops_alpha_config = aws_ops_alpha.AwsOpsAlphaConfig(
     env_aws_profile_mapper={
         aws_ops_alpha.constants.DEVOPS: "bmt_app_devops_us_east_1",
         EnvEnum.sbx.value: "bmt_app_dev_us_east_1",
         EnvEnum.tst.value: "bmt_app_test_us_east_1",
+        # EnvEnum.stg.value: "bmt_app_test_us_east_1",
         EnvEnum.prd.value: "bmt_app_prod_us_east_1",
     }
 )
-
 
 @dataclasses.dataclass
 class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
@@ -35,6 +35,10 @@ class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
         return self.get_app_bsm(env_name=EnvEnum.tst.value)
 
     @cached_property
+    def bsm_stg(self):
+        return self.get_app_bsm(env_name=EnvEnum.stg.value)
+
+    @cached_property
     def bsm_prd(self):
         return self.get_app_bsm(env_name=EnvEnum.prd.value)
 
@@ -43,6 +47,7 @@ class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
         return [
             self.bsm_sbx,
             self.bsm_tst,
+            # self.bsm_stg,
             self.bsm_prd,
         ]
 

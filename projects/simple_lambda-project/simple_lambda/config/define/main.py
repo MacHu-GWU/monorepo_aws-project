@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import dataclasses
-import os
+from functools import cached_property
 
 import config_patterns.api as config_patterns
 
-from ...runtime import runtime
-from ...compat import cached_property
-from ...env import EnvEnum
+from ..._api import EnvEnum, detect_current_env
 
 # You may have a long list of config field definition
 # put them in different module and use Mixin class
@@ -45,21 +43,7 @@ class Env(
 class Config(config_patterns.multi_env_json.BaseConfig):
     @classmethod
     def get_current_env(cls) -> str:  # pragma: no cover
-        # you can uncomment this line to force to use certain env
-        # from your local laptop to run application code, tests, ...
-        # return EnvEnum.sbx.value
-        if runtime.is_local:
-            if "USER_ENV_NAME" in os.environ:
-                return os.environ["USER_ENV_NAME"]
-            return EnvEnum.sbx.value
-        elif runtime.is_ci:
-            env_name = os.environ["USER_ENV_NAME"]
-            EnvEnum.ensure_is_valid_value(env_name)
-            return env_name
-        elif runtime.is_aws_lambda:
-            env_name = os.environ["ENV_NAME"]
-            EnvEnum.ensure_is_valid_value(env_name)
-            return env_name
+        return detect_current_env()
 
     @cached_property
     def sbx(self) -> Env:  # pragma: no cover

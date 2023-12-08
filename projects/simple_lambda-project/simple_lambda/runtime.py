@@ -1,3 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from aws_ops_alpha.api import runtime
+import aws_ops_alpha.api as aws_ops_alpha
+
+runtime = aws_ops_alpha.runtime
