@@ -13,8 +13,9 @@ import aws_ops_alpha.api as aws_ops_alpha
 import aws_ops_alpha.workflow.simple_python.api as simple_python_ops
 import aws_ops_alpha.workflow.simple_lambda.api as simple_lambda_ops
 
-from ..config.init import config
-from .._api import (
+from .config.init import config
+from ._api import (
+    paths,
     runtime,
     git_repo,
     EnvEnum,
@@ -144,9 +145,9 @@ def view_latest_doc():
 
 
 def build_lambda_source(
-    verbose: bool = True,
+    verbose: bool = False,
 ):
-    return aws_ops_alpha.aws_lambda_helpers.build_lambda_source(
+    return simple_lambda_ops.build_lambda_source(
         pyproject_ops=pyproject_ops,
         verbose=verbose,
     )
@@ -169,6 +170,47 @@ def publish_lambda_layer(
     )
 
 
+def deploy_app(
+    check: bool = True,
+):
+    env_name = detect_current_env()
+    if runtime.is_local:
+        skip_prompt = False
+    else:
+        skip_prompt = True
+    return simple_lambda_ops.deploy_app(
+        git_branch_name=git_repo.git_branch_name,
+        env_name=detect_current_env(),
+        runtime_name=runtime.local_or_ci,
+        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
+        lbd_func_name_list=config.env.lambda_function_name_list,
+        dir_cdk=paths.dir_cdk,
+        stack_name=config.env.cloudformation_stack_name,
+        skip_prompt=skip_prompt,
+        check=check,
+    )
+
+
+def delete_app(
+    check: bool = True,
+):
+    env_name = detect_current_env()
+    if runtime.is_local:
+        skip_prompt = False
+    else:
+        skip_prompt = True
+    return simple_lambda_ops.delete_app(
+        git_branch_name=git_repo.git_branch_name,
+        env_name=detect_current_env(),
+        runtime_name=runtime.local_or_ci,
+        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
+        dir_cdk=paths.dir_cdk,
+        stack_name=config.env.cloudformation_stack_name,
+        skip_prompt=skip_prompt,
+        check=check,
+    )
+
+
 def publish_lambda_version(
     check: bool = True,
 ):
@@ -178,9 +220,6 @@ def publish_lambda_version(
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
-        lbd_func_name_list=[
-            lambda_function.name
-            for lambda_function in config.env.lambda_functions.values()
-        ],
+        lbd_func_name_list=config.env.lambda_function_name_list,
         check=check,
     )

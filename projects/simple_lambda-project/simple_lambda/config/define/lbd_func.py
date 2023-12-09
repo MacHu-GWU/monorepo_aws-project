@@ -119,6 +119,30 @@ class LambdaFunctionMixin:
     )
 
     @property
+    def lambda_function_name_list(self) -> T.List[str]:
+        """
+        Example::
+
+            >>> LambdaFunctionMixin().lambda_function_name_list
+            [
+                '${project_name}-${env_name}-${short_name1}',
+                '${project_name}-${env_name}-${short_name2}',
+                '${project_name}-${env_name}-${short_name3}',
+            ]
+        """
+        return [
+            lambda_function.name
+            for lambda_function in config.env.lambda_functions.values()
+        ]
+
+    @property
+    def lambda_function_list(self) -> T.List[LambdaFunction]:
+        """
+        Lambda function object list.
+        """
+        return list(self.lambda_functions.values())
+
+    @property
     def lbd_hello(self) -> LambdaFunction:
         return self.lambda_functions["hello"]
 
