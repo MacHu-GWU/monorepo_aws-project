@@ -11,6 +11,7 @@ sub packages and modules
     :maxdepth: 1
 
     build <build>
+    deploy <deploy>
     docs <docs>
     pyproject <pyproject>
     tests <tests>

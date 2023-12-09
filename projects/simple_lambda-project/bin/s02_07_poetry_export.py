@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from automation.pyproject import pyproject_ops
+from simple_lambda.ops import poetry_export
 
-pyproject_ops.poetry_export(verbose=True)
+poetry_export()

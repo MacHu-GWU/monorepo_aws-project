@@ -15,6 +15,7 @@ sub packages and modules
     lbd <lbd/__init__>
     ops <ops/__init__>
     vendor <vendor/__init__>
+    _api <_api>
     boto_ses <boto_ses>
     compat <compat>
     constants <constants>
@@ -22,5 +23,6 @@ sub packages and modules
     git <git>
     logger <logger>
     paths <paths>
+    pyproject <pyproject>
     runtime <runtime>
     
