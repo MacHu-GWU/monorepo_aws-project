@@ -89,45 +89,46 @@ class LambdaMixin:
             )
 
             # declare lambda function alias
-            # kwargs = dict(
-            #     alias_name="LIVE",
-            #     version=lambda_.Version.from_version_arn(
-            #         self,
-            #         f"LambdaVersion1ForLive{lbd_func_config.short_name_camel}",
-            #         version_arn=f"{lbd_func.function_arn}:{lbd_func_config.target_live_version1}",
-            #     ),
-            # )
-            # # handle optional canary deployment
-            # if lbd_func_config.live_version2 is not None:  # pragma: no cover
-            #     if not (0.01 <= lbd_func_config.live_version2_percentage <= 0.99):
-            #         raise ValueError(
-            #             "version2 percentage has to be between 0.01 and 0.99."
-            #         )
-            #     if lbd_func_config.target_live_version1 == "$LATEST":
-            #         raise ValueError(
-            #             "$LATEST is not supported for an alias pointing to more than 1 version."
-            #         )
-            #     kwargs["additional_versions"] = [
-            #         lambda_.VersionWeight(
-            #             version=lambda_.Version.from_version_arn(
-            #                 self,
-            #                 f"LambdaVersion2ForLive{lbd_func_config.short_name_camel}",
-            #                 version_arn=f"{lbd_func.function_arn}:{lbd_func_config.live_version2}",
-            #             ),
-            #             weight=lbd_func_config.live_version2_percentage,
-            #         )
-            #     ]
-            # lbd_func_alias = lambda_.Alias(
-            #     self,
-            #     f"LambdaAlias{lbd_func_config.short_name_camel}",
-            #     **kwargs,
-            # )
-            #
-            # # put lambda function and alias into mapper so we can access them later
-            # self.lambda_func_mapper[lbd_func_config.name] = {
-            #     KEY_FUNC: lbd_func,
-            #     KEY_ALIAS: lbd_func_alias,
-            # }
+            kwargs = dict(
+                alias_name="LIVE",
+                version=lambda_.Version.from_version_arn(
+                    self,
+                    f"LambdaVersion1ForLive{lbd_func_config.short_name_camel}",
+                    version_arn=f"{lbd_func.function_arn}:{lbd_func_config.target_live_version1}",
+                ),
+            )
+            # handle optional canary deployment
+            if lbd_func_config.live_version2 is not None:  # pragma: no cover
+                if not (0.01 <= lbd_func_config.live_version2_percentage <= 0.99):
+                    raise ValueError(
+                        "version2 percentage has to be between 0.01 and 0.99."
+                    )
+                if lbd_func_config.target_live_version1 == "$LATEST":
+                    raise ValueError(
+                        "$LATEST is not supported for an alias pointing to more than 1 version."
+                    )
+                kwargs["additional_versions"] = [
+                    lambda_.VersionWeight(
+                        version=lambda_.Version.from_version_arn(
+                            self,
+                            f"LambdaVersion2ForLive{lbd_func_config.short_name_camel}",
+                            version_arn=f"{lbd_func.function_arn}:{lbd_func_config.live_version2}",
+                        ),
+                        weight=lbd_func_config.live_version2_percentage,
+                    )
+                ]
+            lbd_func_alias = lambda_.Alias(
+                self,
+                f"LambdaAlias{lbd_func_config.short_name_camel}",
+                **kwargs,
+            )
+            lbd_func_alias.node.add_dependency(lbd_func)
+
+            # put lambda function and alias into mapper so we can access them later
+            self.lambda_func_mapper[lbd_func_config.name] = {
+                KEY_FUNC: lbd_func,
+                KEY_ALIAS: lbd_func_alias,
+            }
 
         # ----------------------------------------------------------------------
         # Configure S3 Notification
