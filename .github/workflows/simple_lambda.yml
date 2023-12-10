@@ -55,8 +55,10 @@ jobs:
           cache: 'pip'
           cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 💾 Install virtualenv, poetry Dependencies
+        # poetry version should match the version in pyproject.toml
         run: |
-          pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
+          pip install virtualenv
+          pip install poetry==1.6.1
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
@@ -66,8 +68,7 @@ jobs:
       - name: 🐍 💾 Create Virtual Environment and Install all dependencies
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
-          virtualenv -p python3.9 .venv
-          poetry install --with dev,doc,test,auto
+          python bin/s02_10_setup_venv_in_ci.py
       - name: === ✅ START MAIN LOGICS ===
         run: echo "START MAIN LOGICS"
       - name: 🏗️ Build Lambda Source Artifacts

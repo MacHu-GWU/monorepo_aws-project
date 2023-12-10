@@ -101,7 +101,7 @@ optional = true
 
 [tool.poetry.group.auto.dependencies]
 # Python dependency management
-poetry = "1.6.1"
+poetry = "1.6.1" # this version should match the version in github action yml file
 # parse pyproject.toml file
 tomli = "2.0.1"
 # beautiful formatting for console output

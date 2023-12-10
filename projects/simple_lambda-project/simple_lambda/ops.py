@@ -120,7 +120,7 @@ def deploy_versioned_doc(check: bool = True):
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
-        bucket=config.env.s3_bucket_doc,
+        bucket=config.env.s3bucket_docs,
         check=check,
     )
 
@@ -132,7 +132,7 @@ def deploy_latest_doc(check: bool = True):
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
-        bucket=config.env.s3_bucket_doc,
+        bucket=config.env.s3bucket_docs,
         check=check,
     )
 
@@ -140,7 +140,7 @@ def deploy_latest_doc(check: bool = True):
 def view_latest_doc():
     simple_python_ops.view_latest_doc(
         pyproject_ops=pyproject_ops,
-        bucket=config.env.s3_bucket_doc,
+        bucket=config.env.s3bucket_docs,
     )
 
 

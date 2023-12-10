@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+We need special handling in CI/
+"""
+
 import os
 import subprocess
 from pathlib import Path
@@ -25,23 +29,32 @@ if path_venv_bin_poetry.exists() is False:
 
     subprocess.run(
         [
-            f"{path_venv_bin_pip}",
+            f"{path_venv_bin_poetry}",
             "install",
-            "-e",
-            f"{dir_project_root}",
-            "--no-deps",
+            "--with",
+            "dev,doc,test,auto",
         ],
         check=True,
     )
-
-    for path in [
-        dir_project_root.joinpath("requirements.txt"),
-        dir_project_root.joinpath("requirements-dev.txt"),
-        dir_project_root.joinpath("requirements-test.txt"),
-        dir_project_root.joinpath("requirements-doc.txt"),
-        dir_project_root.joinpath("requirements-automation.txt"),
-    ]:
-        subprocess.run(
-            [f"{path_venv_bin_pip}", "install", "-r", f"{path}"],
-            check=True,
-        )
+    # subprocess.run(
+    #     [
+    #         f"{path_venv_bin_pip}",
+    #         "install",
+    #         "-e",
+    #         f"{dir_project_root}",
+    #         "--no-deps",
+    #     ],
+    #     check=True,
+    # )
+    #
+    # for path in [
+    #     dir_project_root.joinpath("requirements.txt"),
+    #     dir_project_root.joinpath("requirements-dev.txt"),
+    #     dir_project_root.joinpath("requirements-test.txt"),
+    #     dir_project_root.joinpath("requirements-doc.txt"),
+    #     dir_project_root.joinpath("requirements-automation.txt"),
+    # ]:
+    #     subprocess.run(
+    #         [f"{path_venv_bin_pip}", "install", "-r", f"{path}"],
+    #         check=True,
+    #     )
