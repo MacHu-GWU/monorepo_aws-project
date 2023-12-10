@@ -194,7 +194,8 @@ def deploy_app(
         lbd_func_name_list=config.env.lambda_function_name_list,
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
-        skip_prompt=skip_prompt,
+        # skip_prompt=skip_prompt,
+        skip_prompt=True,
         check=check,
     )
 
