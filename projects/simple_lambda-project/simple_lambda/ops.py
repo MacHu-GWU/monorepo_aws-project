@@ -187,7 +187,7 @@ def deploy_app(
         skip_prompt = True
     return simple_lambda_project.deploy_app(
         git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        env_name=env_name,
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),

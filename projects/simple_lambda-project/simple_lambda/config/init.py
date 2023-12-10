@@ -4,10 +4,13 @@ import os
 import json
 from config_patterns.jsonutils import json_loads
 
-from ..paths import path_config_json, path_config_secret_json
-from ..runtime import runtime
-from ..boto_ses import bsm
-
+from .._api import (
+    paths,
+    runtime,
+    detect_current_env,
+    boto_ses_factory,
+    bsm,
+)
 from .define import EnvEnum, Env, Config
 
 if runtime.is_local:
@@ -16,9 +19,9 @@ if runtime.is_local:
     # this code block is only used to onboard first time user of this
     # project template. Once you know about how to handle the config-secret.json file,
     # you can delete this code block.
-    if not path_config_secret_json.exists():  # pragma: no cover
-        path_config_secret_json.parent.mkdir(parents=True, exist_ok=True)
-        path_config_secret_json.write_text(
+    if not paths.path_config_secret_json.exists():  # pragma: no cover
+        paths.path_config_secret_json.parent.mkdir(parents=True, exist_ok=True)
+        paths.path_config_secret_json.write_text(
             json.dumps(
                 {
                     "_shared": {},
@@ -34,14 +37,14 @@ if runtime.is_local:
     config = Config.read(
         env_class=Env,
         env_enum_class=EnvEnum,
-        path_config=path_config_json.abspath,
-        path_secret_config=path_config_secret_json.abspath,
+        path_config=paths.path_config_json.abspath,
+        path_secret_config=paths.path_config_secret_json.abspath,
     )
 elif runtime.is_ci:
     # read non-sensitive config from local file system
     # and then figure out what is the parameter name
     config = Config(
-        data=json_loads(path_config_json.read_text()),
+        data=json_loads(paths.path_config_json.read_text()),
         secret_data=dict(),
         Env=Env,
         EnvEnum=EnvEnum,
@@ -49,10 +52,11 @@ elif runtime.is_ci:
     )
     # read config from parameter store
     # we consider the value in parameter store is the ground truth for production
+    env_name = detect_current_env()
     config = Config.read(
         env_class=Env,
         env_enum_class=EnvEnum,
-        bsm=bsm,
+        bsm=boto_ses_factory.get_env_bsm(env_name),
         parameter_name=config.parameter_name,
         parameter_with_encryption=True,
     )
