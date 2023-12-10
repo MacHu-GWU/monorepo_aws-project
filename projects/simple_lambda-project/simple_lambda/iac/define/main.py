@@ -39,7 +39,7 @@ class MainStack(
         self.config = config
         self.env = env
         self.mk_rg1_iam()
-        # self.mk_rg2_lbd()
+        self.mk_rg2_lbd()
 
         for key, value in config.env.aws_tags.items():
             cdk.Tags.of(self).add(key, value)
