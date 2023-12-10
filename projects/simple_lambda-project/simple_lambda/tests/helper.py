@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fixa.pytest_cov_helper import run_cov_test as _run_cov_test
+from ..vendor.pytest_cov_helper import run_cov_test as _run_cov_test
 from ..paths import dir_project_root, dir_htmlcov
 
 

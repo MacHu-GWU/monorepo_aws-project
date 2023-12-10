@@ -34,6 +34,8 @@ import botocore.exceptions
 if T.TYPE_CHECKING:  # pragma: no cover
     from mypy_boto3_lambda import LambdaClient
 
+__version__ = "0.1.1"
+
 LATEST = "$LATEST"
 
 
