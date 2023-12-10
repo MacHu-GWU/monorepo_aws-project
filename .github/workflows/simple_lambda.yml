@@ -84,6 +84,7 @@ jobs:
           .venv/bin/python bin/s04_04_lambda_build_layer.py
       - name: 📔 Publish Documentation Website
         working-directory: ${{ env.DIR_PROJECT }}
+        run: |
           .venv/bin/python bin/s03_11_build_doc.py
           .venv/bin/python bin/s03_14_deploy_latest_doc.py
       - name: === 🛑 END OF THE JOB ===
