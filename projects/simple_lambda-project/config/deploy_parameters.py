@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import aws_ops_alpha.api as aws_ops_alpha
 from simple_lambda.boto_ses import boto_ses_factory
 from simple_lambda.config.init import config, EnvEnum
 

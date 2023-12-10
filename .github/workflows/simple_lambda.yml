@@ -1,45 +1,44 @@
-# This is an advanced workflow to show you how to use cache to accelerate CI job run
 name: simple_lambda
 
-# Controls when the action will run.
-# Reference:
-# - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
-# - Events that trigger workflows: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on:
-  # To enable a workflow to be triggered manually, you need to configure the workflow_dispatch event.
-  # - workflow_dispatch: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
-  # - Manually running a workflow: https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow
-  # Allows you to run this workflow manually from the GitHub Actions tab
   workflow_dispatch:
   push:
     branches:
       - 'simple_lambda/feature*'
+      - 'simple_lambda/feature*'
+      - 'simple_lambda/fix*'
+      - 'simple_lambda/doc*'
+      - 'simple_lambda/layer*'
+      - 'simple_lambda/lambda*'
+      - 'simple_lambda/release/'
+      - 'simple_lambda/cleanup*'
 
-# Set common environment for all jobs and all steps
 env:
   AWS_REGION: "us-east-1"
+  DIR_PROJECT: "projects/simple_lambda-project"
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
 jobs:
-  sandbox:
+  job_0_build:
+    name: 🧪️ 🏗 Unit Test and Build Artifacts
     runs-on: ubuntu-latest
     env:
-      USER_ENV_NAME: sbx
+      USER_ENV_NAME: devops
     steps:
-      - name: Git clone the repository
+      - name: === 💾 PREPARATION ===
+        run: echo "PREPARATION"
+      - name: Git Clone the Repository
         uses: actions/checkout@v4
       - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          # this role name has to match the ``github_action_open_id_connection.role_name`` field
-          # in ``bootstrap/config.json`` file
           role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
-          role-session-name: sample_role_session
+          role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
-      # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+          disable-retry: true
       - name: 🛠 Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -53,31 +52,66 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'pip'
-          cache-dependency-path: projects/simple_lambda-project/requirements-automation.txt
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 💾 Install virtualenv, poetry Dependencies
         run: |
-          pip install virtualenv==20.25.0
-          pip install poetry==1.6.1
-      #-------------------------------------------------------------------------
-      #
-      #-------------------------------------------------------------------------
+          pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'poetry'
-          cache-dependency-path: projects/simple_lambda-project/poetry.lock
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/poetry.lock
       - name: 🐍 💾 Create Virtual Environment and Install all dependencies
+        working-directory: ${{ env.DIR_PROJECT }}
         run: |
-          python ./projects/simple_lambda-project/bin/s02_10_setup_venv_in_ci.py
-#      - name: 🪜 Build Lambda Source Artifacts
-#        run: |
-#          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
-#      - name: 🧪 Run Code Coverage Test
-#        run: |
-#          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s03_02_run_cov_test.py
-#      - name: === 🛑 END OF THE JOB ===
-#        run: echo "END OF THE JOB"
+          virtualenv -p python3.9 .venv
+          poetry install --with dev,doc,test,auto
+      - name: === ✅ START MAIN LOGICS ===
+        run: echo "START MAIN LOGICS"
+      - name: 🏗️ Build Lambda Source Artifacts
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_03_lambda_build_source.py
+      - name: 🧪 Run Code Coverage Test
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s03_02_run_cov_test.py
+      - name: 🏗️ Build Lambda Layer
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_04_lambda_build_layer.py
+      - name: 📔 Publish Documentation Website
+        working-directory: ${{ env.DIR_PROJECT }}
+          .venv/bin/python bin/s03_11_build_doc.py
+          .venv/bin/python bin/s03_14_deploy_latest_doc.py
+      - name: === 🛑 END OF THE JOB ===
+        run: echo "END OF THE JOB"
+#  job_1_deploy_to_sbx:
+#    name: 🚀 Deploy App to 📦 sbx
+#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+#    with:
+#      user_env_name: sbx
+#    secrets: inherit
+#    needs: job_0_build
+#
+#  job_2_deploy_to_tst:
+#    name: 🚀 Deploy App to 🧪 tst
+#    # we only run this from release branch
+#    if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') }}
+#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+#    with:
+#      user_env_name: tst
+#    secrets: inherit
+#    needs: job_1_deploy_to_sbx
+#
+#  job_3_deploy_to_prd:
+#    name: 🚀 Deploy App to 🏭 prd
+#    # we only run this from release branch
+#    if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') }}
+#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+#    with:
+#      user_env_name: prd
+#    secrets: inherit
+#    needs: job_2_deploy_to_tst
