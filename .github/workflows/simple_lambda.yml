@@ -26,7 +26,7 @@ jobs:
     name: 🧪️ 🏗 Unit Test and Build Artifacts
     runs-on: ubuntu-latest
     env:
-      USER_ENV_NAME: devops
+      USER_ENV_NAME: sbx
     steps:
       - name: === 💾 PREPARATION ===
         run: echo "PREPARATION"

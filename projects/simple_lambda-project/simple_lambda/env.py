@@ -8,7 +8,6 @@ from .runtime import runtime
 
 
 class EnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
-    devops = aws_ops_alpha.constants.DEVOPS
     sbx = aws_ops_alpha.constants.SBX
     tst = aws_ops_alpha.constants.TST
     prd = aws_ops_alpha.constants.PRD
