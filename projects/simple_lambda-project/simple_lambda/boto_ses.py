@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import typing as T
+import os
 import dataclasses
 from functools import cached_property
 
@@ -28,19 +29,19 @@ class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
 
     @cached_property
     def bsm_sbx(self):
-        return self.get_app_bsm(env_name=EnvEnum.sbx.value)
+        return self.get_env_bsm(env_name=EnvEnum.sbx.value)
 
     @cached_property
     def bsm_tst(self):
-        return self.get_app_bsm(env_name=EnvEnum.tst.value)
+        return self.get_env_bsm(env_name=EnvEnum.tst.value)
 
     @cached_property
     def bsm_stg(self):
-        return self.get_app_bsm(env_name=EnvEnum.stg.value)
+        return self.get_env_bsm(env_name=EnvEnum.stg.value)
 
     @cached_property
     def bsm_prd(self):
-        return self.get_app_bsm(env_name=EnvEnum.prd.value)
+        return self.get_env_bsm(env_name=EnvEnum.prd.value)
 
     @cached_property
     def workload_bsm_list(self):
