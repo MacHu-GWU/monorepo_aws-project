@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import typing as T
-from fixa.hashes import hashes
 
 import aws_cdk as cdk
 from aws_cdk import (
@@ -11,12 +10,13 @@ from aws_cdk import (
     aws_lambda as lambda_,
 )
 
+from ..._version import __version__
 from ...paths import (
     dir_lambda_deploy,
     path_source_zip,
 )
 from ...git import git_repo
-from ..._version import __version__
+from ...vendor.hashes import hashes
 
 if T.TYPE_CHECKING:
     from .main import MainStack
