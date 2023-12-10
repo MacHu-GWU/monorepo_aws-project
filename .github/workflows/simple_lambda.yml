@@ -5,13 +5,15 @@ on:
   push:
     branches:
       - 'simple_lambda/feature*'
-      - 'simple_lambda/feature*'
+      - 'simple_lambda/feat*'
       - 'simple_lambda/fix*'
       - 'simple_lambda/doc*'
       - 'simple_lambda/layer*'
-      - 'simple_lambda/lambda*'
-      - 'simple_lambda/release/'
+      - 'simple_lambda/app*'
+      - 'simple_lambda/release*'
+      - 'simple_lambda/rls*'
       - 'simple_lambda/cleanup*'
+      - 'simple_lambda/clean*'
 
 env:
   AWS_REGION: "us-east-1"
