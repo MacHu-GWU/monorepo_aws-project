@@ -89,6 +89,8 @@ class LambdaMixin:
             )
 
             # declare lambda function alias
+            print(self.env)
+            print(lbd_func_config.target_live_version1)
             kwargs = dict(
                 alias_name="LIVE",
                 version=lambda_.Version.from_version_arn(
