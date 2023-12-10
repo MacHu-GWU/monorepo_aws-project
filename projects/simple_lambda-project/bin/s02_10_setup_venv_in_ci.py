@@ -29,7 +29,7 @@ if path_venv_bin_poetry.exists() is False:
 
     subprocess.run(
         [
-            f"{path_venv_bin_poetry}",
+            f"poetry",
             "install",
             "--with",
             "dev,doc,test,auto",
