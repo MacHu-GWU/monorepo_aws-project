@@ -102,6 +102,7 @@ jobs:
 
   job_1_deploy_to_sbx:
     name: 🚀 Deploy App to 📦 sbx
+    if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') || startsWith(github.ref, 'refs/heads/simple_lambda/app') }}
     uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
     with:
       user_env_name: sbx
