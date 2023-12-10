@@ -1,4 +1,3 @@
-# chore: 0a72938773dd0158a280639561191ce6
 atomicwrites==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:81b2c9071a49367a7f770170e5eec8cb66567cfbbc8c73d20ce5ca4a8d71cf11
 aws-arns==1.4.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
