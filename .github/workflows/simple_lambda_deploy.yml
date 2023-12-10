@@ -11,6 +11,10 @@ on:
 env:
   AWS_REGION: "us-east-1"
   DIR_PROJECT: "projects/simple_lambda-project"
+  DEVOPS_AWS_ACCOUNT_ID: ${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}
+  SBX_AWS_ACCOUNT_ID: ${{ secrets.SBX_AWS_ACCOUNT_ID }}
+  TST_AWS_ACCOUNT_ID: ${{ secrets.TST_AWS_ACCOUNT_ID }}
+  PRD_AWS_ACCOUNT_ID: ${{ secrets.PRD_AWS_ACCOUNT_ID }}
 
 permissions:
   id-token: write # This is required for requesting the JWT
