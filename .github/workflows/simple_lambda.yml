@@ -80,12 +80,12 @@ jobs:
         run: |
           .venv/bin/python bin/s03_02_run_cov_test.py
       - name: 🏗️ Build Lambda Layer
-        if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/layer')
+        if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/layer') }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_04_lambda_build_layer.py
       - name: 📔 Publish Documentation Website
-        if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/doc')
+        if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/doc') }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s03_11_build_doc.py
