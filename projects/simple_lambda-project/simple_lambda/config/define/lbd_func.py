@@ -132,7 +132,7 @@ class LambdaFunctionMixin:
         """
         return [
             lambda_function.name
-            for lambda_function in config.env.lambda_functions.values()
+            for lambda_function in self.lambda_functions.values()
         ]
 
     @property

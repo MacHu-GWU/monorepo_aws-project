@@ -9,7 +9,6 @@ It assumes that:
 1. You have multiple deployment units (projects) in the same github repo, partitioned by folder. If you only have one deployment unit, you can still use this and just maintain the folder structure.
 2. You have multiple workload AWS accounts for different environments, e.g. sandbox, test, production. It's OK that those workload accounts are actually the same account, separated by naming convention.
 
-
 There are two types of setups:
 
 1. Multiple environments such as sbx, tst, and prd are deployed to different AWS accounts.
@@ -17,12 +16,6 @@ There are two types of setups:
 
 1. Multiple environments such as sbx, tst, and prd are deployed to different AWS accounts.
 2. Multiple environments such as sbx, tst, and prd are deployed to the same AWS account, and they are softly isolated by a naming convention like ``${project_name}-{env_name}``.
-
-.. code-block:: bash
-
-    python s1_setup_venv.py
-    python s2_cdk_bootstrap.py
-    python s3_setup_cross_account_permission.py
 
 
 Run Book
@@ -52,3 +45,4 @@ Then run the following script using the command ``python /path/to/file_name.py``
 2. `s2_cdk_bootstrap.py <./s2_cdk_bootstrap.py>`_:
 3. `s3_setup_github_action_oidc.py <./s3_setup_github_action_oidc.py>`_:
 4. `s4_setup_cross_account_permission.py <./s4_setup_cross_account_permission.py>`_:
+5. `s5_setup_cross_account_s3_bucket_permission.py <./s5_setup_cross_account_s3_bucket_permission.py>`_:
