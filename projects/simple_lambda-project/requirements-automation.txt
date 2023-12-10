@@ -9,12 +9,15 @@ aws-arns==1.4.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" 
 aws-codecommit==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:bbb7e1f97aa457e9ffaf07bea34a54a437339e18e545a7862ca012dbe0ef598e \
     --hash=sha256:eed24e8f2ff8dfffe67ef3b164a9431ebafddc4935641a527549d03ea714a7e4
-aws-console-url==1.3.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:2dd04691dd649d6dce033a34098e71c04bd284a12bea016ffd84254ea85b092d \
-    --hash=sha256:33879f02de6e859101cd863374aef9c77b3f49e711c8c8799a889a02490c1ee2
-aws-lambda-layer==0.4.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:a261c5f37325b8ad98de0a58c86e3e68eeb27bc1ef4045852302a5999e6ee23f \
-    --hash=sha256:ef548303ae6e3ab59dbe4cdb123ca811dd69c83eaf2ea136564b220f424f6e05
+aws-console-url==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:5ab29d0fd682759fa6bc3f1198777ecb790103f95d89337fca9a56ec1399116b \
+    --hash=sha256:bc9ae2d32f710441e16c093d2d7b0e22efa169fe056ff2b2a453c3430436ab77
+aws-lambda-layer==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:04f93c57827948744b49e485931de13260e5855aeac57c74c3ef40e48bdd922f \
+    --hash=sha256:7a37f89b3a3b1a353bc419e5a9877d563f2885cc4e6bf8ef6eab500e1cdffed0
+aws-ops-alpha==0.0.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:c4fcf345ff7b485346381ebd978cffa349fe1b1b7b0f1b821bfd2060f6be3d96 \
+    --hash=sha256:e7b19be256914620d4117d63638c85f3c1342cf0f005b1b60f7a954a7b80e294
 boto-session-manager==1.5.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:87da527e97f0799733bc9b174bc818702515e82242d03184cbcf9af9abf28bc2 \
     --hash=sha256:c6ec133ca10c6de1579cc03c9d2936bfa242f50c68ee58ad7db1867b01bcf89e
@@ -186,6 +189,12 @@ colorama==0.4.6 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" 
 commonmark==0.9.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60 \
     --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9
+config-patterns==1.0.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:4d7b3071c23f77efae4e554f6c58c582502839367e835aff7e2115ed22bab2cc \
+    --hash=sha256:ef45e70b475fd69b4b45f6770efa5d50eaa2c52f62b53988d75c9c518fce19b5
+config-patterns[aws]==1.0.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:4d7b3071c23f77efae4e554f6c58c582502839367e835aff7e2115ed22bab2cc \
+    --hash=sha256:ef45e70b475fd69b4b45f6770efa5d50eaa2c52f62b53988d75c9c518fce19b5
 crashtest==0.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:80d7b1f316ebfbd429f648076d6275c877ba30ba48979de4191714a75266f0ce \
     --hash=sha256:8d23eac5fa660409f57472e3851dab7ac18aba459a8d19cbbba86d3d5aecd2a5
@@ -417,9 +426,9 @@ pygments==2.17.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0"
 pyproject-hooks==1.0.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:283c11acd6b928d2f6a7c73fa0d01cb2bdc5f07c57a2eeb6e83d5e56b97976f8 \
     --hash=sha256:f271b298b97f5955d53fb12b72c1fb1948c22c1a6b70b315c54cedaca0264ef5
-pyproject-ops==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:0f9bc10cdd64ae75283a8f14cffbd808cfdd725e4de19f25f2042e61f25fb1be \
-    --hash=sha256:74f074eba91f2aa43962108291e022755881429148ad739ce81378d1225413c3
+pyproject-ops==0.6.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:20ade4d4e97b96214627998908b99225f18e55abd0f87d70f5ac26ca62e6a1d5 \
+    --hash=sha256:d178f2c290246fc6a80dcf139180dfccd2eda6b83d312db1750dd0a44fbfdebe
 pyrsistent==0.20.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:0724c506cd8b63c69c7f883cc233aac948c1ea946ea95996ad8b1380c25e1d3f \
     --hash=sha256:09848306523a3aba463c4b49493a760e7a6ca52e4826aa100ee99d8d39b7ad1e \
@@ -453,6 +462,9 @@ pyrsistent==0.20.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev
     --hash=sha256:f5ac696f02b3fc01a710427585c855f65cd9c640e14f52abe52020722bb4906b \
     --hash=sha256:f920385a11207dc372a028b3f1e1038bb244b3ec38d448e6d8e43c6b3ba20e98 \
     --hash=sha256:fed2c3216a605dc9a6ea50c7e84c82906e3684c4e80d2908208f662a6cbf9022
+pysecret==2.2.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:7880d933f5647032a21113b79ab83ed0718e852a4f50a41999128a4a55377e16 \
+    --hash=sha256:abd780868a39388897ac4b6cd59973b586bc8f18771154168925d268466dea29
 python-dateutil==2.8.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \
     --hash=sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9
@@ -589,6 +601,9 @@ tomlkit==0.12.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" 
 trove-classifiers==2023.11.29 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:02307750cbbac2b3d13078662f8a5bf077732bf506e9c33c97204b7f68f3699e \
     --hash=sha256:ff8f7fd82c7932113b46e7ef6742c70091cc63640c8c65db00d91f2e940b9514
+typing-extensions==4.9.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783 \
+    --hash=sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
 urllib3==1.26.18 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:34b97092d7e0a3a8cf7cd10e386f401b3737364026c45e622aa02903dffe0f07 \
     --hash=sha256:f8ecc1bba5667413457c529ab955bf8c67b45db799d159066261719e328580a0

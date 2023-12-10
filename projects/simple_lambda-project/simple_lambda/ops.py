@@ -73,7 +73,7 @@ def poetry_export():
 
 def run_unit_test(check: bool = True):
     simple_python_ops.run_unit_test(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
@@ -83,7 +83,7 @@ def run_unit_test(check: bool = True):
 
 def run_cov_test(check: bool = True):
     simple_python_ops.run_cov_test(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
@@ -99,7 +99,7 @@ def view_cov():
 
 def build_doc(check: bool = True):
     simple_python_ops.build_doc(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
@@ -115,7 +115,7 @@ def view_doc():
 
 def deploy_versioned_doc(check: bool = True):
     simple_python_ops.deploy_versioned_doc(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
@@ -127,7 +127,7 @@ def deploy_versioned_doc(check: bool = True):
 
 def deploy_latest_doc(check: bool = True):
     simple_python_ops.deploy_latest_doc(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
@@ -157,7 +157,7 @@ def publish_lambda_layer(
     check: bool = True,
 ):
     return simple_lambda_ops.publish_lambda_layer(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         bsm_devops=boto_ses_factory.bsm_devops,
@@ -179,7 +179,7 @@ def deploy_app(
     else:
         skip_prompt = True
     return simple_lambda_ops.deploy_app(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
@@ -200,7 +200,7 @@ def delete_app(
     else:
         skip_prompt = True
     return simple_lambda_ops.delete_app(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
@@ -216,10 +216,27 @@ def publish_lambda_version(
 ):
     env_name = detect_current_env()
     return simple_lambda_ops.publish_lambda_version(
-        git_branch_name=git_repo.git_branch_name,
+        git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         lbd_func_name_list=config.env.lambda_function_name_list,
+        check=check,
+    )
+
+
+def run_int_test(
+    check: bool = True
+):
+    if runtime.is_local:
+        wait = False
+    else:
+        wait = True
+    simple_lambda_ops.run_int_test(
+        git_branch_name=git_repo.semantic_branch_name,
+        env_name=detect_current_env(),
+        runtime_name=runtime.local_or_ci,
+        pyproject_ops=pyproject_ops,
+        wait=wait,
         check=check,
     )
