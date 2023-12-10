@@ -98,7 +98,7 @@ jobs:
 
   job_1_deploy_to_sbx:
     name: 🚀 Deploy App to 📦 sbx
-    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@simple_lambda/app
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@${{ github.ref_name }}
     with:
       user_env_name: sbx
     secrets: inherit
