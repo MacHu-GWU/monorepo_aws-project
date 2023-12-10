@@ -25,7 +25,7 @@
         "username": "sbx.user",
         "lambda_functions": {
             "hello": {
-                "live_version1": "1"
+//                "live_version1": "1"
             },
             "s3sync": {}
         }
