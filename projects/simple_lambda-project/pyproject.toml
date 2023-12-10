@@ -115,7 +115,7 @@ pathlib_mate = "1.2.1"
 # AWS CodeCommit event parser, git utilities
 aws_codecommit = "1.4.1"
 # AWS devops best practice
-aws_ops_alpha = "0.0.1"
+aws_ops_alpha = "0.0.2"
 # build AWS lambda layer and deployment package
 aws_lambda_layer = "0.5.1"
 # create AWS console url

@@ -67,6 +67,7 @@ jobs:
           cache-dependency-path: ${{ env.DIR_PROJECT }}/poetry.lock
       - name: 🐍 💾 Create Virtual Environment and Install all dependencies
         working-directory: ${{ env.DIR_PROJECT }}
+        # at this moment, the virtualenv is not created it, so we should use the global Python here
         run: |
           python bin/s02_10_setup_venv_in_ci.py
       - name: === ✅ START MAIN LOGICS ===

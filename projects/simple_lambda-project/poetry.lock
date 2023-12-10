@@ -213,13 +213,13 @@ tests = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "aws-ops-alpha"
-version = "0.0.1"
+version = "0.0.2"
 description = "Package short description."
 optional = false
 python-versions = "*"
 files = [
-    {file = "aws_ops_alpha-0.0.1-py3-none-any.whl", hash = "sha256:c4fcf345ff7b485346381ebd978cffa349fe1b1b7b0f1b821bfd2060f6be3d96"},
-    {file = "aws_ops_alpha-0.0.1.tar.gz", hash = "sha256:e7b19be256914620d4117d63638c85f3c1342cf0f005b1b60f7a954a7b80e294"},
+    {file = "aws_ops_alpha-0.0.2-py3-none-any.whl", hash = "sha256:61a4771f35888e090a882ab8a6f08eba867ac5085b0342b056d5ad0d76912b18"},
+    {file = "aws_ops_alpha-0.0.2.tar.gz", hash = "sha256:89ab3c54620de2299797fef606bedd2b8ac94c3fdffcfc3e24b82b427e815429"},
 ]
 
 [package.dependencies]
@@ -2703,4 +2703,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "7c7ad1de1353c5b08e2cc6129198c7ecb17ca3a4375ddf72698f3cb5495968ac"
+content-hash = "718e36c0e1baeba5de2c41c8a8606601a207f37d0432bd78f549d295f13e47ee"

@@ -5,6 +5,7 @@ from simple_lambda.git import git_repo
 
 def test():
     _ = git_repo.git_branch_name
+    _ = git_repo.semantic_branch_name
 
 
 if __name__ == "__main__":
