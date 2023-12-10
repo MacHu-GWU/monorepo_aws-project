@@ -15,9 +15,9 @@ aws-console-url==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10
 aws-lambda-layer==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:04f93c57827948744b49e485931de13260e5855aeac57c74c3ef40e48bdd922f \
     --hash=sha256:7a37f89b3a3b1a353bc419e5a9877d563f2885cc4e6bf8ef6eab500e1cdffed0
-aws-ops-alpha==0.0.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:61a4771f35888e090a882ab8a6f08eba867ac5085b0342b056d5ad0d76912b18 \
-    --hash=sha256:89ab3c54620de2299797fef606bedd2b8ac94c3fdffcfc3e24b82b427e815429
+aws-ops-alpha==0.0.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:bde52a0656c9888439162b49849d0fa963281b189c3dc8ca8afa91092f6a1a74 \
+    --hash=sha256:fb4d4dd0d13cb6859b1aded5455157bc824b1681299377cf5b5b13bb78d36797
 boto-session-manager==1.5.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:87da527e97f0799733bc9b174bc818702515e82242d03184cbcf9af9abf28bc2 \
     --hash=sha256:c6ec133ca10c6de1579cc03c9d2936bfa242f50c68ee58ad7db1867b01bcf89e
