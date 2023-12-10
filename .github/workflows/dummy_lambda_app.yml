@@ -169,7 +169,7 @@ jobs:
     name: 🚀 Deploy App to 🏭 prd
     # we only run this from release branch
     if: ${{ startsWith(github.ref, 'refs/heads/dummy_lambda_app/release') || startsWith(github.ref, 'refs/heads/dummy_lambda_app/rls') }}
-    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@${{ github.ref_name }}
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/dummy_lambda_app_deploy.yml@main
     with:
       user_env_name: prd
     secrets: inherit
