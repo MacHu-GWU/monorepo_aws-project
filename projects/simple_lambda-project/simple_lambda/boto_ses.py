@@ -61,3 +61,8 @@ bsm = boto_ses_factory.bsm
 
 # Set default s3pathlib boto session
 context.attach_boto_session(boto_ses=bsm.boto_ses)
+
+print(boto_ses_factory.bsm_devops.aws_account_id[:4])
+print(boto_ses_factory.bsm_sbx.aws_account_id[:4])
+print(boto_ses_factory.bsm_tst.aws_account_id[:4])
+print(boto_ses_factory.bsm_prd.aws_account_id[:4])
