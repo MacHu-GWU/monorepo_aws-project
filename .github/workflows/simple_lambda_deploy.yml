@@ -1,45 +1,42 @@
-# This workflow will be used for app deployment
 name: simple_lambda_deploy
 
-# Controls when the action will run.
-#
-# Reference:
-#
-# - Creating a reusable workflow: https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow
-# - on: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 on:
   workflow_call:
     inputs:
       user_env_name:
+        type: string
+        description: 'The user defined environment name'
         required: true
-        description: 'The user provided environment name'
 
-# Set common environment for all jobs and all steps
 env:
   AWS_REGION: "us-east-1"
-  USER_ENV_NAME: ${{ github.event.inputs.user_env_name }}
+  DIR_PROJECT: "projects/simple_lambda-project"
 
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
 
 jobs:
-  sandbox:
+  deploy:
+    name: 🚀 Deploy to ${{ inputs.user_env_name }}
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.user_env_name }}
     env:
-      USER_ENV_NAME: sbx
+      # Set the environment name to the environment variable
+      USER_ENV_NAME: ${{ inputs.user_env_name }}
     steps:
-      - name: Git clone the repository
+      - name: === 💾 PREPARATION ===
+        run: echo "PREPARATION"
+      - name: Git Clone the Repository
         uses: actions/checkout@v4
       - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          # this role name has to match the ``github_action_open_id_connection.role_name`` field
-          # in ``bootstrap/config.json`` file
           role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
-          role-session-name: sample_role_session
+          role-session-name: devops_role_session
           aws-region: ${{ env.AWS_REGION }}
-      # ref: https://dev.to/aws-builders/deploy-to-aws-with-github-actions-and-aws-cdk-4m1e
+          disable-retry: true
       - name: 🛠 Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -53,31 +50,37 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'pip'
-          cache-dependency-path: projects/simple_lambda-project/requirements-automation.txt
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 💾 Install virtualenv, poetry Dependencies
         run: |
-          pip install virtualenv==20.25.0
-          pip install poetry==1.6.1
-      #-------------------------------------------------------------------------
-      #
-      #-------------------------------------------------------------------------
+          pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
       - name: 🐍 Setup Python with poetry cache
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          # ref: https://github.com/actions/setup-python#caching-packages-dependencies
           cache: 'poetry'
-          cache-dependency-path: projects/simple_lambda-project/poetry.lock
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/poetry.lock
       - name: 🐍 💾 Create Virtual Environment and Install all dependencies
+        working-directory: ${{ env.DIR_PROJECT }}
+        # at this moment, the virtualenv is not created it, so we should use the global Python here
         run: |
-          python ./projects/simple_lambda-project/bin/s02_10_setup_venv_in_ci.py
-#      - name: 🪜 Build Lambda Source Artifacts
+          python bin/s02_10_setup_venv_in_ci.py
+      - name: === ✅ START MAIN LOGICS ===
+        run: echo "START MAIN LOGICS"
+      - name: 🚀 Deploy Lambda App via CDK
+        run: |
+          .venv/bin/python bin/s04_05_deploy_app.py
+      - name: 🧪 Run Integration Test
+        run: |
+          .venv/bin/python bin/s03_04_run_int_test.py
+#      - name: 🔯 Create Config Snapshot
+#        if: ${{ env.USER_ENV_NAME == 'prd' }}
 #        run: |
-#          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s04_03_lambda_build_source.py
-#      - name: 🧪 Run Code Coverage Test
+#          echo create config snapshot on $${ env.USER_ENV_NAME }}
+#      - name: 🏷️ Create Git Tag
+#        if: ${{ env.USER_ENV_NAME == 'prd' }}
 #        run: |
-#          ./projects/simple_lambda-project/.venv/bin/python ./projects/simple_lambda-project/bin/s03_02_run_cov_test.py
-#      - name: === 🛑 END OF THE JOB ===
-#        run: echo "END OF THE JOB"
+#          echo create git tag on $${ env.USER_ENV_NAME }}
+      - name: === 🛑 END OF THE JOB ===
+        run: echo "END OF THE JOB"

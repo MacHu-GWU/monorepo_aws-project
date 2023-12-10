@@ -93,14 +93,15 @@ jobs:
           .venv/bin/python bin/s03_14_deploy_latest_doc.py
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
-#  job_1_deploy_to_sbx:
-#    name: 🚀 Deploy App to 📦 sbx
-#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
-#    with:
-#      user_env_name: sbx
-#    secrets: inherit
-#    needs: job_0_build
-#
+
+  job_1_deploy_to_sbx:
+    name: 🚀 Deploy App to 📦 sbx
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+    with:
+      user_env_name: sbx
+    secrets: inherit
+    needs: job_0_build
+
 #  job_2_deploy_to_tst:
 #    name: 🚀 Deploy App to 🧪 tst
 #    # we only run this from release branch
