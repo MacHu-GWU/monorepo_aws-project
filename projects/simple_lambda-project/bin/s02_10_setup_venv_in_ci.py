@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-We need special handling in CI/
+This script is used to set up the virtual environment in GitHub Action CI.
+We use global Python to run this script (because the project venv is not ready yet).
+
+It leverages the cache to restore the venv from the previous run if the poetry.lock
+file is not changed.
 """
 
 import os
@@ -13,11 +17,11 @@ dir_here = Path(__file__).absolute().parent
 dir_project_root = dir_here.parent
 dir_venv = dir_project_root / ".venv"
 path_venv_bin_poetry = dir_venv / "bin" / "poetry"
-path_venv_bin_pip = dir_venv / "bin" / "pip"
 
 os.chdir(f"{dir_project_root}")
 
-if path_venv_bin_poetry.exists() is False:
+# if venv does not exist (recover from cache),  create it.
+if dir_venv.exists() is False:
     subprocess.run(
         [
             "virtualenv",
@@ -27,6 +31,9 @@ if path_venv_bin_poetry.exists() is False:
         ]
     )
 
+# if the poetry CLI entry point file does not exist, which means that
+# we haven't run "poetry install" yet, we run it.
+if path_venv_bin_poetry.exists() is False:
     subprocess.run(
         [
             f"poetry",
@@ -36,25 +43,3 @@ if path_venv_bin_poetry.exists() is False:
         ],
         check=True,
     )
-    # subprocess.run(
-    #     [
-    #         f"{path_venv_bin_pip}",
-    #         "install",
-    #         "-e",
-    #         f"{dir_project_root}",
-    #         "--no-deps",
-    #     ],
-    #     check=True,
-    # )
-    #
-    # for path in [
-    #     dir_project_root.joinpath("requirements.txt"),
-    #     dir_project_root.joinpath("requirements-dev.txt"),
-    #     dir_project_root.joinpath("requirements-test.txt"),
-    #     dir_project_root.joinpath("requirements-doc.txt"),
-    #     dir_project_root.joinpath("requirements-automation.txt"),
-    # ]:
-    #     subprocess.run(
-    #         [f"{path_venv_bin_pip}", "install", "-r", f"{path}"],
-    #         check=True,
-    #     )
