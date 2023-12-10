@@ -80,6 +80,7 @@ def run_unit_test(check: bool = True):
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
         check=check,
+        rule_set=simple_lambda_project.rule_set,
     )
 
 
@@ -90,6 +91,7 @@ def run_cov_test(check: bool = True):
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
         check=check,
+        rule_set=simple_lambda_project.rule_set,
     )
 
 
@@ -106,6 +108,7 @@ def build_doc(check: bool = True):
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
         check=check,
+        rule_set=simple_lambda_project.rule_set,
     )
 
 
@@ -124,6 +127,7 @@ def deploy_versioned_doc(check: bool = True):
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
         check=check,
+        rule_set=simple_lambda_project.rule_set,
     )
 
 
@@ -136,6 +140,7 @@ def deploy_latest_doc(check: bool = True):
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
         check=check,
+        rule_set=simple_lambda_project.rule_set,
     )
 
 
