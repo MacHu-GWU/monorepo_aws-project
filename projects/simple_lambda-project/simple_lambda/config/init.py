@@ -59,6 +59,8 @@ elif runtime.is_ci:
         bsm = boto_ses_factory.bsm_devops
     else:
         bsm = boto_ses_factory.get_env_bsm(env_name)
+    print(f"{env_name = }")
+    print(f"{bsm.aws_account_alias = }")
     config = Config.read(
         env_class=Env,
         env_enum_class=EnvEnum,
