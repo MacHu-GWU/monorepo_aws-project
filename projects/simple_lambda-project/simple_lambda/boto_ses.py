@@ -59,6 +59,8 @@ boto_ses_factory = BotoSesFactory(
     },
     default_app_env_name=EnvEnum.sbx.value,
 )
+print(f"{boto_ses_factory.bsm_devops.aws_account_alias = }")
+
 bsm = boto_ses_factory.bsm
 
 # Set default s3pathlib boto session
