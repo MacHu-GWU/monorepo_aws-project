@@ -194,6 +194,10 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
                     region_name = bsm_devops.aws_region
                 else:
                     region_name = self.aws_region
+            print("before assume")
+            print(f"{bsm_devops.aws_account_alias = }")
+            from .vendor.aws_sts import mask_iam_principal_arn
+            print(f"{mask_iam_principal_arn(role_arn) = }")
             return bsm_devops.assume_role(
                 role_arn=role_arn,
                 role_session_name=role_session_name,
