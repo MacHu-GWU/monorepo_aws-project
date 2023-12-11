@@ -57,15 +57,17 @@ elif runtime.is_ci:
     env_name = detect_current_env()
     if env_name == aws_ops_alpha.DEVOPS:
         bsm = boto_ses_factory.bsm_devops
+        parameter_name = config.parameter_name
     else:
         bsm = boto_ses_factory.get_env_bsm(env_name)
+        parameter_name = config.env.parameter_name
     print(f"{env_name = }")
     print(f"{bsm.aws_account_alias = }")
     config = Config.read(
         env_class=Env,
         env_enum_class=EnvEnum,
         bsm=bsm,
-        parameter_name=config.env.parameter_name,
+        parameter_name=parameter_name,
         parameter_with_encryption=True,
     )
 elif runtime.is_aws_lambda:
