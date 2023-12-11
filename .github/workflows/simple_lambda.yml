@@ -32,7 +32,7 @@ jobs:
     name: 🧪️ 🏗 Unit Test and Build Artifacts
     runs-on: ubuntu-latest
     env:
-      USER_ENV_NAME: sbx
+      USER_ENV_NAME: devops
     steps:
       - name: === 💾 PREPARATION ===
         run: echo "PREPARATION"

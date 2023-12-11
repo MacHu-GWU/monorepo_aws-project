@@ -6,11 +6,9 @@ Build artifacts related automation.
 
 # standard library
 import typing as T
-from pathlib import Path
 
 # third party library (include vendor)
-import aws_lambda_layer.api as aws_lambda_layer
-import aws_ops_alpha.api as aws_ops_alpha
+import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 
 # modules from this project
 from .config.init import config

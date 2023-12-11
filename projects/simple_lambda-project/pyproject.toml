@@ -17,7 +17,7 @@ aws_console_url = "1.4.1"
 botocore = "1.33.0"
 boto3 = "1.33.0"
 # advanced boto3 session manager
-boto_session_manager = "1.5.4"
+boto_session_manager = "1.6.1"
 # helper functions
 boltons = "21.0.0"
 # multi environment config management
@@ -115,7 +115,7 @@ pathlib_mate = "1.2.1"
 # AWS CodeCommit event parser, git utilities
 aws_codecommit = "1.4.1"
 # AWS devops best practice
-aws_ops_alpha = "0.0.5"
+#aws_ops_alpha = "0.0.5"
 # build AWS lambda layer and deployment package
 aws_lambda_layer = "0.5.1"
 # create AWS console url

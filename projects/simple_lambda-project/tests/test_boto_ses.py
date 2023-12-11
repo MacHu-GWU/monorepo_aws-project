@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from simple_lambda.config.define import EnvEnum
 from simple_lambda.boto_ses import boto_ses_factory
 
 
 def test():
-    _ = boto_ses_factory.get_devops_bsm().aws_account_id
-    _ = boto_ses_factory.get_app_bsm(EnvEnum.sbx).aws_account_id
-    _ = boto_ses_factory.get_app_bsm(EnvEnum.tst).aws_account_id
-    _ = boto_ses_factory.get_app_bsm(EnvEnum.prd).aws_account_id
+    _ = boto_ses_factory.bsm_devops.aws_account_alias
+    _ = boto_ses_factory.bsm_sbx.aws_account_alias
+    _ = boto_ses_factory.bsm_tst.aws_account_alias
+    _ = boto_ses_factory.bsm_prd.aws_account_alias
+    _ = boto_ses_factory.bsm_app.aws_account_alias
+
+    # print(f"{boto_ses_factory.bsm_devops.aws_account_alias = }")
+    # print(f"{boto_ses_factory.bsm_sbx.aws_account_alias = }")
+    # print(f"{boto_ses_factory.bsm_tst.aws_account_alias = }")
+    # print(f"{boto_ses_factory.bsm_prd.aws_account_alias = }")
+    # print(f"{boto_ses_factory.bsm_app.aws_account_alias = }")
 
 
 if __name__ == "__main__":

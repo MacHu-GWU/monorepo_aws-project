@@ -1,31 +1,26 @@
 # -*- coding: utf-8 -*-
 
-import typing as T
+"""
+Define the boto session creation setup for this project.
+"""
+
 import os
 import dataclasses
 from functools import cached_property
 
 from s3pathlib import context
 
-import aws_ops_alpha.api as aws_ops_alpha
+import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 
 from .env import EnvEnum
 from .runtime import runtime
 
-aws_ops_alpha_config = aws_ops_alpha.AwsOpsAlphaConfig(
-    env_aws_profile_mapper={
-        aws_ops_alpha.constants.DEVOPS: "bmt_app_devops_us_east_1",
-        EnvEnum.sbx.value: "bmt_app_dev_us_east_1",
-        EnvEnum.tst.value: "bmt_app_test_us_east_1",
-        # EnvEnum.stg.value: "bmt_app_test_us_east_1",
-        EnvEnum.prd.value: "bmt_app_prod_us_east_1",
-    }
-)
 
 @dataclasses.dataclass
-class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
-    def get_env_role_name(self, env_name: str) -> str:
-        return f"monorepo_aws-{env_name}-deployer-us-east-1"
+class BotoSesFactory(aws_ops_alpha.AlphaBotoSesFactory):
+    def get_env_role_arn(self, env_name: str) -> str:
+        aws_account_id = os.environ[f"{env_name.upper()}_AWS_ACCOUNT_ID"]
+        return f"arn:aws:iam::{aws_account_id}:role/monorepo_aws-{env_name}-deployer-us-east-1"
 
     @cached_property
     def bsm_sbx(self):
@@ -35,9 +30,9 @@ class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
     def bsm_tst(self):
         return self.get_env_bsm(env_name=EnvEnum.tst.value)
 
-    @cached_property
-    def bsm_stg(self):
-        return self.get_env_bsm(env_name=EnvEnum.stg.value)
+    # @cached_property
+    # def bsm_stg(self):
+    #     return self.get_env_bsm(env_name=EnvEnum.stg.value)
 
     @cached_property
     def bsm_prd(self):
@@ -54,15 +49,17 @@ class BotoSesFactory(aws_ops_alpha.BotoSesFactory):
 
 
 boto_ses_factory = BotoSesFactory(
-    config=aws_ops_alpha_config,
     runtime=runtime,
+    env_to_profile_mapper={
+        aws_ops_alpha.constants.DEVOPS: "bmt_app_devops_us_east_1",
+        EnvEnum.sbx.value: "bmt_app_dev_us_east_1",
+        EnvEnum.tst.value: "bmt_app_test_us_east_1",
+        # EnvEnum.stg.value: "bmt_app_test_us_east_1",
+        EnvEnum.prd.value: "bmt_app_prod_us_east_1",
+    },
+    default_app_env_name=EnvEnum.sbx.value,
 )
 bsm = boto_ses_factory.bsm
 
 # Set default s3pathlib boto session
 context.attach_boto_session(boto_ses=bsm.boto_ses)
-
-print(boto_ses_factory.bsm_devops.aws_account_id[:4])
-print(boto_ses_factory.bsm_sbx.aws_account_id[:4])
-print(boto_ses_factory.bsm_tst.aws_account_id[:4])
-print(boto_ses_factory.bsm_prd.aws_account_id[:4])

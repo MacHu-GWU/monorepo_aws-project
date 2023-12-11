@@ -2,7 +2,9 @@
 
 import os
 import json
+
 from config_patterns.jsonutils import json_loads
+import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 
 from .._api import (
     paths,
@@ -53,10 +55,14 @@ elif runtime.is_ci:
     # read config from parameter store
     # we consider the value in parameter store is the ground truth for production
     env_name = detect_current_env()
+    if env_name == aws_ops_alpha.DEVOPS:
+        bsm = boto_ses_factory.bsm_devops
+    else:
+        bsm = boto_ses_factory.get_env_bsm(env_name)
     config = Config.read(
         env_class=Env,
         env_enum_class=EnvEnum,
-        bsm=boto_ses_factory.get_env_bsm(env_name),
+        bsm=bsm,
         parameter_name=config.parameter_name,
         parameter_with_encryption=True,
     )
