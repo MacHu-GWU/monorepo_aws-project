@@ -3,7 +3,6 @@
         "*.project_name": "simple_lambda",
         "*.s3bucket_docs": "bmt-app-devops-us-east-1-doc-host",
         "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/simple_lambda/",
-        "*.s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_lambda/",
         // please read the :class:`simple_lambda.config.define.lbd_func.LambdaFunction` class for more details
         "*.lambda_functions.*.layers": [
             "arn:aws:lambda:us-east-1:862612136886:layer:simple_lambda:8"
@@ -23,6 +22,7 @@
     },
     "sbx": {
         "username": "sbx.user",
+        "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_lambda/",
         "lambda_functions": {
             "hello": {
 //                "live_version1": "1"
@@ -32,6 +32,7 @@
     },
     "tst": {
         "username": "tst.user",
+        "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/simple_lambda/",
         "lambda_functions": {
             "hello": {},
             "s3sync": {}
@@ -39,6 +40,7 @@
     },
     "prd": {
         "username": "prd.user",
+        "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_lambda/",
         "lambda_functions": {
             "hello": {},
             "s3sync": {}
