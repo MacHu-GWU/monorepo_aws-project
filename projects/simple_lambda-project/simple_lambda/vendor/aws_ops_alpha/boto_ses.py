@@ -187,13 +187,20 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         elif self.runtime.is_ci or self.runtime.is_aws_cloud9:
             bsm_devops = self.get_devops_bsm()
             role_arn = self.get_env_role_arn(env_name)
-            print(bsm_devops.principal_arn)
-            print(role_arn)
+            # ------------------------------------------------------------------
             # usually, the default boto session should be the devops bsm
             # but in CDK deploy shell script, we manually set the default
             # boto session as the workload bsm, in other words, the bsm_devops
             # is already the workload bsm. We need special handling here.
-            if bsm_devops.principal_arn.startswith(role_arn):
+            # ------------------------------------------------------------------
+            # bsm_devops.principal_arn could be either
+            # arn:aws:iam::***:role/devops_role_name
+            # arn:aws:sts::***:assumed-role/workload_role_name/session_name
+            bsm_devops_role_name = bsm_devops.principal_arn.split("/", 1)[1]
+            # role_arn should be
+            # arn:aws:iam::***:role/workload_role_name
+            bsm_workload_role_name = role_arn.split("/")[1]
+            if bsm_devops_role_name.startswith(bsm_workload_role_name):
                 return bsm_devops
 
             if role_session_name is None:
