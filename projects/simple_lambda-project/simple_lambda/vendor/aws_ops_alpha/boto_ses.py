@@ -187,7 +187,8 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         elif self.runtime.is_ci or self.runtime.is_aws_cloud9:
             bsm_devops = self.get_devops_bsm()
             role_arn = self.get_env_role_arn(env_name)
-
+            print(bsm_devops.principal_arn)
+            print(role_arn)
             # usually, the default boto session should be the devops bsm
             # but in CDK deploy shell script, we manually set the default
             # boto session as the workload bsm, in other words, the bsm_devops
