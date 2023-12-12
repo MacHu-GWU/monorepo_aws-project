@@ -45,6 +45,7 @@ In ``aws_ops_alpha`` best practice, we have five environments:
     rollbacks to any previous state, ensuring continuity and minimal disruption in service.
 """
 
+import typing as T
 import os
 
 import config_patterns.api as config_patterns
@@ -54,12 +55,33 @@ from .constants import DEVOPS, SBX, TST, STG, PRD, USER_ENV_NAME
 from .runtime import Runtime
 
 
-class EnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
+class BaseWorkloadEnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
     """
-    Environment name enumeration.
+    Base env enum for workload environments.
+
+    You have to subclass this class to define your own workload environments.
+    There are some restriction:
+
+    1. you cannot have "devops" environment, it is not workload environment.
+    2. you have to have at least a "sbx" environment and a "prd" environment.
     """
 
-    devops = DEVOPS
+    @classmethod
+    def validate(cls):
+        if cls.is_valid_value(DEVOPS):
+            raise ValueError(f"{DEVOPS!r} is not a valid workload environment")
+        if cls.is_valid_value(SBX) is False or cls.is_valid_value(PRD) is False:
+            raise ValueError(
+                f"you have to have at least a {SBX!r} environment "
+                f"and a {PRD!r} environment"
+            )
+
+
+class EnvEnum(BaseWorkloadEnvEnum):
+    """
+    Base env enum for workload environments.
+    """
+
     sbx = SBX
     tst = TST
     stg = STG
@@ -74,7 +96,6 @@ class EnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
 
 
 env_emoji_mapper = {
-    EnvEnum.devops.value: Emoji.devops,
     EnvEnum.sbx.value: Emoji.sbx,
     EnvEnum.tst.value: Emoji.tst,
     EnvEnum.stg.value: Emoji.stg,
@@ -82,7 +103,10 @@ env_emoji_mapper = {
 }
 
 
-def detect_current_env(runtime: Runtime) -> str:  # pragma: no cover
+def detect_current_env(
+    runtime: Runtime,
+    env_enum: T.Union[BaseWorkloadEnvEnum, T.Type[BaseWorkloadEnvEnum]],
+) -> str:  # pragma: no cover
     """
     Smartly detect the current environment name.
 
@@ -92,15 +116,40 @@ def detect_current_env(runtime: Runtime) -> str:  # pragma: no cover
     If it is a CI runtime or the application runtime, it uses the value
     of environment variable ``USER_ENV_NAME``.
     """
+    # ----------------------------------------------------------------------
+    # you can uncomment this line to force to use certain env
+    # from your local laptop to run application code, tests, ...
+    # ----------------------------------------------------------------------
+    # return EnvEnum.sbx.value
+
+    # ----------------------------------------------------------------------
+    # Validate the implementation of the enum.
+    # ----------------------------------------------------------------------
+    env_enum.validate()
+
+    # ----------------------------------------------------------------------
+    # For local laptop, by default we use sbx environment
+    # But you can use the "USER_ENV_NAME" environment variable to override it
+    # ----------------------------------------------------------------------
     if runtime.is_local:
         if USER_ENV_NAME in os.environ:
             return os.environ[USER_ENV_NAME]
-        return EnvEnum.sbx.value
+        return env_enum.sbx.value
+    # ----------------------------------------------------------------------
+    # For ci runtime, the job runtime should use the  "USER_ENV_NAME"
+    # environment variable to identify the env name. If it is "devops"
+    # we skip the env name validation
+    # ----------------------------------------------------------------------
     elif runtime.is_ci:
         env_name = os.environ[USER_ENV_NAME]
-        EnvEnum.ensure_is_valid_value(env_name)
+        if env_name != DEVOPS:
+            env_enum.ensure_is_valid_value(env_name)
         return env_name
+    # ----------------------------------------------------------------------
+    # For app runtime, it should use the  "USER_ENV_NAME" environment variable
+    # to identify the env name. It should NEVER be "devops"
+    # ----------------------------------------------------------------------
     else:
         env_name = os.environ[USER_ENV_NAME]
-        EnvEnum.ensure_is_valid_value(env_name)
+        env_enum.ensure_is_valid_value(env_name)
         return env_name
