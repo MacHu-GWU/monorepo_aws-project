@@ -11,7 +11,6 @@ from aws_cdk import (
 )
 
 import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
-from ..._version import __version__
 from ...paths import (
     dir_lambda_deploy,
     path_source_zip,

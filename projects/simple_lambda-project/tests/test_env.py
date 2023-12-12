@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from simple_lambda.env import EnvEnum, detect_current_env
+from simple_lambda.env import EnvNameEnum, detect_current_env
 
 
 def test():

@@ -2,7 +2,7 @@
 
 import moto
 from simple_lambda.logger import logger
-from simple_lambda.config.init import config
+from simple_lambda.config.load import config
 from simple_lambda.lbd.s3sync import low_level_api
 from simple_lambda.tests.mock import BaseMockTest
 

@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from simple_lambda.config.load import config
-from simple_lambda.config.define.api import Env
 
 
 def test():
     # main.py
     _ = config
-    from rich import print as rprint
-    rprint(config)
+    # from rich import print as rprint
+    # rprint(config)
     _ = config.env
 
     # app.py
