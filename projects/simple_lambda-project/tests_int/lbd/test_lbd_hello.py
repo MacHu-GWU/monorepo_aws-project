@@ -7,7 +7,7 @@ import base64
 
 import aws_console_url.api as aws_console_url
 
-from simple_lambda.config.init import config
+from simple_lambda.config.load import config
 from simple_lambda.boto_ses import bsm
 from simple_lambda.logger import logger
 
@@ -32,7 +32,6 @@ def _test():
 
     log = base64.b64decode(response["LogResult"].encode("utf-8")).decode("utf-8")
     result: dict = json.loads(response["Payload"].read().decode("utf-8"))
-
     assert result["message"] == "hello bob"
 
     # test case 2

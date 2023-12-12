@@ -141,24 +141,6 @@ publication = ">=0.0.3"
 typeguard = ">=2.13.3,<2.14.0"
 
 [[package]]
-name = "aws-codecommit"
-version = "1.4.1"
-description = "empower AWS CodeCommit"
-optional = false
-python-versions = "*"
-files = [
-    {file = "aws_codecommit-1.4.1-py2.py3-none-any.whl", hash = "sha256:bbb7e1f97aa457e9ffaf07bea34a54a437339e18e545a7862ca012dbe0ef598e"},
-    {file = "aws_codecommit-1.4.1.tar.gz", hash = "sha256:eed24e8f2ff8dfffe67ef3b164a9431ebafddc4935641a527549d03ea714a7e4"},
-]
-
-[package.dependencies]
-boto-session-manager = ">=1.3.1"
-
-[package.extras]
-docs = ["docfly (==1.0.2)", "furo (==2021.8.31)", "rstobj (==0.0.7)", "sphinx (==4.3.0)", "sphinx-copybutton (==0.4.0)", "sphinx-inline-tabs (==2021.8.17b10)"]
-tests = ["pytest", "pytest-cov", "pytest-mock"]
-
-[[package]]
 name = "aws-console-url"
 version = "1.4.1"
 description = "Build AWS Console Url for debugging."
@@ -2355,21 +2337,6 @@ lint = ["docutils-stubs", "flake8", "mypy"]
 test = ["pytest"]
 
 [[package]]
-name = "superjson"
-version = "1.0.2"
-description = "Extendable json encode/decode library."
-optional = false
-python-versions = "*"
-files = [
-    {file = "superjson-1.0.2-py2.py3-none-any.whl", hash = "sha256:5b93fb43a89187a8ce777c7ffbdaadcb6ecda16bf024e3518248642e5875d940"},
-    {file = "superjson-1.0.2.tar.gz", hash = "sha256:24cfe20d419ec4e6be4487831eec9d762a9fb3b7b4a5a1c32a31a14f99996e26"},
-]
-
-[package.extras]
-docs = ["Pygments (==2.9.0)", "docfly (==0.0.18)", "furo (==2021.6.18b36)", "rstobj (==0.0.7)", "sphinx (==3.5.4)", "sphinx-copybutton (==0.2.5)", "sphinx-inline-tabs (==2021.3.28b7)", "sphinx-jinja (==1.1.0)"]
-tests = ["pytest", "pytest-cov", "python-dateutil"]
-
-[[package]]
 name = "termcolor"
 version = "2.4.0"
 description = "ANSI color formatting for output in terminal"
@@ -2676,4 +2643,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "8f1d28118c479238e44045927a2c332003d57168cfe720c7d8153b5781c458cd"
+content-hash = "b69fc662048d761ba177bc8c5f508dd0ca78de66899985f318fe90d6410ba9f2"

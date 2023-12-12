@@ -5,7 +5,7 @@ import pytest
 
 from simple_lambda.boto_ses import bsm
 from simple_lambda.iac.exports import StackExports
-from simple_lambda.config.init import config
+from simple_lambda.config.load import config
 
 
 class TestStackExports:

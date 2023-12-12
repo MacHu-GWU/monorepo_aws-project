@@ -9,6 +9,9 @@ aws-console-url==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10
 aws-lambda-event==2.0.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:30f2da7d03f4bb70ffab9f33082864bb9e833f0693a350066c83008eea2573a6 \
     --hash=sha256:3a72c88cd975e5d8a25ea0540f477aedf4f60a652f6fafe2831008aa19628a40
+aws-lambda-layer==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:04f93c57827948744b49e485931de13260e5855aeac57c74c3ef40e48bdd922f \
+    --hash=sha256:7a37f89b3a3b1a353bc419e5a9877d563f2885cc4e6bf8ef6eab500e1cdffed0
 boltons==21.0.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:65e70a79a731a7fe6e98592ecfb5ccf2115873d01dbc576079874629e5c90f13 \
     --hash=sha256:b9bb7b58b2b420bbe11a6025fdef6d3e5edc9f76a42fb467afe7ca212ef9948b
@@ -24,6 +27,8 @@ botocore==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0"
 config-patterns==1.0.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:4d7b3071c23f77efae4e554f6c58c582502839367e835aff7e2115ed22bab2cc \
     --hash=sha256:ef45e70b475fd69b4b45f6770efa5d50eaa2c52f62b53988d75c9c518fce19b5
+fire==0.5.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:a6b0d49e98c8963910021f92bba66f65ab440da2982b78eb1bbf95a0a34aacc6
 func-args==0.1.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:4815248811505c6bb75fbc03059448323a4b7e58fa6fa17b525c1dae75a7565b \
     --hash=sha256:8640ffee0ae20dafa775bd012ced8b20835200bdb0e5847b9ef004acbf553993
@@ -36,6 +41,9 @@ jmespath==1.0.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" 
 pathlib-mate==1.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:0cd0a8b742941efdc5a3b3c46e75da6430c3f869fe6a5fb490025c0bc39a5c2d \
     --hash=sha256:6ef576ccefac39a8a1bb4b7d93fcd50f73113a34ddd01cc46ca149b947f7dc0e
+pyproject-ops==0.6.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:a7c52ddaa432cc0c69e08e47d20d30d29ccbfd8dc9e5d8cfcf8bb2ecec96afb8 \
+    --hash=sha256:ee58047aa353cd560f1481db40a7590be478e8d4ed6941bac76e09b23523cb99
 pysecret==2.2.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:7880d933f5647032a21113b79ab83ed0718e852a4f50a41999128a4a55377e16 \
     --hash=sha256:abd780868a39388897ac4b6cd59973b586bc8f18771154168925d268466dea29
@@ -54,9 +62,9 @@ six==1.16.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
 smart-open==6.2.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:088bf00f9327c71e549bc2f86567d3320df5d89667f009ce1c16568976068ef7 \
     --hash=sha256:1b4df5c8365218f3852c507451920ccad606c80b0acb4e67508e50ba9b5d2632
-superjson==1.0.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:24cfe20d419ec4e6be4487831eec9d762a9fb3b7b4a5a1c32a31a14f99996e26 \
-    --hash=sha256:5b93fb43a89187a8ce777c7ffbdaadcb6ecda16bf024e3518248642e5875d940
+termcolor==2.4.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:9297c0df9c99445c2412e832e882a7884038a25617c60cea2ad69488d4040d63 \
+    --hash=sha256:aab9e56047c8ac41ed798fa36d892a37aca6b3e9159f3e0c24bc64a9b3ac7b7a
 typing-extensions==4.9.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783 \
     --hash=sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd

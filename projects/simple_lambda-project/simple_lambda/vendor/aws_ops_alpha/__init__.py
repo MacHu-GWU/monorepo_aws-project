@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
 """
-Package Description.
+A devops best practices for AWS projects. Designed for production-ready,
+multi-environments deployment projects.
 """
 
 from ._version import __version__
 
-__short_description__ = "Package short description."
+__short_description__ = (
+    "A devops best practices for AWS projects. "
+    "Designed for production-ready, multi-environments deployment projects"
+)
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
 __author_email__ = "husanhe@gmail.com"

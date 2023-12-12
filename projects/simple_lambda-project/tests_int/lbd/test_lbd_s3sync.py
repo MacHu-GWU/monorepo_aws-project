@@ -5,7 +5,7 @@ import os
 import time
 import uuid
 
-from simple_lambda.config.init import config
+from simple_lambda.config.load import config
 from simple_lambda.logger import logger
 
 

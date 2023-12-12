@@ -13,22 +13,30 @@ from boto_session_manager import BotoSesManager
 
 from .constants import DEVOPS, SBX
 from .runtime import Runtime, runtime
-from .env_var import (
-    get_workload_aws_account_id_in_ci,
-)
 
 
 @dataclasses.dataclass
 class AbstractBotoSesFactory(abc.ABC):
     """
-    Manages creation of boto session manager (bsm) for
-    multi-aws-account, multi-environment deployment. For all bsm object,
-    it provides a factory method to create a new instance of the bsm object,
-    and a cached_property to get the singleton object to reduce
-    authentication overhead.
+    Manages the creation of the
+    `boto session manager (bsm) <https://pypi.org/project/boto-session-manager/>`_
+    for multi-AWS-account, multi-environment deployment.
 
-    The instance of this class is the central place to access different boto session
-    for different environments' AWS account.
+    For all bsm objects, it provides a factory method to create a new instance of the bsm object,
+    and a cached_property to obtain the singleton object, reducing authentication overhead.
+
+    An instance of this class serves as the central point for accessing
+    different Boto sessions for AWS accounts in various environments.
+
+    Note that THIS CLASS IS AN ABSTRACT CLASS, you should inherit from it and implement
+    the following abstract methods before using it:
+
+    - :meth:`AbstractBotoSesFactory.get_devops_bsm`
+    - :meth:`AbstractBotoSesFactory.get_env_bsm`
+    - :meth:`AbstractBotoSesFactory.get_app_bsm`
+    - :meth:`AbstractBotoSesFactory.bsm_devops`
+    - :meth:`AbstractBotoSesFactory.bsm_app`
+    - :meth:`AbstractBotoSesFactory.bsm`
     """
 
     @abc.abstractmethod
