@@ -7,7 +7,7 @@ Export the internal API for submodules to use.
 from . import paths
 from .runtime import runtime
 from .git import git_repo
-from .env import EnvEnum
+from .env import EnvNameEnum
 from .env import detect_current_env
 from .boto_ses import boto_ses_factory
 from .boto_ses import bsm

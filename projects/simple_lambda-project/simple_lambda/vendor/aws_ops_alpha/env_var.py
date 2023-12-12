@@ -23,7 +23,7 @@ import typing as T
 import os
 import contextlib
 
-from .constants import DEVOPS
+from .constants import CommonEnvNameEnum
 
 
 def get_devops_aws_account_id_in_ci() -> str:
@@ -31,7 +31,7 @@ def get_devops_aws_account_id_in_ci() -> str:
     Get devops AWS account ID in CI runtime. We assume that your store
     them in environment variables like ``DEVOPS_AWS_ACCOUNT_ID``.
     """
-    return os.environ[f"{DEVOPS.upper()}_AWS_ACCOUNT_ID"]
+    return os.environ[f"{CommonEnvNameEnum.devops.value.upper()}_AWS_ACCOUNT_ID"]
 
 
 def get_workload_aws_account_id_in_ci(env_name: str) -> str:

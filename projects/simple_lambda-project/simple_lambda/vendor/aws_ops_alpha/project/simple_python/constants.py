@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import enum
+from ...vendor.better_enum import BetterStrEnum
 
 
-class StepEnum(str, enum.Enum):
+class StepEnum(BetterStrEnum):
     CREATE_VIRTUALENV = "CREATE_VIRTUALENV"
     INSTALL_DEPENDENCIES = "INSTALL_DEPENDENCIES"
     BUILD_SOURCE_CODE = "BUILD_SOURCE_CODE"
@@ -12,7 +12,7 @@ class StepEnum(str, enum.Enum):
     PUBLISH_PYPI_VERSION = "PUBLISH_PYPI_VERSION"
 
 
-class GitBranchNameEnum(str, enum.Enum):
+class GitBranchNameEnum(BetterStrEnum):
     main = "main"
     feature = "feature"
     fix = "fix"
@@ -21,12 +21,12 @@ class GitBranchNameEnum(str, enum.Enum):
     release = "release"
 
 
-class EnvNameEnum(str, enum.Enum):
+class EnvNameEnum(BetterStrEnum):
     devops = "devops"
     sbx = "sbx"
 
 
-class RuntimeNameEnum(str, enum.Enum):
+class RuntimeNameEnum(BetterStrEnum):
     local = "local"
     ci = "ci"
 

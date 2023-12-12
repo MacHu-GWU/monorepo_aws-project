@@ -9,17 +9,17 @@ import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 from .runtime import runtime
 
 
-class EnvEnum(aws_ops_alpha.BaseWorkloadEnvEnum):
+class EnvNameEnum(aws_ops_alpha.BaseEnvNameEnum):
     """
-    Workload environment enumeration. Don't put devops environment name here.
+    Environment enumeration. It has to have at least a devops, sbx and a prd
+    environment.
     """
 
-    sbx = aws_ops_alpha.SBX
-    tst = aws_ops_alpha.TST
-    prd = aws_ops_alpha.PRD
-
-
-USER_ENV_NAME = aws_ops_alpha.USER_ENV_NAME
+    devops = aws_ops_alpha.CommonEnvNameEnum.devops.value
+    sbx = aws_ops_alpha.CommonEnvNameEnum.sbx.value
+    tst = aws_ops_alpha.CommonEnvNameEnum.tst.value
+    # stg = aws_ops_alpha.CommonEnvNameEnum.stg.value
+    prd = aws_ops_alpha.CommonEnvNameEnum.prd.value
 
 
 def detect_current_env() -> str:
@@ -27,5 +27,5 @@ def detect_current_env() -> str:
     # you can uncomment this line to force to use certain env
     # from your local laptop to run application code, tests, ...
     # ----------------------------------------------------------------------
-    # return EnvEnum.sbx.value
-    return aws_ops_alpha.detect_current_env(runtime, EnvEnum)
+    # return EnvNameEnum.sbx.value
+    return aws_ops_alpha.detect_current_env(runtime, EnvNameEnum)

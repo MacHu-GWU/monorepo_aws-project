@@ -7,6 +7,8 @@ from simple_lambda.config.define.api import Env
 def test():
     # main.py
     _ = config
+    from rich import print as rprint
+    rprint(config)
     _ = config.env
 
     # app.py
@@ -19,7 +21,6 @@ def test():
     _ = config.env.s3dir_source
     _ = config.env.s3dir_target
     _ = config.env.env_vars
-    print(config.env.env_vars)
     _ = config.env.devops_aws_tags
     _ = config.env.workload_aws_tags
 

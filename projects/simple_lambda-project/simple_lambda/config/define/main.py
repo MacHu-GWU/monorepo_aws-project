@@ -5,7 +5,7 @@ from functools import cached_property
 
 import config_patterns.api as config_patterns
 import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
-from ..._api import runtime, EnvEnum, detect_current_env
+from ..._api import EnvNameEnum, detect_current_env
 
 # You may have a long list of config field definition
 # put them in different module and use Mixin class
@@ -47,15 +47,15 @@ class Config(aws_ops_alpha.Config):
 
     @cached_property
     def sbx(self) -> Env:  # pragma: no cover
-        return self.get_env(env_name=EnvEnum.sbx)
+        return self.get_env(env_name=EnvNameEnum.sbx)
 
     @cached_property
     def tst(self) -> Env:  # pragma: no cover
-        return self.get_env(env_name=EnvEnum.tst)
+        return self.get_env(env_name=EnvNameEnum.tst)
 
     @cached_property
     def prd(self) -> Env:  # pragma: no cover
-        return self.get_env(env_name=EnvEnum.prd)
+        return self.get_env(env_name=EnvNameEnum.prd)
 
     @cached_property
     def env(self) -> Env:

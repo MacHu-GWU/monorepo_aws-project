@@ -5,7 +5,7 @@ import dataclasses
 
 from s3pathlib import S3Path
 
-from ...constants import DEVOPS
+from ...constants import CommonEnvNameEnum
 
 if T.TYPE_CHECKING:  # pragma: no cover
     from .main import Env
@@ -34,7 +34,6 @@ class AppMixin:
             "PARAMETER_NAME": self.parameter_name,
             "PROJECT_NAME": self.project_name,
             "ENV_NAME": self.env_name,
-            # "PACKAGE_VERSION": __version__,
         }
 
     @property
@@ -44,7 +43,7 @@ class AppMixin:
         """
         return {
             "tech:project_name": self.project_name,
-            "tech:env_name": DEVOPS,
+            "tech:env_name": CommonEnvNameEnum.devops.value,
         }
 
     @property

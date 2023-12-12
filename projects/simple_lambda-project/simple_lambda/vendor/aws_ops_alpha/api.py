@@ -13,12 +13,8 @@ Usage example:
 """
 
 from . import constants
-from .constants import DEVOPS
-from .constants import SBX
-from .constants import TST
-from .constants import STG
-from .constants import PRD
-from .constants import USER_ENV_NAME
+from .constants import CommonEnvNameEnum
+from .constants import EnvVarNameEnum
 from .constants import AwsOpsSemanticBranchEnum
 from .runtime import Runtime
 from .runtime import RunTimeEnum
@@ -26,8 +22,8 @@ from .runtime import runtime
 from .env_var import get_devops_aws_account_id_in_ci
 from .env_var import get_workload_aws_account_id_in_ci
 from .env_var import temp_env_var
-from .environment import BaseWorkloadEnvEnum
-from .environment import EnvEnum
+from .environment import BaseEnvNameEnum
+from .environment import EnvNameEnum
 from .environment import detect_current_env
 from .git import InvalidSemanticNameError
 from .git import SemanticBranchRule

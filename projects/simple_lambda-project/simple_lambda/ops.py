@@ -16,7 +16,7 @@ from ._api import (
     paths,
     runtime,
     git_repo,
-    EnvEnum,
+    EnvNameEnum,
     detect_current_env,
     boto_ses_factory,
     bsm,

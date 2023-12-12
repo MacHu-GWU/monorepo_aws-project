@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import enum
+from ...vendor.better_enum import BetterStrEnum
 
 
-class StepEnum(str, enum.Enum):
+class StepEnum(BetterStrEnum):
     CREATE_VIRTUALENV = "CREATE_VIRTUALENV"
     INSTALL_DEPENDENCIES = "INSTALL_DEPENDENCIES"
     BUILD_LAMBDA_SOURCE_LOCALLY = "BUILD_LAMBDA_SOURCE_LOCALLY"
@@ -21,7 +21,7 @@ class StepEnum(str, enum.Enum):
     DELETE_LAMBDA_APP_IN_PRD = "DELETE_LAMBDA_APP_IN_PRD"
 
 
-class GitBranchNameEnum(str, enum.Enum):
+class GitBranchNameEnum(BetterStrEnum):
     main = "main"
     feature = "feature"
     fix = "fix"
@@ -32,7 +32,7 @@ class GitBranchNameEnum(str, enum.Enum):
     cleanup = "cleanup"
 
 
-class EnvNameEnum(str, enum.Enum):
+class EnvNameEnum(BetterStrEnum):
     devops = "devops"
     sbx = "sbx"
     tst = "tst"
@@ -40,7 +40,6 @@ class EnvNameEnum(str, enum.Enum):
     prd = "prd"
 
 
-class RuntimeNameEnum(str, enum.Enum):
+class RuntimeNameEnum(BetterStrEnum):
     local = "local"
     ci = "ci"
-

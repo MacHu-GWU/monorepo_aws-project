@@ -11,7 +11,7 @@ from functools import cached_property
 
 from boto_session_manager import BotoSesManager
 
-from .constants import DEVOPS, SBX
+from .constants import CommonEnvNameEnum
 from .runtime import Runtime, runtime
 
 
@@ -37,6 +37,18 @@ class AbstractBotoSesFactory(abc.ABC):
     - :meth:`AbstractBotoSesFactory.bsm_devops`
     - :meth:`AbstractBotoSesFactory.bsm_app`
     - :meth:`AbstractBotoSesFactory.bsm`
+
+    Sample usage:
+
+        >>> import dataclasses
+        >>> from boto_session_manager import BotoSesManager
+        >>> @dataclasses.dataclass
+        ... class MyBotoSesFactory(AbstractBotoSesFactory):
+        ...     def get_devops_bsm(self) -> BotoSesManager:
+        ...         return BotoSesManager(profile_name="my_devops_profile")
+        >>> boto_ses_factory = MyBotoSesFactory()
+        >>> boto_ses_factory.bsm_devops.sts_client.get_caller_identity()
+        {'UserId': '...', 'Account': '123456789012', 'Arn': '...'}
     """
 
     @abc.abstractmethod
@@ -67,7 +79,6 @@ class AbstractBotoSesFactory(abc.ABC):
         """
         raise NotImplementedError
 
-    @abc.abstractmethod
     @cached_property
     def bsm_devops(self) -> "BotoSesManager":
         """
@@ -75,7 +86,6 @@ class AbstractBotoSesFactory(abc.ABC):
         """
         return self.get_devops_bsm()
 
-    @abc.abstractmethod
     @cached_property
     def bsm_app(self) -> "BotoSesManager":
         """
@@ -90,7 +100,7 @@ class AbstractBotoSesFactory(abc.ABC):
         The shortcut to access the most commonly used boto session manager.
         Usually, it is for the application code.
         """
-        return self.bsm_app
+        raise NotImplementedError
 
 
 @dataclasses.dataclass
@@ -126,7 +136,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
     runtime: "Runtime" = dataclasses.field()
     env_to_profile_mapper: T.Dict[str, str] = dataclasses.field(default_factory=dict)
     aws_region: T.Optional[str] = dataclasses.field(default=None)
-    default_app_env_name: str = dataclasses.field(default=SBX)
+    default_app_env_name: str = dataclasses.field(default=CommonEnvNameEnum.sbx.value)
 
     @abc.abstractmethod
     def get_env_role_arn(self, env_name: str) -> str:
@@ -153,7 +163,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         Get the boto session manager for devops AWS account.
         """
         if self.runtime.is_local:
-            kwargs = dict(profile_name=self.env_to_profile_mapper[DEVOPS])
+            kwargs = dict(profile_name=self.env_to_profile_mapper[CommonEnvNameEnum.devops.value])
             if self.aws_region:
                 kwargs["region_name"] = self.aws_region
             return BotoSesManager(**kwargs)
@@ -239,20 +249,6 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
             return self.get_env_bsm(env_name=self.default_app_env_name)
         else:
             return BotoSesManager()
-
-    @cached_property
-    def bsm_devops(self) -> "BotoSesManager":
-        """
-        cached property of the :meth:`AlphaBotoSesFactory.get_devops_bsm`.
-        """
-        return self.get_devops_bsm()
-
-    @cached_property
-    def bsm_app(self) -> "BotoSesManager":
-        """
-        cached property of the :meth:`AlphaBotoSesFactory.get_app_bsm`.
-        """
-        return self.get_app_bsm()
 
     @cached_property
     def bsm(self) -> "BotoSesManager":

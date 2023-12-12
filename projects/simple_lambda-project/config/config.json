@@ -1,9 +1,24 @@
 {
     "_shared": {
+        // ---------------------------------------------------------------------
+        // shared by all environments
+        // ---------------------------------------------------------------------
         "*.project_name": "simple_lambda",
         "*.s3bucket_docs": "bmt-app-devops-us-east-1-doc-host",
         "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/simple_lambda/",
-        // please read the :class:`simple_lambda.config.define.lbd_func.LambdaFunction` class for more details
+        // ---------------------------------------------------------------------
+        // Application related
+        //
+        // please read the :class:`simple_lambda.config.define.lbd_func.LambdaFunction`
+        // class to understand the config data model
+        //
+        // note that if a json node been set by two expression multiple times,
+        // the first one will be used
+        // ---------------------------------------------------------------------
+        "*.lambda_functions": {
+            "hello": {},
+            "s3sync": {}
+        },
         "*.lambda_functions.*.layers": [
             "arn:aws:lambda:us-east-1:862612136886:layer:simple_lambda:8"
         ],
@@ -19,6 +34,8 @@
         "*.lambda_functions.*.live_version2_percentage": null,
         "*.lambda_functions.hello.handler": "hello_handler",
         "*.lambda_functions.s3sync.handler": "s3sync_handler"
+    },
+    "devops": {
     },
     "sbx": {
         "username": "sbx.user",

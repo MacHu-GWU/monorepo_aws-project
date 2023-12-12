@@ -11,9 +11,9 @@ from pathlib import Path
 from config_patterns.api import multi_env_json
 from ..vendor.jsonutils import json_loads
 
-from ..constants import DEVOPS
+from ..constants import CommonEnvNameEnum
 from ..runtime import Runtime
-from ..environment import BaseWorkloadEnvEnum, detect_current_env
+from ..environment import BaseEnvNameEnum, detect_current_env
 from ..boto_ses import AbstractBotoSesFactory
 
 
@@ -21,8 +21,7 @@ T_CONFIG = T.TypeVar("T_CONFIG", bound=multi_env_json.BaseConfig)
 
 def load_config(
     runtime: Runtime,
-    env_enum: T.Union[BaseWorkloadEnvEnum, T.Type[BaseWorkloadEnvEnum]],
-    # config_class: T.Type[multi_env_json.BaseConfig],
+    env_name_enum_class: T.Union[BaseEnvNameEnum, T.Type[BaseEnvNameEnum]],
     config_class: T.Type[T_CONFIG],
     env_class: T.Type[multi_env_json.BaseEnv],
     path_config_json: T.Optional[Path] = None,
@@ -54,7 +53,7 @@ def load_config(
             initial_config_secret_data = {
                 "_shared": {},
             }
-            for env_name in env_enum:
+            for env_name in env_name_enum_class:
                 initial_config_secret_data[env_name] = {
                     "_comment": "make sure secret config match your config object definition"
                 }
@@ -64,7 +63,7 @@ def load_config(
         # read non-sensitive config and sensitive config from local file system
         return config_class.read(
             env_class=env_class,
-            env_enum_class=env_enum,
+            env_enum_class=env_name_enum_class,
             path_config=f"{path_config_json}",
             path_secret_config=f"{path_config_secret_json}",
         )
@@ -75,12 +74,12 @@ def load_config(
             data=json_loads(path_config_json.read_text()),
             secret_data=dict(),
             Env=env_class,
-            EnvEnum=env_enum,
+            EnvEnum=env_name_enum_class,
             version="not-applicable",
         )
         # read config from parameter store
-        env_name = detect_current_env(runtime, env_enum)
-        if env_name == DEVOPS:
+        env_name = detect_current_env(runtime, env_name_enum_class)
+        if env_name == CommonEnvNameEnum.devops.value:
             bsm = boto_ses_factory.bsm_devops
             parameter_name = config.parameter_name
         else:
@@ -88,7 +87,7 @@ def load_config(
             parameter_name = config.env.parameter_name
         return config_class.read(
             env_class=env_class,
-            env_enum_class=env_enum,
+            env_enum_class=env_name_enum_class,
             bsm=bsm,
             parameter_name=parameter_name,
             parameter_with_encryption=True,
@@ -100,7 +99,7 @@ def load_config(
         # read config from parameter store
         return config_class.read(
             env_class=env_class,
-            env_enum_class=env_enum,
+            env_enum_class=env_name_enum_class,
             bsm=boto_ses_factory.bsm,
             parameter_name=parameter_name,
             parameter_with_encryption=True,

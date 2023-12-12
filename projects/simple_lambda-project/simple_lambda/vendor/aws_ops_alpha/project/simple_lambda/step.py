@@ -21,7 +21,7 @@ from ...vendor import semantic_branch as sem_branch
 # modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
-from ...environment import EnvEnum
+from ...environment import EnvNameEnum
 
 # modules from this submodule
 from .constants import StepEnum, GitBranchNameEnum
@@ -236,11 +236,11 @@ def delete_app(
 
     if check:
         _mapper = {
-            EnvEnum.devops.value: StepEnum.DELETE_LAMBDA_APP_IN_SBX.value,
-            EnvEnum.sbx.value: StepEnum.DELETE_LAMBDA_APP_IN_SBX.value,
-            EnvEnum.tst.value: StepEnum.DELETE_LAMBDA_APP_IN_TST.value,
-            EnvEnum.stg.value: StepEnum.DELETE_LAMBDA_APP_IN_STG.value,
-            EnvEnum.prd.value: StepEnum.DELETE_LAMBDA_APP_IN_PRD.value,
+            EnvNameEnum.devops.value: StepEnum.DELETE_LAMBDA_APP_IN_SBX.value,
+            EnvNameEnum.sbx.value: StepEnum.DELETE_LAMBDA_APP_IN_SBX.value,
+            EnvNameEnum.tst.value: StepEnum.DELETE_LAMBDA_APP_IN_TST.value,
+            EnvNameEnum.stg.value: StepEnum.DELETE_LAMBDA_APP_IN_STG.value,
+            EnvNameEnum.prd.value: StepEnum.DELETE_LAMBDA_APP_IN_PRD.value,
         }
 
         flag = rule_set.should_we_do_it(

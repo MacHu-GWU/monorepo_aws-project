@@ -10,7 +10,7 @@ from pathlib import Path
 
 from ..vendor.better_pathlib import temp_cwd
 
-from ..constants import USER_ENV_NAME
+from ..constants import EnvVarNameEnum
 from ..env_var import temp_env_var
 
 if T.TYPE_CHECKING:
@@ -27,7 +27,7 @@ def cdk_deploy(
     Run ``cdk deploy ...`` command.
     """
     with bsm_workload.awscli():
-        with temp_env_var({USER_ENV_NAME: env_name}):
+        with temp_env_var({EnvVarNameEnum.USER_ENV_NAME.value: env_name}):
             args = ["cdk", "deploy"]
             if skip_prompt is True:
                 args.extend(["--require-approval", "never"])
@@ -45,7 +45,7 @@ def cdk_destroy(
     Run ``cdk destroy ...`` command.
     """
     with bsm_workload.awscli():
-        with temp_env_var({USER_ENV_NAME: env_name}):
+        with temp_env_var({EnvVarNameEnum.USER_ENV_NAME.value: env_name}):
             args = ["cdk", "destroy"]
             if skip_prompt is True:
                 args.extend(["--force"])

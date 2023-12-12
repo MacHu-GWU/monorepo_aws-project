@@ -51,11 +51,11 @@ import os
 import config_patterns.api as config_patterns
 from .vendor.emoji import Emoji
 
-from .constants import DEVOPS, SBX, TST, STG, PRD, USER_ENV_NAME
+from .constants import CommonEnvNameEnum, EnvVarNameEnum
 from .runtime import Runtime
 
 
-class BaseWorkloadEnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
+class BaseEnvNameEnum(config_patterns.multi_env_json.BaseEnvEnum):
     """
     Base env enum for workload environments.
 
@@ -68,24 +68,52 @@ class BaseWorkloadEnvEnum(config_patterns.multi_env_json.BaseEnvEnum):
 
     @classmethod
     def validate(cls):
-        if cls.is_valid_value(DEVOPS):
-            raise ValueError(f"{DEVOPS!r} is not a valid workload environment")
-        if cls.is_valid_value(SBX) is False or cls.is_valid_value(PRD) is False:
+        if (
+            cls.is_valid_value(CommonEnvNameEnum.devops.value) is False
+            or cls.is_valid_value(CommonEnvNameEnum.sbx.value) is False
+            or cls.is_valid_value(CommonEnvNameEnum.prd.value) is False
+        ):
             raise ValueError(
-                f"you have to have at least a {SBX!r} environment "
-                f"and a {PRD!r} environment"
+                f"you have to define at least "
+                f"a {CommonEnvNameEnum.devops.value!r}, "
+                f"a {CommonEnvNameEnum.sbx.value!r}, "
+                f"and a {CommonEnvNameEnum.prd.value!r} environment,"
+                f"you only have {list(cls)}."
             )
 
+    @classmethod
+    def _get_devops(cls):
+        return cls.devops
 
-class EnvEnum(BaseWorkloadEnvEnum):
+    @classmethod
+    def _get_sbx(cls):
+        return cls.sbx
+
+    @classmethod
+    def _get_prd(cls):
+        return cls.prd
+
+
+env_emoji_mapper = {
+    CommonEnvNameEnum.devops.value: Emoji.devops,
+    CommonEnvNameEnum.sbx.value: Emoji.sbx,
+    CommonEnvNameEnum.dev.value: Emoji.dev,
+    CommonEnvNameEnum.tst.value: Emoji.tst,
+    CommonEnvNameEnum.stg.value: Emoji.stg,
+    CommonEnvNameEnum.prd.value: Emoji.prd,
+}
+
+
+class EnvNameEnum(BaseEnvNameEnum):
     """
     Base env enum for workload environments.
     """
 
-    sbx = SBX
-    tst = TST
-    stg = STG
-    prd = PRD
+    devops = CommonEnvNameEnum.devops.value
+    sbx = CommonEnvNameEnum.sbx.value
+    tst = CommonEnvNameEnum.tst.value
+    stg = CommonEnvNameEnum.stg.value
+    prd = CommonEnvNameEnum.prd.value
 
     @property
     def emoji(self) -> str:
@@ -95,17 +123,9 @@ class EnvEnum(BaseWorkloadEnvEnum):
         return env_emoji_mapper[self.value]
 
 
-env_emoji_mapper = {
-    EnvEnum.sbx.value: Emoji.sbx,
-    EnvEnum.tst.value: Emoji.tst,
-    EnvEnum.stg.value: Emoji.stg,
-    EnvEnum.prd.value: Emoji.prd,
-}
-
-
 def detect_current_env(
     runtime: Runtime,
-    env_enum: T.Union[BaseWorkloadEnvEnum, T.Type[BaseWorkloadEnvEnum]],
+    env_name_enum_class: T.Union[BaseEnvNameEnum, T.Type[BaseEnvNameEnum]],
 ) -> str:  # pragma: no cover
     """
     Smartly detect the current environment name.
@@ -115,41 +135,39 @@ def detect_current_env(
 
     If it is a CI runtime or the application runtime, it uses the value
     of environment variable ``USER_ENV_NAME``.
-    """
-    # ----------------------------------------------------------------------
-    # you can uncomment this line to force to use certain env
-    # from your local laptop to run application code, tests, ...
-    # ----------------------------------------------------------------------
-    # return EnvEnum.sbx.value
 
+    :param runtime: the :class:`aws_ops_alpha.runtime.Runtime` object, that
+        is the entry point of all kinds of runtime related variables, methods..
+    :param env_name_enum_class: a subclass of ``BaseEnvNameEnum``, note that
+        this is NOT a instance, it is the enum class
+    """
     # ----------------------------------------------------------------------
     # Validate the implementation of the enum.
     # ----------------------------------------------------------------------
-    env_enum.validate()
+    env_name_enum_class.validate()
 
     # ----------------------------------------------------------------------
     # For local laptop, by default we use sbx environment
     # But you can use the "USER_ENV_NAME" environment variable to override it
     # ----------------------------------------------------------------------
     if runtime.is_local:
-        if USER_ENV_NAME in os.environ:
-            return os.environ[USER_ENV_NAME]
-        return env_enum.sbx.value
+        if EnvVarNameEnum.USER_ENV_NAME.value in os.environ:
+            return os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
+        return env_name_enum_class._get_sbx().value
     # ----------------------------------------------------------------------
     # For ci runtime, the job runtime should use the  "USER_ENV_NAME"
     # environment variable to identify the env name. If it is "devops"
     # we skip the env name validation
     # ----------------------------------------------------------------------
     elif runtime.is_ci:
-        env_name = os.environ[USER_ENV_NAME]
-        if env_name != DEVOPS:
-            env_enum.ensure_is_valid_value(env_name)
+        env_name = os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
+        env_name_enum_class.ensure_is_valid_value(env_name)
         return env_name
     # ----------------------------------------------------------------------
     # For app runtime, it should use the  "USER_ENV_NAME" environment variable
     # to identify the env name. It should NEVER be "devops"
     # ----------------------------------------------------------------------
     else:
-        env_name = os.environ[USER_ENV_NAME]
-        env_enum.ensure_is_valid_value(env_name)
+        env_name = os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
+        env_name_enum_class.ensure_is_valid_value(env_name)
         return env_name
