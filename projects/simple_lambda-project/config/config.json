@@ -36,6 +36,7 @@
         "*.lambda_functions.s3sync.handler": "s3sync_handler"
     },
     "devops": {
+        "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_lambda/"
     },
     "sbx": {
         "username": "sbx.user",
