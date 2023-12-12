@@ -5,7 +5,6 @@ import dataclasses
 
 from s3pathlib import S3Path
 
-from ..._version import __version__
 from ...constants import DEVOPS
 
 if T.TYPE_CHECKING:  # pragma: no cover
@@ -35,27 +34,25 @@ class AppMixin:
             "PARAMETER_NAME": self.parameter_name,
             "PROJECT_NAME": self.project_name,
             "ENV_NAME": self.env_name,
-            "PACKAGE_VERSION": __version__,
+            # "PACKAGE_VERSION": __version__,
         }
 
     @property
     def devops_aws_tags(self: "Env") -> T.Dict[str, str]:
         """
-        Common AWS resources tags for all resources in this environment.
+        Common AWS resources tags for all resources in devops environment.
         """
         return {
             "tech:project_name": self.project_name,
             "tech:env_name": DEVOPS,
-            "tech:package_version": __version__,
         }
 
     @property
     def workload_aws_tags(self: "Env") -> T.Dict[str, str]:
         """
-        Common AWS resources tags for all resources in this environment.
+        Common AWS resources tags for all resources in workload environment.
         """
         return {
             "tech:project_name": self.project_name,
             "tech:env_name": self.env_name,
-            "tech:package_version": __version__,
         }

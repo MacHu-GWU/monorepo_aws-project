@@ -3,7 +3,7 @@
 from s3pathlib import S3Path
 from aws_lambda_event import S3PutEvent
 
-from ..config.init import config
+from ..config.load import config
 from ..logger import logger
 
 

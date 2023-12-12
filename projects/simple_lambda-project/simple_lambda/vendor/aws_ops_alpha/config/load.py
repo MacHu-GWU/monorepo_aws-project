@@ -17,15 +17,19 @@ from ..environment import BaseWorkloadEnvEnum, detect_current_env
 from ..boto_ses import AbstractBotoSesFactory
 
 
+T_CONFIG = T.TypeVar("T_CONFIG", bound=multi_env_json.BaseConfig)
+
 def load_config(
     runtime: Runtime,
     env_enum: T.Union[BaseWorkloadEnvEnum, T.Type[BaseWorkloadEnvEnum]],
-    config_class: T.Type[multi_env_json.BaseConfig],
+    # config_class: T.Type[multi_env_json.BaseConfig],
+    config_class: T.Type[T_CONFIG],
     env_class: T.Type[multi_env_json.BaseEnv],
     path_config_json: T.Optional[Path] = None,
     path_config_secret_json: T.Optional[Path] = None,
     boto_ses_factory: T.Optional[AbstractBotoSesFactory] = None,
-):
+# ) -> multi_env_json.BaseConfig:
+) -> T_CONFIG:
     """
     If you use the recommended multi-environments config management strategy,
     you can use this function to load the config object.

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from simple_lambda.config.init import config
+from simple_lambda.config.load import config
+from simple_lambda.config.define.api import Env
 
 
 def test():
@@ -18,7 +19,9 @@ def test():
     _ = config.env.s3dir_source
     _ = config.env.s3dir_target
     _ = config.env.env_vars
-    _ = config.env.aws_tags
+    print(config.env.env_vars)
+    _ = config.env.devops_aws_tags
+    _ = config.env.workload_aws_tags
 
     # deploy.py
     _ = config.env.s3dir_artifacts

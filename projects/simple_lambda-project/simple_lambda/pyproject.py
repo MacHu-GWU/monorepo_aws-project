@@ -1,7 +1,19 @@
 # -*- coding: utf-8 -*-
 
 """
-Parse the ``pyproject.toml`` file.
+`pyproject_ops <https://github.com/MacHu-GWU/pyproject_ops-project>`_ library
+provides a set of utilities to automate common devops tasks for Python projects.
+If you follow the code structure defined in ``pyproject_ops``, you can do these
+things::
+
+    # create virtual environment for this project
+    >>> pyproject_ops.create_virtualenv()
+    # install core dependencies
+    >>> pyproject_ops.pip_install()
+    # install additional dependencies for dev, doc, test
+    >>> pyproject_ops.pip_install_all()
+    # run code coverage test
+    >>> pyproject_ops.run_cov_test()
 """
 
 import sys

@@ -7,7 +7,7 @@ This module is the CloudFormation stack definition.
 import aws_cdk as cdk
 from constructs import Construct
 
-from ...config.define.main import Env, Config
+from ...config.define.api import Env, Config
 from ...git import git_repo
 
 from .iam import IamMixin
@@ -41,7 +41,7 @@ class MainStack(
         self.mk_rg1_iam()
         self.mk_rg2_lbd()
 
-        for key, value in config.env.aws_tags.items():
+        for key, value in config.env.workload_aws_tags.items():
             cdk.Tags.of(self).add(key, value)
 
         cdk.Tags.of(self).add("tech:git_commit_id", git_repo.git_commit_id)

@@ -11,7 +11,7 @@ import typing as T
 import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 
 # modules from this project
-from .config.init import config
+from .config.load import config
 from ._api import (
     paths,
     runtime,
