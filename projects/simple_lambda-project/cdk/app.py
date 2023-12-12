@@ -2,7 +2,7 @@
 
 import aws_cdk as cdk
 from simple_lambda.iac.define import MainStack
-from simple_lambda.config.init import config
+from simple_lambda.config.load import config
 
 app = cdk.App()
 
