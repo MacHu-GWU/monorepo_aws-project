@@ -16,7 +16,7 @@ def test():
         env=config.env,
         stack_name=config.env.prefix_name_slug,
     )
-    for key, value in config.env.aws_tags.items():
+    for key, value in config.env.workload_aws_tags.items():
         cdk.Tags.of(app).add(key, value)
     template = assertions.Template.from_stack(stack)
     # print(json.dumps(template.to_json(), indent=4))
