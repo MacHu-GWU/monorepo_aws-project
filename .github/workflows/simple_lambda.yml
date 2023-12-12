@@ -109,22 +109,22 @@ jobs:
     secrets: inherit
     needs: job_0_build
 
-#  job_2_deploy_to_tst:
-#    name: 🚀 Deploy App to 🧪 tst
-#    # we only run this from release branch
-#    if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') }}
-#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
-#    with:
-#      user_env_name: tst
-#    secrets: inherit
-#    needs: job_1_deploy_to_sbx
-#
-#  job_3_deploy_to_prd:
-#    name: 🚀 Deploy App to 🏭 prd
-#    # we only run this from release branch
-#    if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') }}
-#    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
-#    with:
-#      user_env_name: prd
-#    secrets: inherit
-#    needs: job_2_deploy_to_tst
+  job_2_deploy_to_tst:
+    name: 🚀 Deploy App to 🧪 tst
+    # we only run this from release branch
+    if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') }}
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+    with:
+      user_env_name: tst
+    secrets: inherit
+    needs: job_1_deploy_to_sbx
+
+  job_3_deploy_to_prd:
+    name: 🚀 Deploy App to 🏭 prd
+    # we only run this from release branch
+    if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') }}
+    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+    with:
+      user_env_name: prd
+    secrets: inherit
+    needs: job_2_deploy_to_tst
