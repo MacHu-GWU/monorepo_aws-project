@@ -10,6 +10,7 @@ from aws_cdk import (
     aws_lambda as lambda_,
 )
 
+import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 from ..._version import __version__
 from ...paths import (
     dir_lambda_deploy,
@@ -20,6 +21,9 @@ from ...vendor.hashes import hashes
 
 if T.TYPE_CHECKING:
     from .main import MainStack
+
+
+USER_ENV_NAME = aws_ops_alpha.EnvVarNameEnum.USER_ENV_NAME.value
 
 
 class LambdaMixin:
@@ -51,6 +55,15 @@ class LambdaMixin:
                 layers.append(layer)
 
             # declare lambda function
+            env_vars = self.env.env_vars
+            env_vars.update(
+                {
+                    USER_ENV_NAME: self.env.env_name,
+                    "SOURCE_SHA256": source_sha256,
+                    "GIT_COMMIT_ID": git_repo.git_commit_id,
+                    "CONFIG_VERSION": self.config.version,
+                }
+            )
             kwargs = dict(
                 function_name=lbd_func_config.name,
                 code=lambda_.Code.from_asset(f"{path_source_zip}"),
@@ -59,20 +72,12 @@ class LambdaMixin:
                 memory_size=lbd_func_config.memory,
                 timeout=cdk.Duration.seconds(lbd_func_config.timeout),
                 layers=layers,
-                environment={
-                    "PARAMETER_NAME": self.env.parameter_name,
-                    "PROJECT_NAME": self.env.project_name,
-                    "ENV_NAME": self.env.env_name,
-                    "SOURCE_SHA256": source_sha256,
-                    "GIT_COMMIT_ID": git_repo.git_commit_id,
-                    "PACKAGE_VERSION": __version__,
-                    "CONFIG_VERSION": self.config.version,
-                },
+                environment=env_vars,
             )
             if lbd_func_config.iam_role is None:
                 kwargs["role"] = self.iam_role_for_lambda
             # use role managed by external projects
-            else: # pragma: no cover
+            else:  # pragma: no cover
                 kwargs["role"] = iam.Role.from_role_arn(
                     self,
                     f"ImportedLambdaRole{lbd_func_config.short_name_camel}",

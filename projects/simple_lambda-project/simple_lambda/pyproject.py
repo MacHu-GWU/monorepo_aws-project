@@ -21,9 +21,13 @@ import sys
 from pyproject_ops.api import PyProjectOps
 
 from .paths import dir_project_root, PACKAGE_NAME
+from .runtime import runtime
 
-pyproject_ops = PyProjectOps(
-    python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
-    package_name=PACKAGE_NAME,
-    dir_project_root=dir_project_root,
-)
+if runtime.is_aws_lambda:
+    pyproject_ops = None
+else:
+    pyproject_ops = PyProjectOps(
+        python_version=f"{sys.version_info.major}.{sys.version_info.minor}",
+        package_name=PACKAGE_NAME,
+        dir_project_root=dir_project_root,
+    )

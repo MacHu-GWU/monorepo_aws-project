@@ -4,4 +4,4 @@
 from simple_lambda.ops import build_lambda_source, run_cov_test
 
 build_lambda_source(verbose=False)
-# run_cov_test(check=True)
+run_cov_test(check=True)
