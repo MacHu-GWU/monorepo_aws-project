@@ -6,7 +6,7 @@ import dataclasses
 from s3pathlib import S3Path
 
 if T.TYPE_CHECKING:  # pragma: no cover
-    from .main import Env
+    from .main import BaseEnv
 
 
 @dataclasses.dataclass
@@ -22,14 +22,14 @@ class DeployMixin:
     s3uri_artifacts: T.Optional[str] = dataclasses.field(default=None)
 
     @property
-    def s3dir_artifacts(self: "Env") -> S3Path:  # pragma: no cover
+    def s3dir_artifacts(self: "BaseEnv") -> S3Path:  # pragma: no cover
         """
         Shared artifacts s3 dir for all environments.
         """
         return S3Path.from_s3_uri(self.s3uri_artifacts).to_dir()
 
     @property
-    def s3dir_env_artifacts(self: "Env") -> S3Path:  # pragma: no cover
+    def s3dir_env_artifacts(self: "BaseEnv") -> S3Path:  # pragma: no cover
         """
         Env specific artifacts s3 dir.
 
@@ -38,14 +38,14 @@ class DeployMixin:
         return self.s3dir_artifacts.joinpath("envs", self.env_name).to_dir()
 
     @property
-    def s3dir_tmp(self: "Env") -> S3Path:
+    def s3dir_tmp(self: "BaseEnv") -> S3Path:
         """
         example: ``${s3dir_artifacts}/tmp/``
         """
         return self.s3dir_artifacts.joinpath("tmp").to_dir()
 
     @property
-    def s3dir_config(self: "Env") -> S3Path:
+    def s3dir_config(self: "BaseEnv") -> S3Path:
         """
         example: ``${s3dir_artifacts}/config/``
         """

@@ -5,10 +5,10 @@ import dataclasses
 
 from s3pathlib import S3Path
 
-from ...constants import CommonEnvNameEnum
+from ..constants import CommonEnvNameEnum
 
 if T.TYPE_CHECKING:  # pragma: no cover
-    from .main import Env
+    from .main import BaseEnv
 
 
 @dataclasses.dataclass
@@ -21,11 +21,11 @@ class AppMixin:
         return S3Path.from_s3_uri(self.s3uri_data).to_dir()
 
     @property
-    def s3dir_env_data(self: "Env") -> S3Path:
+    def s3dir_env_data(self: "BaseEnv") -> S3Path:
         return self.s3dir_data.joinpath("envs", self.env_name).to_dir()
 
     @property
-    def env_vars(self: "Env") -> T.Dict[str, str]:
+    def env_vars(self: "BaseEnv") -> T.Dict[str, str]:
         """
         Common environment variable for all computational resources in this environment.
         It is primarily for "self awareness" (detect who I am, which environment I am in).
@@ -37,7 +37,7 @@ class AppMixin:
         }
 
     @property
-    def devops_aws_tags(self: "Env") -> T.Dict[str, str]:
+    def devops_aws_tags(self: "BaseEnv") -> T.Dict[str, str]:
         """
         Common AWS resources tags for all resources in devops environment.
         """
@@ -47,7 +47,7 @@ class AppMixin:
         }
 
     @property
-    def workload_aws_tags(self: "Env") -> T.Dict[str, str]:
+    def workload_aws_tags(self: "BaseEnv") -> T.Dict[str, str]:
         """
         Common AWS resources tags for all resources in workload environment.
         """

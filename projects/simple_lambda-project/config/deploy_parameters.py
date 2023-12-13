@@ -10,5 +10,8 @@ bsm_collection = {
     EnvNameEnum.tst.value: boto_ses_factory.bsm_tst,
     EnvNameEnum.prd.value: boto_ses_factory.bsm_prd,
 }
-config.deploy(bsm=bsm_collection, parameter_with_encryption=True)
+# config.deploy(bsm=bsm_collection, parameter_with_encryption=True)
+# config.delete(bsm=bsm_collection, use_parameter_store=True)
+
+config.deploy(bsm=bsm_collection, s3folder_config=True)
 # config.delete(bsm=bsm_collection, use_parameter_store=True)

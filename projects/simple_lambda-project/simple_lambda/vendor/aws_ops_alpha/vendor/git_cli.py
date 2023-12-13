@@ -12,6 +12,7 @@ from pathlib import Path
 
 __version__ = "0.1.1"
 
+
 @contextlib.contextmanager
 def temp_cwd(path: T.Union[str, Path]):  # pragma: no cover
     """
@@ -121,3 +122,36 @@ def get_commit_message_by_commit_id(
     message = response.stdout.decode("utf-8")
     message = message.strip().split("\n")[0].replace("'", "").replace('"', "").strip()
     return message
+
+
+def create_git_tag(
+    tag_name: str,
+    commit_id: str,
+):
+    """
+    Reference:
+
+    - https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-tag.html
+    """
+    args = [
+        "git",
+        "tag",
+        tag_name,
+        commit_id,
+    ]
+    subprocess.run(args, check=True)
+
+
+def push_git_tag(tag_name: str):
+    """
+    Reference:
+
+    - https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-create-tag.html
+    """
+    args = [
+        "git",
+        "push",
+        "origin",
+        tag_name,
+    ]
+    subprocess.run(args, check=True)

@@ -4,7 +4,7 @@ import typing as T
 import dataclasses
 
 if T.TYPE_CHECKING:  # pragma: no cover
-    from .main import Env
+    from .main import BaseEnv
 
 
 @dataclasses.dataclass
@@ -15,5 +15,5 @@ class NameMixin:
     """
 
     @property
-    def cloudformation_stack_name(self: "Env") -> str:
+    def cloudformation_stack_name(self: "BaseEnv") -> str:
         return self.prefix_name_slug
