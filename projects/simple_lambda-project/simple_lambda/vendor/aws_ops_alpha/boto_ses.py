@@ -163,6 +163,12 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         """
         raise NotImplementedError
 
+    def get_current_env(self) -> str:
+        """
+        An abstract method to get the current environment name.
+        """
+        raise NotImplementedError
+
     def get_devops_bsm(self) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for devops AWS account.
@@ -250,10 +256,10 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         """
         Get the boto session manager for application code logic.
         """
-        if runtime.is_local:
+        if runtime.is_local or self.runtime.is_aws_cloud9:
             return self.get_env_bsm(env_name=self.default_app_env_name)
-        elif self.runtime.is_ci or self.runtime.is_aws_cloud9:
-            return self.get_env_bsm(env_name=self.default_app_env_name)
+        elif self.runtime.is_ci:
+            return self.get_env_bsm(env_name=self.get_current_env())
         else:
             return BotoSesManager()
 

@@ -12,7 +12,7 @@ from s3pathlib import context
 
 import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 
-from .env import EnvNameEnum
+from .env import EnvNameEnum, detect_current_env
 from .runtime import runtime
 
 
@@ -21,6 +21,9 @@ class BotoSesFactory(aws_ops_alpha.AlphaBotoSesFactory):
     def get_env_role_arn(self, env_name: str) -> str:  # pragma: no cover
         aws_account_id = os.environ[f"{env_name.upper()}_AWS_ACCOUNT_ID"]
         return f"arn:aws:iam::{aws_account_id}:role/monorepo_aws-{env_name}-deployer-us-east-1"
+
+    def get_current_env(self) -> str:
+        return detect_current_env()
 
     @cached_property
     def bsm_sbx(self):
