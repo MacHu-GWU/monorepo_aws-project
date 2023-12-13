@@ -13,7 +13,6 @@ from pathlib import Path
 from functools import cached_property
 
 import config_patterns.api as config_patterns
-from s3pathlib import S3Path
 from ..vendor.jsonutils import json_loads
 
 from ..constants import CommonEnvNameEnum
@@ -24,6 +23,10 @@ from ..boto_ses import AbstractBotoSesFactory
 from .app import AppMixin
 from .name import NameMixin
 from .deploy import DeployMixin
+
+if T.TYPE_CHECKING:
+    from s3pathlib import S3Path
+    from boto_session_manager import BotoSesManager
 
 
 @dataclasses.dataclass
@@ -203,13 +206,13 @@ class BaseConfig(
     def smart_backup(
         cls,
         runtime: Runtime,
-        boto_ses_factory: AbstractBotoSesFactory,
+        bsm_devops: "BotoSesManager",
         env_name_enum_class: T.Union[BaseEnvNameEnum, T.Type[BaseEnvNameEnum]],
         env_class: T.Type[BaseEnv],
         version: str,
         path_config_json: T.Optional[Path] = None,
         path_config_secret_json: T.Optional[Path] = None,
-    ):  # pragma: no cover
+    ) -> "S3Path":  # pragma: no cover
         """
         Create a backup of the current production config data in S3. The version
         is the project semantic version x.y.z. The version file is immutable.
@@ -246,7 +249,7 @@ class BaseConfig(
             return cls.read(
                 env_class=env_class,
                 env_enum_class=env_name_enum_class,
-                bsm=boto_ses_factory.bsm_devops,
+                bsm=bsm_devops,
                 parameter_name=config.parameter_name,
                 parameter_with_encryption=True,
             )
@@ -255,9 +258,12 @@ class BaseConfig(
 
         config_data = {"data": config.data, "secret_data": config.secret_data}
         s3path = config.devops.s3dir_config.joinpath(f"{version}.json")
-        bsm_devops = boto_ses_factory.bsm_devops
         if s3path.exists(bsm=bsm_devops):
-            raise FileExistsError()
+            raise FileExistsError(
+                f"{version}.json already exists!"
+                f"You can not overwrite existing config snapshot backup!"
+                f"You should consider bump to a new version!"
+            )
         tags = {
             "tech:note": (
                 "this file is for production config data backup "
@@ -270,3 +276,7 @@ class BaseConfig(
             bsm=bsm_devops,
             tags=tags,
         )
+        return s3path
+
+
+T_BASE_CONFIG = T.TypeVar("T_BASE_CONFIG", bound=BaseConfig)

@@ -3,7 +3,7 @@
 """
 Usage example::
 
-    >>> import aws_ops_alpha.project.simple_lambda.api as simple_lambda_project
+    >>> import aws_ops_alpha.project.simple_config.api as simple_config_project
 """
 
 from .constants import StepEnum
@@ -12,10 +12,6 @@ from .constants import EnvNameEnum
 from .constants import RuntimeNameEnum
 from .rule import rule_set
 from .step import semantic_branch_rule
-from .step import build_lambda_source
-from .step import publish_lambda_layer
-from .step import publish_lambda_version
-from .step import deploy_app
-from .step import delete_app
-from .step import run_int_test
+from .step import deploy_config
 from .step import create_config_snapshot
+from .step import delete_config

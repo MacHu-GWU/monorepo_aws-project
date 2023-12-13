@@ -6,7 +6,6 @@ This module implements the automation to deploy CloudFormation stack via CDK.
 
 # standard library
 import typing as T
-import dataclasses
 from pathlib import Path
 
 # third party library (include vendor)

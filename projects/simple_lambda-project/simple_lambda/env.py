@@ -27,5 +27,5 @@ def detect_current_env() -> str:
     # you can uncomment this line to force to use certain env
     # from your local laptop to run application code, tests, ...
     # ----------------------------------------------------------------------
-    # return EnvNameEnum.sbx.value
+    # return EnvNameEnum.prd.value
     return aws_ops_alpha.detect_current_env(runtime, EnvNameEnum)

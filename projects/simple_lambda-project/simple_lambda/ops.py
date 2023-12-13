@@ -11,7 +11,8 @@ import typing as T
 import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 
 # modules from this project
-from .config.load import config
+from ._version import __version__
+from .config.api import Config, Env, EnvNameEnum, config
 from ._api import (
     paths,
     runtime,
@@ -25,13 +26,10 @@ from ._api import (
 )
 from .pyproject import pyproject_ops
 
-# type hint
-if T.TYPE_CHECKING:
-    from boto_session_manager import BotoSesManager
-    from s3pathlib import S3Path
 
 # Emoji = aws_ops_alpha.Emoji
 simple_python_project = aws_ops_alpha.simple_python_project
+simple_config_project = aws_ops_alpha.simple_config_project
 simple_lambda_project = aws_ops_alpha.simple_lambda_project
 
 
@@ -77,6 +75,25 @@ def run_unit_test(check: bool = True):
         env_name=detect_current_env(),
         runtime_name=runtime.local_or_ci,
         pyproject_ops=pyproject_ops,
+        check=check,
+        rule_set=simple_lambda_project.rule_set,
+    )
+
+
+def deploy_config(check: bool = True):
+    simple_config_project.deploy_config(
+        git_branch_name=git_repo.semantic_branch_name,
+        env_name=detect_current_env(),
+        runtime_name=runtime.local_or_ci,
+        config=config,
+        bsm={
+            "all": boto_ses_factory.bsm_devops,
+            EnvNameEnum.devops.value: boto_ses_factory.bsm_devops,
+            EnvNameEnum.sbx.value: boto_ses_factory.bsm_sbx,
+            EnvNameEnum.tst.value: boto_ses_factory.bsm_tst,
+            EnvNameEnum.prd.value: boto_ses_factory.bsm_prd,
+        },
+        parameter_with_encryption=True,
         check=check,
         rule_set=simple_lambda_project.rule_set,
     )
@@ -244,4 +261,40 @@ def run_int_test(check: bool = True):
         pyproject_ops=pyproject_ops,
         wait=wait,
         check=check,
+    )
+
+
+def create_config_snapshot(check: bool = True):
+    simple_lambda_project.create_config_snapshot(
+        git_branch_name=git_repo.semantic_branch_name,
+        env_name=detect_current_env(),
+        runtime_name=runtime.local_or_ci,
+        runtime=runtime,
+        bsm_devops=boto_ses_factory.bsm_devops,
+        env_name_enum_class=EnvNameEnum,
+        env_class=Env,
+        config_class=Config,
+        version=__version__,
+        path_config_json=paths.path_config_json,
+        path_config_secret_json=paths.path_config_secret_json,
+        check=check,
+    )
+
+
+def delete_config(check: bool = True):
+    simple_config_project.delete_config(
+        git_branch_name=git_repo.semantic_branch_name,
+        env_name=detect_current_env(),
+        runtime_name=runtime.local_or_ci,
+        config=config,
+        bsm={
+            "all": boto_ses_factory.bsm_devops,
+            EnvNameEnum.devops.value: boto_ses_factory.bsm_devops,
+            EnvNameEnum.sbx.value: boto_ses_factory.bsm_sbx,
+            EnvNameEnum.tst.value: boto_ses_factory.bsm_tst,
+            EnvNameEnum.prd.value: boto_ses_factory.bsm_prd,
+        },
+        use_parameter_store=True,
+        check=check,
+        rule_set=simple_lambda_project.rule_set,
     )

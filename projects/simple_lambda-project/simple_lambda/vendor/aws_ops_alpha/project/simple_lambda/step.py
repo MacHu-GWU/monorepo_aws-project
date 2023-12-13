@@ -21,14 +21,16 @@ from ...vendor import semantic_branch as sem_branch
 # modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
-from ...environment import EnvNameEnum
+from ...runtime import Runtime
+from ...environment import BaseEnvNameEnum
+from ...config.api import BaseConfig, BaseEnv
 
 # modules from this submodule
 from .constants import StepEnum, GitBranchNameEnum
 from .rule import RuleSet, rule_set as default_rule_set
 
 # type hint
-if T.TYPE_CHECKING:# pragma: no cover
+if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
     from s3pathlib import S3Path
@@ -42,12 +44,13 @@ semantic_branch_rules = {
     GitBranchNameEnum.layer: ["layer"],
     GitBranchNameEnum.app: ["app"],
     GitBranchNameEnum.release: ["release", "rls"],
-    GitBranchNameEnum.cleanup: ["cleanup", "clean"]
+    GitBranchNameEnum.cleanup: ["cleanup", "clean"],
 }
 
 semantic_branch_rule = sem_branch.SemanticBranchRule(
     rules=semantic_branch_rules,
 )
+
 
 @logger.start_and_end(
     msg="Build Lambda Source Artifacts",
@@ -59,7 +62,7 @@ semantic_branch_rule = sem_branch.SemanticBranchRule(
 def build_lambda_source(
     pyproject_ops: "pyops.PyProjectOps",
     verbose: bool = False,
-):# pragma: no cover
+):  # pragma: no cover
     source_sha256, path_source_zip = aws_lambda_helpers.build_lambda_source(
         pyproject_ops=pyproject_ops,
         verbose=verbose,
@@ -87,7 +90,7 @@ def publish_lambda_layer(
     tags: T.Dict[str, str],
     check=True,
     rule_set: RuleSet = default_rule_set,
-):# pragma: no cover
+):  # pragma: no cover
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.PUBLISH_LAMBDA_LAYER,
@@ -136,7 +139,7 @@ def publish_lambda_version(
     lbd_func_name_list: T.List[str],
     check=True,
     rule_set: RuleSet = default_rule_set,
-):# pragma: no cover
+):  # pragma: no cover
     """
     Publish a new lambda version from latest.
     """
@@ -176,7 +179,7 @@ def deploy_app(
     skip_prompt: bool = False,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):# pragma: no cover
+):  # pragma: no cover
     logger.info(f"deploy app to {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
     url = aws_console.cloudformation.filter_stack(name=stack_name)
@@ -228,7 +231,7 @@ def delete_app(
     skip_prompt: bool = False,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):# pragma: no cover
+):  # pragma: no cover
     logger.info(f"delete app from {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
     url = aws_console.cloudformation.filter_stack(name=stack_name)
@@ -273,7 +276,7 @@ def run_int_test(
     wait: bool = False,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):# pragma: no cover
+):  # pragma: no cover
     logger.info(f"Run integration test in {env_name!r} env...")
     if check:
         flag = rule_set.should_we_do_it(
@@ -291,3 +294,47 @@ def run_int_test(
     if wait:
         time.sleep(5)
     pyproject_ops.run_int_test()
+
+
+@logger.emoji_block(
+    msg="Create Config Snapshot",
+    emoji=Emoji.config,
+)
+def create_config_snapshot(
+    git_branch_name: str,
+    env_name: str,
+    runtime_name: str,
+    runtime: Runtime,
+    bsm_devops: "BotoSesManager",
+    env_name_enum_class: T.Union[BaseEnvNameEnum, T.Type[BaseEnvNameEnum]],
+    env_class: T.Type[BaseEnv],
+    config_class: T.Type[BaseConfig],
+    version: str,
+    path_config_json: T.Optional[Path] = None,
+    path_config_secret_json: T.Optional[Path] = None,
+    check: bool = True,
+    rule_set: RuleSet = default_rule_set,
+):  # pragma: no cover
+    logger.info(f"Create Config Snapshot in {env_name!r} env...")
+    if check:
+        flag = rule_set.should_we_do_it(
+            step=StepEnum.CREATE_CONFIG_SNAPSHOT,
+            git_branch_name=git_branch_name,
+            env_name=env_name,
+            runtime_name=runtime_name,
+        )
+        if flag is False:
+            return
+
+    s3path = config_class.smart_backup(
+        runtime=runtime,
+        bsm_devops=bsm_devops,
+        env_name_enum_class=env_name_enum_class,
+        env_class=env_class,
+        version=version,
+        path_config_json=path_config_json,
+        path_config_secret_json=path_config_secret_json,
+    )
+
+    logger.info(f"config snapshot is saved to {s3path.uri}")
+    logger.info(f"preview it at: {s3path.console_url}")

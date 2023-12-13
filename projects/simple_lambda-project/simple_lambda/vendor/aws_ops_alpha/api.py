@@ -37,10 +37,13 @@ from .aws_helpers import aws_cdk_helpers
 from .aws_helpers import aws_lambda_helpers
 from .config.api import BaseConfig
 from .config.api import BaseEnv
+from .config.api import T_BASE_CONFIG
+from .config.api import T_BASE_ENV
 
 try:
     from .project.api import simple_python_project
     from .project.api import simple_cdk_project
+    from .project.api import simple_config_project
     from .project.api import simple_lambda_project
 except ImportError:  # pragma: no cover
     pass

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from simple_lambda.boto_ses import boto_ses_factory
-from simple_lambda.config.load import config, EnvNameEnum
+from simple_lambda.config.api import config, EnvNameEnum
 
 bsm_collection = {
     "all": boto_ses_factory.bsm_devops,
@@ -10,8 +10,5 @@ bsm_collection = {
     EnvNameEnum.tst.value: boto_ses_factory.bsm_tst,
     EnvNameEnum.prd.value: boto_ses_factory.bsm_prd,
 }
-# config.deploy(bsm=bsm_collection, parameter_with_encryption=True)
-# config.delete(bsm=bsm_collection, use_parameter_store=True)
-
-config.deploy(bsm=bsm_collection, s3folder_config=True)
+config.deploy(bsm=bsm_collection, parameter_with_encryption=True)
 # config.delete(bsm=bsm_collection, use_parameter_store=True)
