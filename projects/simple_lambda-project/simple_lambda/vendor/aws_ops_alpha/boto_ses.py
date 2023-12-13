@@ -217,6 +217,9 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
             return BotoSesManager(**kwargs)
         elif self.runtime.is_ci or self.runtime.is_aws_cloud9:
             bsm_devops = self.get_devops_bsm()
+            if env_name == CommonEnvNameEnum.devops.value:
+                return bsm_devops
+            
             role_arn = self.get_env_role_arn(env_name)
             # ------------------------------------------------------------------
             # usually, the default boto session should be the devops bsm
@@ -255,11 +258,18 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
     def get_app_bsm(self) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for application code logic.
+
+        This bsm is used to access the environment specific AWS resource
+        for application code logic, unit test, integration test, etc.
         """
-        if runtime.is_local or self.runtime.is_aws_cloud9:
+        if self.runtime.is_local or self.runtime.is_aws_cloud9:
             return self.get_env_bsm(env_name=self.default_app_env_name)
         elif self.runtime.is_ci:
-            return self.get_env_bsm(env_name=self.get_current_env())
+            env_name = self.get_current_env()
+            if env_name == CommonEnvNameEnum.devops.value:
+                return self.get_env_bsm(env_name=self.default_app_env_name)
+            else:
+                return self.get_env_bsm(env_name=self.get_current_env())
         else:
             return BotoSesManager()
 
