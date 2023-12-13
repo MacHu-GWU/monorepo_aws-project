@@ -4,7 +4,7 @@ import json
 import aws_cdk as cdk
 import aws_cdk.assertions as assertions
 from simple_lambda.iac.define import MainStack
-from simple_lambda.config.load import config
+from simple_lambda.config.api import config
 
 
 def test():

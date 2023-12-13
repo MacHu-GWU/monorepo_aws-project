@@ -23,7 +23,8 @@ from pyproject_ops.api import PyProjectOps
 from .paths import dir_project_root, PACKAGE_NAME
 from .runtime import runtime
 
-if runtime.is_aws_lambda:
+# we still need this variable for import, but will not use this in lambda runtime
+if runtime.is_aws_lambda:  # pragma: no cover
     pyproject_ops = None
 else:
     pyproject_ops = PyProjectOps(

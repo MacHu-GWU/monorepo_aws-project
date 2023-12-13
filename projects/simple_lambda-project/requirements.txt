@@ -24,9 +24,9 @@ boto3==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
 botocore==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:ccf3d67fd046265ae73bc9862d1618c6e774a61a96beac832edb63d9a21fe1ba \
     --hash=sha256:e35526421fe8ee180b6aed3102929594aa51e4d60e3f29366a603707c37c0d52
-config-patterns==1.0.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:4d7b3071c23f77efae4e554f6c58c582502839367e835aff7e2115ed22bab2cc \
-    --hash=sha256:ef45e70b475fd69b4b45f6770efa5d50eaa2c52f62b53988d75c9c518fce19b5
+config-patterns==1.0.6 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:4790c5f86d308c9f587cd6ea6c21f47077d35065d15803f972fac889aecf754a \
+    --hash=sha256:8cfe27719bf86022c77336149e4c0aa5e4f247469722c81b509090b18516238a
 fire==0.5.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:a6b0d49e98c8963910021f92bba66f65ab440da2982b78eb1bbf95a0a34aacc6
 func-args==0.1.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
@@ -41,9 +41,9 @@ jmespath==1.0.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" 
 pathlib-mate==1.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:0cd0a8b742941efdc5a3b3c46e75da6430c3f869fe6a5fb490025c0bc39a5c2d \
     --hash=sha256:6ef576ccefac39a8a1bb4b7d93fcd50f73113a34ddd01cc46ca149b947f7dc0e
-pyproject-ops==0.6.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:a7c52ddaa432cc0c69e08e47d20d30d29ccbfd8dc9e5d8cfcf8bb2ecec96afb8 \
-    --hash=sha256:ee58047aa353cd560f1481db40a7590be478e8d4ed6941bac76e09b23523cb99
+pyproject-ops==0.6.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:354f231c941b904a65e439e98757c849af2abb9a769527251774ddc311a40243 \
+    --hash=sha256:b12d66670857700578650f5825b33f3a7179f157bd84f37fda972aef25684aa8
 pysecret==2.2.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:7880d933f5647032a21113b79ab83ed0718e852a4f50a41999128a4a55377e16 \
     --hash=sha256:abd780868a39388897ac4b6cd59973b586bc8f18771154168925d268466dea29

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from simple_lambda.config.load import config
+from simple_lambda.config.api import config
 
 
 def test():
@@ -37,6 +37,8 @@ def test():
 
     # lbd_func.py
     _ = config.env.lambda_functions
+    _ = config.env.lambda_function_name_list
+    _ = config.env.lambda_function_list
     for shortname, lambda_function in config.env.lambda_functions.items():
         _ = lambda_function.env
         _ = lambda_function.handler

@@ -38,9 +38,6 @@ class Env(
             lbd_func.env = env
         return env
 
-    def my_smart_method(self):
-        pass
-
 
 @dataclasses.dataclass
 class Config(aws_ops_alpha.BaseConfig[Env]):

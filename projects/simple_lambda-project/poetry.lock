@@ -195,13 +195,13 @@ tests = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "babel"
-version = "2.13.1"
+version = "2.14.0"
 description = "Internationalization utilities"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "Babel-2.13.1-py3-none-any.whl", hash = "sha256:7077a4984b02b6727ac10f1f7294484f737443d7e2e66c5e4380e41a3ae0b4ed"},
-    {file = "Babel-2.13.1.tar.gz", hash = "sha256:33e0952d7dd6374af8dbf6768cc4ddf3ccfefc244f9986d4074704f2fbd18900"},
+    {file = "Babel-2.14.0-py3-none-any.whl", hash = "sha256:efb1a25b7118e67ce3a259bed20545c29cb68be8ad2c784c83689981b7a57287"},
+    {file = "Babel-2.14.0.tar.gz", hash = "sha256:6919867db036398ba21eb5c7a0f6b28ab8cbc3ae7a73a44ebe34ae74a4e7d363"},
 ]
 
 [package.extras]
@@ -577,13 +577,13 @@ test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 
 [[package]]
 name = "config-patterns"
-version = "1.0.4"
+version = "1.0.6"
 description = "Brings config management best practices for production-ready application."
 optional = false
 python-versions = "*"
 files = [
-    {file = "config_patterns-1.0.4-py2.py3-none-any.whl", hash = "sha256:4d7b3071c23f77efae4e554f6c58c582502839367e835aff7e2115ed22bab2cc"},
-    {file = "config_patterns-1.0.4.tar.gz", hash = "sha256:ef45e70b475fd69b4b45f6770efa5d50eaa2c52f62b53988d75c9c518fce19b5"},
+    {file = "config_patterns-1.0.6-py2.py3-none-any.whl", hash = "sha256:4790c5f86d308c9f587cd6ea6c21f47077d35065d15803f972fac889aecf754a"},
+    {file = "config_patterns-1.0.6.tar.gz", hash = "sha256:8cfe27719bf86022c77336149e4c0aa5e4f247469722c81b509090b18516238a"},
 ]
 
 [package.dependencies]
@@ -733,13 +733,13 @@ test-randomorder = ["pytest-randomly"]
 
 [[package]]
 name = "distlib"
-version = "0.3.7"
+version = "0.3.8"
 description = "Distribution utilities"
 optional = false
 python-versions = "*"
 files = [
-    {file = "distlib-0.3.7-py2.py3-none-any.whl", hash = "sha256:2e24928bc811348f0feb63014e97aaae3037f2cf48712d51ae61df7fd6075057"},
-    {file = "distlib-0.3.7.tar.gz", hash = "sha256:9dafe54b34a028eafd95039d5e5d4851a13734540f1331060d31c9916e7147a8"},
+    {file = "distlib-0.3.8-py2.py3-none-any.whl", hash = "sha256:034db59a0b96f8ca18035f36290806a9a6e6bd9d1ff91e45a7f172eb17e51784"},
+    {file = "distlib-0.3.8.tar.gz", hash = "sha256:1530ea13e350031b6312d8580ddb6b27a104275a31106523b8f123787f494f64"},
 ]
 
 [[package]]
@@ -1590,13 +1590,13 @@ tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "pyproject-ops"
-version = "0.6.2"
+version = "0.6.3"
 description = "Python project Ops automation."
 optional = false
 python-versions = "*"
 files = [
-    {file = "pyproject_ops-0.6.2-py3-none-any.whl", hash = "sha256:a7c52ddaa432cc0c69e08e47d20d30d29ccbfd8dc9e5d8cfcf8bb2ecec96afb8"},
-    {file = "pyproject_ops-0.6.2.tar.gz", hash = "sha256:ee58047aa353cd560f1481db40a7590be478e8d4ed6941bac76e09b23523cb99"},
+    {file = "pyproject_ops-0.6.3-py3-none-any.whl", hash = "sha256:354f231c941b904a65e439e98757c849af2abb9a769527251774ddc311a40243"},
+    {file = "pyproject_ops-0.6.3.tar.gz", hash = "sha256:b12d66670857700578650f5825b33f3a7179f157bd84f37fda972aef25684aa8"},
 ]
 
 [package.dependencies]
@@ -2643,4 +2643,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "b69fc662048d761ba177bc8c5f508dd0ca78de66899985f318fe90d6410ba9f2"
+content-hash = "24cb8e6cae14f2ed7fea49519a6bf926015bae6e33767dc1dfe75e90eea14d27"

@@ -7,7 +7,7 @@ from aws_cdk import (
     aws_iam as iam,
 )
 
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:  # pragma: no cover
     from .main import MainStack
 
 

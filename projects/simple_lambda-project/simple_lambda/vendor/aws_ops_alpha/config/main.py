@@ -10,6 +10,7 @@ import os
 import json
 import dataclasses
 from pathlib import Path
+from functools import cached_property
 
 import config_patterns.api as config_patterns
 from s3pathlib import S3Path
@@ -76,18 +77,29 @@ class BaseConfig(
 
         @dataclasses.dataclass
         class Config(BaseConfig[Env]):
-            @property
-            def dev_env(self) -> Env:
-                return self.get_env("dev")
+            @classmethod
+            def get_current_env(cls) -> str:
+                # your implementation here
 
             @property
-            def int_env(self) -> Env:
-                return self.get_env("int")
+            def sbx(self) -> Env:
+                return self.get_env("sbx")
 
             @property
-            def prod_env(self) -> Env:
-                return self.get_env("prod")
+            def tst(self) -> Env:
+                return self.get_env("tst")
+
+            @property
+            def stg(self) -> Env:
+                return self.get_env("stg")
+
+            @property
+            def prd(self) -> Env:
+                return self.get_env("prd")
     """
+    @cached_property
+    def devops(self):  # pragma: no cover
+        return self.get_env(env_name=CommonEnvNameEnum.devops.value)
 
     @classmethod
     def smart_load(
@@ -193,7 +205,6 @@ class BaseConfig(
         boto_ses_factory: AbstractBotoSesFactory,
         env_name_enum_class: T.Union[BaseEnvNameEnum, T.Type[BaseEnvNameEnum]],
         env_class: T.Type[BaseEnv],
-        s3dir: S3Path,
         version: str,
         path_config_json: T.Optional[Path] = None,
         path_config_secret_json: T.Optional[Path] = None,
@@ -242,7 +253,7 @@ class BaseConfig(
             raise RuntimeError
 
         config_data = {"data": config.data, "secret_data": config.secret_data}
-        s3path = s3dir.joinpath(f"{version}.json")
+        s3path = config.devops.s3dir_config.joinpath(f"{version}.json")
         bsm_devops = boto_ses_factory.bsm_devops
         if s3path.exists(bsm=bsm_devops):
             raise FileExistsError()

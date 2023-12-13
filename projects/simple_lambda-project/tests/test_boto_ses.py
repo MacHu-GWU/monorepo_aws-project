@@ -16,6 +16,10 @@ def test():
     # print(f"{boto_ses_factory.bsm_prd.aws_account_alias = }")
     # print(f"{boto_ses_factory.bsm_app.aws_account_alias = }")
 
+    for bsm in boto_ses_factory.workload_bsm_list:
+        _ = bsm.aws_account_alias
+        # print(f"{bsm.aws_account_alias = }")
+
 
 if __name__ == "__main__":
     from simple_lambda.tests import run_cov_test

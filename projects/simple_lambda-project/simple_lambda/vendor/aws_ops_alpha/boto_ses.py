@@ -144,6 +144,11 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         An abstract method to get the workload AWS account IAM role name for deployment.
         You have to subclass this class and implement this method.
 
+        Usually, you only need this method in CI environment, because on local,
+        you may just need to use AWS CLI named profile to assume the role.
+        But in CI, you don't have AWS CLI named profile, you have to use the
+        default role, which is the devops role to assume workload role.
+
         I recommend you to use environment variable to store the IAM role name.
         Let say you have three environments, sbx, tst, prd. Then you can create
         three environment variables, SBX_AWS_ACCOUNT_ID, TST_AWS_ACCOUNT_ID,
