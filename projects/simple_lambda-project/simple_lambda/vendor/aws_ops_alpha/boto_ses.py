@@ -163,12 +163,14 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         """
         raise NotImplementedError
 
-    def get_devops_bsm(self) -> "BotoSesManager":
+    def get_devops_bsm(self) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for devops AWS account.
         """
         if self.runtime.is_local:
-            kwargs = dict(profile_name=self.env_to_profile_mapper[CommonEnvNameEnum.devops.value])
+            kwargs = dict(
+                profile_name=self.env_to_profile_mapper[CommonEnvNameEnum.devops.value]
+            )
             if self.aws_region:
                 kwargs["region_name"] = self.aws_region
             return BotoSesManager(**kwargs)
@@ -187,7 +189,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         duration_seconds: int = 3600,
         region_name: T.Optional[str] = None,
         auto_refresh: bool = False,
-    ) -> "BotoSesManager":
+    ) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for workload AWS account.
 
@@ -244,7 +246,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         else:  # pragma: no cover
             raise RuntimeError
 
-    def get_app_bsm(self) -> "BotoSesManager":
+    def get_app_bsm(self) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for application code logic.
         """
@@ -256,7 +258,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
             return BotoSesManager()
 
     @cached_property
-    def bsm(self) -> "BotoSesManager":
+    def bsm(self) -> "BotoSesManager":  # pragma: no cover
         """
         The shortcut to access the most commonly used boto session manager.
         Usually, it is for the application code.

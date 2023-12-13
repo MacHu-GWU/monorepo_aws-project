@@ -22,7 +22,7 @@ from .constants import StepEnum, GitBranchNameEnum
 from .rule import RuleSet, rule_set as default_rule_set
 
 # type hint
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
 
@@ -43,31 +43,31 @@ semantic_branch_rule = sem_branch.SemanticBranchRule(
 quiet = True if runtime.is_ci else False
 
 
-def pip_install(pyproject_ops: "pyops.PyProjectOps"):
+def pip_install(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.pip_install(quiet=quiet, verbose=True)
 
 
-def pip_install_dev(pyproject_ops: "pyops.PyProjectOps"):
+def pip_install_dev(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.pip_install_dev(quiet=quiet, verbose=True)
 
 
-def pip_install_test(pyproject_ops: "pyops.PyProjectOps"):
+def pip_install_test(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.pip_install_test(quiet=quiet, verbose=True)
 
 
-def pip_install_doc(pyproject_ops: "pyops.PyProjectOps"):
+def pip_install_doc(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.pip_install_doc(quiet=quiet, verbose=True)
 
 
-def pip_install_automation(pyproject_ops: "pyops.PyProjectOps"):
+def pip_install_automation(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.pip_install_automation(quiet=quiet, verbose=True)
 
 
-def pip_install_all(pyproject_ops: "pyops.PyProjectOps"):
+def pip_install_all(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.pip_install_all(quiet=quiet, verbose=True)
 
 
-def pip_install_all_in_ci(pyproject_ops: "pyops.PyProjectOps"):
+def pip_install_all_in_ci(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     # if path_venv_bin_pytest already exists, it means that the virtualenv
     # is restored from cache, there's no need to install dependencies again.
     if pyproject_ops.path_venv_bin_pytest.exists() is False:
@@ -76,11 +76,11 @@ def pip_install_all_in_ci(pyproject_ops: "pyops.PyProjectOps"):
         logger.info("dependencies are already installed, do nothing")
 
 
-def poetry_lock(pyproject_ops: "pyops.PyProjectOps"):
+def poetry_lock(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.poetry_lock(verbose=True)
 
 
-def poetry_export(pyproject_ops: "pyops.PyProjectOps"):
+def poetry_export(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.poetry_export(verbose=True)
 
 
@@ -95,7 +95,7 @@ def run_unit_test(
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):  # pragma: no cover
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.RUN_CODE_COVERAGE_TEST,
@@ -119,7 +119,7 @@ def run_cov_test(
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):  # pragma: no cover
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.RUN_CODE_COVERAGE_TEST,
@@ -132,7 +132,7 @@ def run_cov_test(
     pyproject_ops.run_cov_test()
 
 
-def view_cov(pyproject_ops: "pyops.PyProjectOps"):
+def view_cov(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.view_cov(verbose=True)
 
 
@@ -147,7 +147,7 @@ def build_doc(
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):  # pragma: no cover
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.PUBLISH_DOCUMENTATION_WEBSITE,
@@ -161,7 +161,7 @@ def build_doc(
     pyproject_ops.build_doc()
 
 
-def view_doc(pyproject_ops: "pyops.PyProjectOps"):
+def view_doc(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     pyproject_ops.view_doc()
 
 
@@ -178,7 +178,7 @@ def deploy_versioned_doc(
     bucket: str,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):  # pragma: no cover
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.PUBLISH_DOCUMENTATION_WEBSITE,
@@ -206,7 +206,7 @@ def deploy_latest_doc(
     bucket: str,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):  # pragma: no cover
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.PUBLISH_DOCUMENTATION_WEBSITE,
@@ -224,5 +224,5 @@ def deploy_latest_doc(
 def view_latest_doc(
     pyproject_ops: "pyops.PyProjectOps",
     bucket: str,
-):
+):  # pragma: no cover
     pyproject_ops.view_latest_doc(bucket=bucket)

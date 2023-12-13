@@ -13,7 +13,7 @@ from ..vendor.better_pathlib import temp_cwd
 from ..constants import EnvVarNameEnum
 from ..env_var import temp_env_var
 
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:  # pragma: no cover
     from boto_session_manager import BotoSesManager
 
 
@@ -22,7 +22,7 @@ def cdk_deploy(
     dir_cdk: Path,
     env_name: str,
     skip_prompt: bool = False,
-):
+):  # pragma: no cover
     """
     Run ``cdk deploy ...`` command.
     """
@@ -40,7 +40,7 @@ def cdk_destroy(
     env_name: str,
     dir_cdk: Path,
     skip_prompt: bool = False,
-):
+):  # pragma: no cover
     """
     Run ``cdk destroy ...`` command.
     """

@@ -82,21 +82,22 @@ class BaseConfig(
                 # your implementation here
 
             @property
-            def sbx(self) -> Env:
+            def sbx(self):
                 return self.get_env("sbx")
 
             @property
-            def tst(self) -> Env:
+            def tst(self):
                 return self.get_env("tst")
 
             @property
-            def stg(self) -> Env:
+            def stg(self):
                 return self.get_env("stg")
 
             @property
-            def prd(self) -> Env:
+            def prd(self):
                 return self.get_env("prd")
     """
+
     @cached_property
     def devops(self):  # pragma: no cover
         return self.get_env(env_name=CommonEnvNameEnum.devops.value)
@@ -160,7 +161,7 @@ class BaseConfig(
                 path_config=f"{path_config_json}",
                 path_secret_config=f"{path_config_secret_json}",
             )
-        elif runtime.is_ci:
+        elif runtime.is_ci:  # pragma: no cover
             # read non-sensitive config from local file system
             # and then figure out what is the parameter name
             config = cls(
@@ -186,7 +187,7 @@ class BaseConfig(
                 parameter_with_encryption=True,
             )
         # app runtime
-        else:
+        else:  # pragma: no cover
             # read the parameter name from environment variable
             parameter_name = os.environ["PARAMETER_NAME"]
             # read config from parameter store
@@ -208,7 +209,7 @@ class BaseConfig(
         version: str,
         path_config_json: T.Optional[Path] = None,
         path_config_secret_json: T.Optional[Path] = None,
-    ):
+    ):  # pragma: no cover
         """
         Create a backup of the current production config data in S3. The version
         is the project semantic version x.y.z. The version file is immutable.
@@ -232,7 +233,7 @@ class BaseConfig(
                 path_config=f"{path_config_json}",
                 path_secret_config=f"{path_config_secret_json}",
             )
-        elif runtime.is_ci:
+        elif runtime.is_ci:  # pragma: no cover
             # read non-sensitive config from local file system
             # and then figure out what is the parameter name
             config = cls(
@@ -249,7 +250,7 @@ class BaseConfig(
                 parameter_name=config.parameter_name,
                 parameter_with_encryption=True,
             )
-        else:
+        else:  # pragma: no cover
             raise RuntimeError
 
         config_data = {"data": config.data, "secret_data": config.secret_data}

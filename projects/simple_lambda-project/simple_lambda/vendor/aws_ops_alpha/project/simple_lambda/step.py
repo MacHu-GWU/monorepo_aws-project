@@ -28,7 +28,7 @@ from .constants import StepEnum, GitBranchNameEnum
 from .rule import RuleSet, rule_set as default_rule_set
 
 # type hint
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:# pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
     from s3pathlib import S3Path
@@ -59,7 +59,7 @@ semantic_branch_rule = sem_branch.SemanticBranchRule(
 def build_lambda_source(
     pyproject_ops: "pyops.PyProjectOps",
     verbose: bool = False,
-):
+):# pragma: no cover
     source_sha256, path_source_zip = aws_lambda_helpers.build_lambda_source(
         pyproject_ops=pyproject_ops,
         verbose=verbose,
@@ -87,7 +87,7 @@ def publish_lambda_layer(
     tags: T.Dict[str, str],
     check=True,
     rule_set: RuleSet = default_rule_set,
-):
+):# pragma: no cover
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.PUBLISH_LAMBDA_LAYER,
@@ -136,7 +136,7 @@ def publish_lambda_version(
     lbd_func_name_list: T.List[str],
     check=True,
     rule_set: RuleSet = default_rule_set,
-):
+):# pragma: no cover
     """
     Publish a new lambda version from latest.
     """
@@ -176,7 +176,7 @@ def deploy_app(
     skip_prompt: bool = False,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):# pragma: no cover
     logger.info(f"deploy app to {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
     url = aws_console.cloudformation.filter_stack(name=stack_name)
@@ -228,7 +228,7 @@ def delete_app(
     skip_prompt: bool = False,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):# pragma: no cover
     logger.info(f"delete app from {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
     url = aws_console.cloudformation.filter_stack(name=stack_name)
@@ -273,7 +273,7 @@ def run_int_test(
     wait: bool = False,
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
-):
+):# pragma: no cover
     logger.info(f"Run integration test in {env_name!r} env...")
     if check:
         flag = rule_set.should_we_do_it(

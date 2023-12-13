@@ -14,7 +14,7 @@ from ..vendor.emoji import Emoji
 from ..logger import logger
 
 
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
     from s3pathlib import S3Path
@@ -23,7 +23,7 @@ if T.TYPE_CHECKING:
 def build_lambda_source(
     pyproject_ops: "pyops.PyProjectOps",
     verbose: bool = True,
-) -> T.Tuple[str, Path]:
+) -> T.Tuple[str, Path]:  # pragma: no cover
     """
     Wrapper of ``aws_lambda_layer.api.build_source_artifacts``.
 
@@ -50,7 +50,7 @@ def deploy_layer(
     layer_name: str,
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
-) -> T.Optional[aws_lambda_layer.LayerDeployment]:
+) -> T.Optional[aws_lambda_layer.LayerDeployment]:  # pragma: no cover
     """
     Publish lambda layer.
 
@@ -75,7 +75,7 @@ def grant_layer_permission(
     bsm_devops: "BotoSesManager",
     workload_bsm_list: T.List["BotoSesManager"],
     layer_deployment: aws_lambda_layer.LayerDeployment,
-) -> T.List[str]:
+) -> T.List[str]:  # pragma: no cover
     principal_list = list()
     for bsm_workload in workload_bsm_list:
         if (bsm_devops.aws_account_id == bsm_workload.aws_account_id) and (
@@ -95,7 +95,7 @@ def grant_layer_permission(
 def explain_layer_deployment(
     bsm_devops: "BotoSesManager",
     layer_deployment: T.Optional[aws_lambda_layer.LayerDeployment],
-):
+):  # pragma: no cover
     if layer_deployment is None:
         logger.info(
             f"{Emoji.red_circle} don't publish layer, "

@@ -18,7 +18,7 @@ from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers
 
 # type hint
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:  # pragma: no cover
     from boto_session_manager import BotoSesManager
 
 
@@ -32,7 +32,7 @@ def cdk_deploy(
     dir_cdk: Path,
     stack_name: str,
     skip_prompt: bool = False,
-):
+):  # pragma: no cover
     """
     Run ``cdk deploy ...`` command.
     """
@@ -47,6 +47,7 @@ def cdk_deploy(
         skip_prompt=skip_prompt,
     )
 
+
 @logger.emoji_block(
     msg="Run 'cdk destroy'",
     emoji=Emoji.cloudformation,
@@ -57,7 +58,7 @@ def cdk_destroy(
     dir_cdk: Path,
     stack_name: str,
     skip_prompt: bool = False,
-):
+):  # pragma: no cover
     """
     Run ``cdk destroy ...`` command.
     """
