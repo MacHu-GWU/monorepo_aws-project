@@ -22,7 +22,7 @@ class Env(
     AppMixin,
     LambdaDeployMixin,
     LambdaFunctionMixin,
-    aws_ops_alpha.Env,
+    aws_ops_alpha.BaseEnv,
 ):
     @classmethod
     def from_dict(cls, data: dict):
@@ -38,24 +38,27 @@ class Env(
             lbd_func.env = env
         return env
 
+    def my_smart_method(self):
+        pass
+
 
 @dataclasses.dataclass
-class Config(aws_ops_alpha.Config):
+class Config(aws_ops_alpha.BaseConfig[Env]):
     @classmethod
     def get_current_env(cls) -> str:  # pragma: no cover
         return detect_current_env()
 
     @cached_property
-    def sbx(self) -> Env:  # pragma: no cover
-        return self.get_env(env_name=EnvNameEnum.sbx)
+    def sbx(self):  # pragma: no cover
+        return self.get_env(env_name=EnvNameEnum.sbx.value)
 
     @cached_property
     def tst(self) -> Env:  # pragma: no cover
-        return self.get_env(env_name=EnvNameEnum.tst)
+        return self.get_env(env_name=EnvNameEnum.tst.value)
 
     @cached_property
     def prd(self) -> Env:  # pragma: no cover
-        return self.get_env(env_name=EnvNameEnum.prd)
+        return self.get_env(env_name=EnvNameEnum.prd.value)
 
     @cached_property
     def env(self) -> Env:

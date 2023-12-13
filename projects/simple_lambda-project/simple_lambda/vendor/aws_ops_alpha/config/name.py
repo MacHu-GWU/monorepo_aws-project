@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Naming convention related configs.
+"""
+
 import typing as T
 import dataclasses
 
@@ -16,4 +20,7 @@ class NameMixin:
 
     @property
     def cloudformation_stack_name(self: "BaseEnv") -> str:
+        """
+        Cloudformation stack name.
+        """
         return self.prefix_name_slug

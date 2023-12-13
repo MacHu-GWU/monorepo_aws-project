@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+"""
+Extend the ``config_patterns.multi_env_json`` module to add more AWS project
+specific features.
+"""
+
 import typing as T
 import os
 import json
 import dataclasses
 from pathlib import Path
-from functools import cached_property
 
 import config_patterns.api as config_patterns
 from s3pathlib import S3Path
@@ -28,6 +32,21 @@ class BaseEnv(
     NameMixin,
     DeployMixin,
 ):
+    """
+    Extend the ``config_patterns.multi_env_json.BaseEnv`` class to add more
+    AWS project specific config fields and methods.
+
+    Example::
+
+        import typing as T
+        import dataclasses
+
+        @dataclasses.dataclass
+        class Env(BaseEnv):
+            username: T.Optional[str] = dataclasses.field(default=None)
+            password: T.Optional[str] = dataclasses.field(default=None)
+    """
+
     @classmethod
     def from_dict(cls, data: dict):
         return cls(**data)
@@ -37,14 +56,38 @@ T_BASE_ENV = T.TypeVar("T_BASE_ENV", bound=BaseEnv)
 
 
 @dataclasses.dataclass
-class BaseConfig(config_patterns.multi_env_json.BaseConfig[BaseEnv]):
-    @classmethod
-    def get_current_env(cls) -> str:  # pragma: no cover
-        raise NotImplementedError("You must implement this method")
+class BaseConfig(
+    config_patterns.multi_env_json.BaseConfig[T_BASE_ENV],
+    T.Generic[T_BASE_ENV],
+):
+    """
+    Extend the ``config_patterns.multi_env_json.BaseConfig`` class to add more
+    AWS project specific methods.
 
-    @cached_property
-    def env(self) -> BaseEnv:
-        return self.get_env(env_name=self.get_current_env())
+    Example::
+
+        import typing as T
+        import dataclasses
+
+        @dataclasses.dataclass
+        class Env(BaseEnv):
+            username: T.Optional[str] = dataclasses.field(default=None)
+            password: T.Optional[str] = dataclasses.field(default=None)
+
+        @dataclasses.dataclass
+        class Config(BaseConfig[Env]):
+            @property
+            def dev_env(self) -> Env:
+                return self.get_env("dev")
+
+            @property
+            def int_env(self) -> Env:
+                return self.get_env("int")
+
+            @property
+            def prod_env(self) -> Env:
+                return self.get_env("prod")
+    """
 
     @classmethod
     def smart_load(
