@@ -79,26 +79,10 @@ jobs:
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s03_04_run_int_test.py
-#      - name: 🔯 Create Config Snapshot
-#        if: ${{ env.USER_ENV_NAME == 'prd' }}
-#        working-directory: ${{ env.DIR_PROJECT }}
-#        run: |
-#          echo create config snapshot on $${ env.USER_ENV_NAME }}
-#      - name: 🏷️ Create Git Tag
-#        if: ${{ env.USER_ENV_NAME == 'prd' }}
-#        working-directory: ${{ env.DIR_PROJECT }}
-#        run: |
-#          echo create git tag on $${ env.USER_ENV_NAME }}
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1 # https://github.com/mathieudutour/github-tag-action
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1 # https://github.com/marketplace/actions/create-release
-        with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
+      - name: ⚙️ Create Config Snapshot
+        if: ${{ env.USER_ENV_NAME == 'prd' }}
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_07_create_config_snapshot.py
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
