@@ -21,12 +21,9 @@ from ...vendor import semantic_branch as sem_branch
 # modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
-from ...runtime.api import Runtime
-from ...multi_env.api import BaseEnvNameEnum
-from ...config.api import BaseConfig, BaseEnv
 
 # modules from this submodule
-from .constants import StepEnum, GitBranchNameEnum
+from .constants import StepEnum, GitBranchNameEnum, EnvNameEnum
 from .rule import RuleSet, rule_set as default_rule_set
 
 # type hint
@@ -294,51 +291,3 @@ def run_int_test(
     if wait:
         time.sleep(5)
     pyproject_ops.run_int_test()
-
-
-@logger.emoji_block(
-    msg="Create Config Snapshot",
-    emoji=Emoji.config,
-)
-def create_config_snapshot(
-    git_branch_name: str,
-    env_name: str,
-    runtime_name: str,
-    runtime: Runtime,
-    bsm_devops: "BotoSesManager",
-    env_name_enum_class: T.Union[BaseEnvNameEnum, T.Type[BaseEnvNameEnum]],
-    env_class: T.Type[BaseEnv],
-    config_class: T.Type[BaseConfig],
-    version: str,
-    path_config_json: T.Optional[Path] = None,
-    path_config_secret_json: T.Optional[Path] = None,
-    check: bool = True,
-    rule_set: RuleSet = default_rule_set,
-):  # pragma: no cover
-    logger.info(f"Create Config Snapshot in {env_name!r} env...")
-    if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.CREATE_CONFIG_SNAPSHOT,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
-            runtime_name=runtime_name,
-        )
-        if flag is False:
-            return
-
-    s3path, flag = config_class.smart_backup(
-        runtime=runtime,
-        bsm_devops=bsm_devops,
-        env_name_enum_class=env_name_enum_class,
-        env_class=env_class,
-        version=version,
-        path_config_json=path_config_json,
-        path_config_secret_json=path_config_secret_json,
-    )
-
-    if flag:
-        logger.info(f"{Emoji.green_circle} config snapshot is saved to {s3path.uri}")
-    else:
-        logger.info(f"{Emoji.red_circle} config snapshot already exists at {s3path.uri}")
-    logger.info(f"preview it at: {s3path.console_url}")
-

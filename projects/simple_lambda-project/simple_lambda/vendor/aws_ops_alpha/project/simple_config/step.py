@@ -18,6 +18,7 @@ from ...vendor import semantic_branch as sem_branch
 
 # modules from this project
 from ...logger import logger
+from ...constants import CommonEnvNameEnum
 from ...runtime.api import Runtime
 from ...multi_env.api import BaseEnvNameEnum
 from ...config.api import BaseConfig, BaseEnv, T_BASE_CONFIG
@@ -151,7 +152,10 @@ def create_config_snapshot(
     check: bool = True,
     rule_set: RuleSet = default_rule_set,
 ):  # pragma: no cover
-    logger.info(f"Create Config Snapshot in {env_name!r} env...")
+    logger.info(
+        f"Now we are in {env_name!r}, "
+        f"Create Config Snapshot in {CommonEnvNameEnum.devops.value!r} environment ..."
+    )
     if check:
         flag = rule_set.should_we_do_it(
             step=StepEnum.CREATE_CONFIG_SNAPSHOT,
@@ -162,7 +166,7 @@ def create_config_snapshot(
         if flag is False:
             return
 
-    s3path = config_class.smart_backup(
+    s3path, flag = config_class.smart_backup(
         runtime=runtime,
         bsm_devops=bsm_devops,
         env_name_enum_class=env_name_enum_class,

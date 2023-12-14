@@ -262,7 +262,7 @@ def run_int_test(check: bool = True):
 
 
 def create_config_snapshot(check: bool = True):
-    simple_lambda_project.create_config_snapshot(
+    simple_config_project.create_config_snapshot(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.current_runtime_group,
@@ -275,6 +275,7 @@ def create_config_snapshot(check: bool = True):
         path_config_json=paths.path_config_json,
         path_config_secret_json=paths.path_config_secret_json,
         check=check,
+        rule_set=simple_lambda_project.rule_set,
     )
 
 

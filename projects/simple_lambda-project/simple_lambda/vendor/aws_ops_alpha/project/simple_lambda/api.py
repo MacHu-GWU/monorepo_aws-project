@@ -18,4 +18,3 @@ from .step import publish_lambda_version
 from .step import deploy_app
 from .step import delete_app
 from .step import run_int_test
-from .step import create_config_snapshot
