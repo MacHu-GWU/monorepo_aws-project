@@ -11,8 +11,8 @@ from functools import cached_property
 
 from boto_session_manager import BotoSesManager
 
-from .constants import CommonEnvNameEnum
-from .runtime.api import Runtime
+from ..constants import CommonEnvNameEnum
+from ..runtime.api import Runtime
 
 
 @dataclasses.dataclass

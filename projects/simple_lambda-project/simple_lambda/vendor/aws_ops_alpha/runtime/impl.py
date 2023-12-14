@@ -25,22 +25,6 @@ Requirements: Python>=3.8
 Dependencies::
 
     cached-property>=1.5.2; python_version < '3.8'
-
-Usage example:
-
-    # use in aws_ops_alpha
-    >>> import aws_ops_alpha.api as aws_ops_alpha
-    >>> aws_ops_alpha.runtime.is_local
-    True
-    >>> aws_ops_alpha.runtime.current_runtime
-    'local'
-
-    # use standalone
-    >>> from runtime import runtime
-    >>> runtime.is_local
-    True
-    >>> runtime.current_runtime
-    'local'
 """
 
 import os
@@ -49,26 +33,36 @@ import enum
 from functools import cached_property
 
 
+class RunTimeGroupEnum(str, enum.Enum):
+    """
+    Enumeration of common runtime groups in AWS projects.
+    """
+
+    local = "local"
+    ci = "ci"
+    app = "app"
+    unknown = "unknown"
+
+
 class RunTimeEnum(str, enum.Enum):
     """
     Enumeration of common runtime in AWS projects.
     """
 
-    # local runtime
+    # local runtime group
     local = "local"
-    # ci runtimes
+    aws_cloud9 = "aws_cloud9"
+    # ci runtime group
     aws_codebuild = "aws_codebuild"
     github_action = "github_action"
     gitlab_ci = "gitlab_ci"
     bitbucket_pipeline = "bitbucket_pipeline"
     circleci = "circleci"
     jenkins = "jenkins"
-    ci = "ci"
-    # app runtimes
+    # app runtime group
     aws_lambda = "aws_lambda"
     aws_batch = "aws_batch"
     aws_glue = "aws_glue"
-    aws_cloud9 = "aws_cloud9"
     aws_ec2 = "aws_ec2"
     aws_ecs = "aws_ecs"
     # special runtimes
@@ -85,58 +79,79 @@ class Runtime:
     You can extend this class to add more runtime detection logic.
     """
 
+    # --------------------------------------------------------------------------
+    # detect if it is a specific runtime
+    # --------------------------------------------------------------------------
     @cached_property
     def is_aws_codebuild(self) -> bool:
-        # ref: https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+        """
+        Reference:
+
+        - https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+        """
         return "CODEBUILD_BUILD_ID" in os.environ
 
     @cached_property
     def is_github_action(self) -> bool:
-        # ref: https://docs.github.com/en/actions/learn-github-actions/variables
+        """
+        Reference:
+
+        - https://docs.github.com/en/actions/learn-github-actions/variables
+        """
         return "GITHUB_ACTION" in os.environ
 
     @cached_property
     def is_gitlab_ci(self) -> bool:
-        # ref: https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+        """
+        Reference:
+
+        - https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+        """
         return "CI_PROJECT_ID" in os.environ
 
     @cached_property
     def is_bitbucket_pipeline(self) -> bool:
-        # ref: https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/
+        """
+        Reference:
+
+        - https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/
+        """
         return "BITBUCKET_BUILD_NUMBER" in os.environ
 
     @cached_property
     def is_circleci(self) -> bool:
-        # ref: https://circleci.com/docs/variables/
+        """
+        Reference:
+
+        - https://circleci.com/docs/variables/
+        """
         return "CIRCLECI" in os.environ
 
     @cached_property
     def is_jenkins(self) -> bool:
-        # ref: https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#using-environment-variables
+        """
+        Reference:
+
+        - https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#using-environment-variables
+        """
         return "BUILD_TAG" in os.environ and "EXECUTOR_NUMBER" in os.environ
 
     @cached_property
-    def is_ci(self) -> bool:
-        if (
-            self.is_aws_codebuild
-            or self.is_github_action
-            or self.is_gitlab_ci
-            or self.is_bitbucket_pipeline
-            or self.is_circleci
-            or self.is_jenkins
-        ):
-            return True
-        else:
-            return "CI" in os.environ
-
-    @cached_property
     def is_aws_lambda(self) -> bool:
-        # ref: https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html
+        """
+        Reference:
+
+        - https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html
+        """
         return "AWS_LAMBDA_FUNCTION_NAME" in os.environ
 
     @cached_property
     def is_aws_batch(self) -> bool:
-        # ref: https://docs.aws.amazon.com/batch/latest/userguide/job_env_vars.html
+        """
+        Reference:
+
+        - https://docs.aws.amazon.com/batch/latest/userguide/job_env_vars.html
+        """
         return "AWS_BATCH_JOB_ID" in os.environ
 
     @cached_property
@@ -145,19 +160,35 @@ class Runtime:
 
     @cached_property
     def is_aws_cloud9(self) -> bool:
+        """
+        We use "C9" environment variable to detect AWS Cloud9 runtime.
+        Note that this method may not be stable. But you could add the
+        ``export C9=true`` to the ``~/.bashrc`` or ``~/.bash_profile``.
+
+        Reference:
+
+        - https://docs.aws.amazon.com/cloud9/latest/user-guide/env-vars.html
+        """
         return "C9" in os.environ
 
     @cached_property
     def is_aws_ec2(self) -> bool:
-        # there's no official way to detect if it is ec2 instance
-        # you could set a custom environment variable for all your ec2 instances
+        """
+        There's no official way to detect if it is ec2 instance,
+        you could set a custom environment variable for all your ec2 instances
+        """
         return "IS_AWS_EC2" in os.environ
 
     @cached_property
     def is_aws_ecs(self) -> bool:
-        # there's no official way to detect if it is ec2 instance
-        # you could set a custom environment variable for all your ec2 instances
-        # ref: https://docs.aws.amazon.com/AmazonECS/latest/userguide/taskdef-envfiles.html
+        """
+        There's no official way to detect if it is ecs task container,
+        you could set a custom environment variable for all your ec2 instances
+
+        Reference:
+
+        - https://docs.aws.amazon.com/AmazonECS/latest/userguide/taskdef-envfiles.html
+        """
         return "IS_AWS_ECS_TASK" in os.environ
 
     @cached_property
@@ -173,7 +204,6 @@ class Runtime:
             or self.is_bitbucket_pipeline
             or self.is_circleci
             or self.is_jenkins
-            or self.is_ci
             or self.is_aws_lambda
             or self.is_aws_batch
             or self.is_aws_glue
@@ -184,7 +214,7 @@ class Runtime:
         return not flag
 
     @cached_property
-    def current_runtime(self):  # pragma: no cover
+    def current_runtime(self) -> str:  # pragma: no cover
         """
         Return the human friendly name of the current runtime.
         """
@@ -200,8 +230,6 @@ class Runtime:
             return RunTimeEnum.circleci.value
         if self.is_jenkins:
             return RunTimeEnum.jenkins.value
-        if self.is_ci:
-            return RunTimeEnum.ci.value
         if self.is_aws_lambda:
             return RunTimeEnum.aws_lambda.value
         if self.is_aws_batch:
@@ -218,19 +246,60 @@ class Runtime:
             return RunTimeEnum.local.value
         return RunTimeEnum.unknown.value
 
+    # --------------------------------------------------------------------------
+    # detect if it is a specific runtime group
+    # --------------------------------------------------------------------------
     @cached_property
-    def local_or_ci(self) -> str: # pragma: no cover
+    def is_local_runtime_group(self) -> bool:
         """
-        Return "local" or "ci" if it is local or CI. Otherwise, raise an exception.
-
-        This is useful when you want to use different settings for local and CI.
+        Where developer has access to the local file system and operating system.
         """
-        if self.is_ci:
-            return RunTimeEnum.ci.value
-        if self.is_local:
-            return RunTimeEnum.local.value
-        raise RuntimeError("Not in local or CI environment")
+        return self.is_local or self.is_aws_cloud9
+
+    @cached_property
+    def is_ci_runtime_group(self) -> bool:  # pragma: no cover
+        """
+        Where CI/CD automation code runs.
+        """
+        if (
+            self.is_aws_codebuild
+            or self.is_github_action
+            or self.is_gitlab_ci
+            or self.is_bitbucket_pipeline
+            or self.is_circleci
+            or self.is_jenkins
+        ):
+            return True
+        else:
+            return "CI" in os.environ
+
+    @cached_property
+    def is_app_runtime_group(self) -> bool:
+        """
+        Where application code runs.
+        """
+        return (
+            self.is_aws_lambda
+            or self.is_aws_batch
+            or self.is_aws_glue
+            or self.is_aws_cloud9
+            or self.is_aws_ec2
+            or self.is_aws_ecs
+        )
+
+    @cached_property
+    def current_runtime_group(self) -> str:  # pragma: no cover
+        """
+        Return the human friendly name of the current runtime group.
+        """
+        if self.is_ci_runtime_group:
+            return RunTimeGroupEnum.ci.value
+        if self.is_app_runtime_group:
+            return RunTimeGroupEnum.app.value
+        if self.is_local_runtime_group:
+            return RunTimeGroupEnum.local.value
+        return RunTimeGroupEnum.unknown.value
 
 
-# A singleton object that is used in your concrete project.
+# A singleton object that can be used in your concrete project.
 runtime = Runtime()

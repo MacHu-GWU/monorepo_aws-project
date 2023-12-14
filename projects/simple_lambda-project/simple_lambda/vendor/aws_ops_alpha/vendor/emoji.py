@@ -176,6 +176,7 @@ class Emoji:
     sbx = "📦"
     tst = "🧪"
     stg = "🎸"
+    qa = "👮"
     prd = "🏭"
 
     # aws codebuild

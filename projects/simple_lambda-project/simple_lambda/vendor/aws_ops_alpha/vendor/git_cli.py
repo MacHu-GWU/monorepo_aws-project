@@ -5,7 +5,7 @@ Git CLI related utilities.
 
 Usage example::
 
-    from git_cli import (
+    from fixa.git_cli import (
         temp_cwd,
         GitCLIError,
         locate_dir_repo,

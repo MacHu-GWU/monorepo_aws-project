@@ -5,6 +5,7 @@ Extend the ``config_patterns.multi_env_json`` module to add more AWS project
 specific features.
 """
 
+# standard library
 import typing as T
 import os
 import json
@@ -12,18 +13,22 @@ import dataclasses
 from pathlib import Path
 from functools import cached_property
 
+# third party library (include vendor)
 import config_patterns.api as config_patterns
 from ..vendor.jsonutils import json_loads
 
+# modules from this project
 from ..constants import CommonEnvNameEnum
-from ..runtime import Runtime
-from ..environment import BaseEnvNameEnum, detect_current_env
-from ..boto_ses import AbstractBotoSesFactory
+from ..runtime.api import Runtime
+from ..multi_env.api import BaseEnvNameEnum, detect_current_env
+from ..boto_ses.api import AbstractBotoSesFactory
 
+# modules from this submodule
 from .app import AppMixin
 from .name import NameMixin
 from .deploy import DeployMixin
 
+# type hint
 if T.TYPE_CHECKING:
     from s3pathlib import S3Path
     from boto_session_manager import BotoSesManager
@@ -136,7 +141,7 @@ class BaseConfig(
         :param boto_ses_factory: you need this parameter when loading data
             from AWS parameter store in CI.
         """
-        if runtime.is_local:
+        if runtime.is_local_runtime_group:
             # ensure that the config-secret.json file exists
             # I recommend to put it at the ${HOME}/.projects/${project_name}/config-secret.json
             # if the user haven't created it yet, this code block will print helper
@@ -164,7 +169,7 @@ class BaseConfig(
                 path_config=f"{path_config_json}",
                 path_secret_config=f"{path_config_secret_json}",
             )
-        elif runtime.is_ci:  # pragma: no cover
+        elif runtime.is_ci_runtime_group:  # pragma: no cover
             # read non-sensitive config from local file system
             # and then figure out what is the parameter name
             config = cls(
@@ -218,25 +223,24 @@ class BaseConfig(
         is the project semantic version x.y.z. The version file is immutable.
 
         :param runtime: the :class:`aws_ops_alpha.runtime.Runtime` object.
-        :param boto_ses_factory: provide the boto session to access S3
+        :param bsm_devops: boto session manager for devops account.
         :param env_name_enum_class: env name enumeration class, not the instance.
             a subclass of :class:`aws_ops_alpha.environment.BaseEnvNameEnum`.
         :param env_class: the :class:`aws_ops_alpha.config.define.main.BaseEnv` subclass.
-        :param s3dir: the s3 directory where you want to store the backup data.
         :param version: the project semantic version x.y.z
         :param path_config_json: you need this parameter when loading data from local.
             it is where you store the non-sensitive config data json file.
         :param path_config_secret_json: you need this parameter when loading data from local.
             it is where you store the sensitive config data json file.
         """
-        if runtime.is_local:
+        if runtime.is_local_runtime_group:
             config = cls.read(
                 env_class=env_class,
                 env_enum_class=env_name_enum_class,
                 path_config=f"{path_config_json}",
                 path_secret_config=f"{path_config_secret_json}",
             )
-        elif runtime.is_ci:  # pragma: no cover
+        elif runtime.is_ci_runtime_group:  # pragma: no cover
             # read non-sensitive config from local file system
             # and then figure out what is the parameter name
             config = cls(

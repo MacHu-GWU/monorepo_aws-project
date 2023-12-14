@@ -18,8 +18,8 @@ from ...vendor import semantic_branch as sem_branch
 
 # modules from this project
 from ...logger import logger
-from ...runtime import Runtime
-from ...environment import BaseEnvNameEnum
+from ...runtime.api import Runtime
+from ...multi_env.api import BaseEnvNameEnum
 from ...config.api import BaseConfig, BaseEnv, T_BASE_CONFIG
 
 

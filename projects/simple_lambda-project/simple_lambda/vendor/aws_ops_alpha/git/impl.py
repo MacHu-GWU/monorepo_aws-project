@@ -10,16 +10,17 @@ import dataclasses
 from pathlib import Path
 from functools import cached_property
 
-from .vendor import semantic_branch as sem_branch
-from .vendor.git_cli import (
+from ..vendor import semantic_branch as sem_branch
+from ..vendor.git_cli import (
+    locate_dir_repo,
     get_git_branch_from_git_cli,
     get_git_commit_id_from_git_cli,
     get_commit_message_by_commit_id,
 )
 
-from .constants import AwsOpsSemanticBranchEnum
-from .runtime import runtime
-from .logger import logger
+from ..constants import AwsOpsSemanticBranchEnum
+from ..logger import logger
+from ..runtime.api import runtime
 
 
 InvalidSemanticNameError = sem_branch.InvalidSemanticNameError
@@ -28,8 +29,27 @@ SemanticBranchRule = sem_branch.SemanticBranchRule
 
 @dataclasses.dataclass
 class GitRepo:
-    dir_repo: Path = dataclasses.field()
+    """
+    Detect the current git repo, branch, commit information.
+
+    The instance of this class is the entry point of all kinds of git related
+    variables, methods.
+
+    This is a generic class. This project provides two common git repo setup,
+    the :class:`MultiGitRepo` and :class:`MonoGitRepo`.
+
+    :param dir_repo: the path of the git repo root folder. there should be a
+        .git folder under this folder.
+    :param sem_branch_rule: A pre-defined semantic branch rule that only accept
+        certain semantic branch names.
+    """
+
+    dir_repo: T.Optional[Path] = dataclasses.field(default=None)
     sem_branch_rule: T.Optional[SemanticBranchRule] = dataclasses.field(default=None)
+
+    def __post_init__(self):
+        if self.dir_repo is None:
+            self.dir_repo = locate_dir_repo(Path.cwd())
 
     # --------------------------------------------------------------------------
     # Get git information from runtime environment
@@ -40,7 +60,7 @@ class GitRepo:
         Return the human friendly git branch name. Some CI vendor would use
         ``refs/heads/branch_name``, we only keep the ``branch_name`` part.
         """
-        if runtime.is_local:
+        if runtime.is_local_runtime_group:
             return get_git_branch_from_git_cli(self.dir_repo)
         elif runtime.is_aws_codebuild:
             raise NotImplementedError
@@ -52,7 +72,7 @@ class GitRepo:
             return os.environ.get("BITBUCKET_BRANCH")
         elif runtime.is_circleci:
             return os.environ["CIRCLE_BRANCH"]
-        elif runtime.is_jenkins:
+        elif runtime.is_jenkins:  # todo: support jenkins
             raise NotImplementedError
         else:
             raise NotImplementedError
@@ -74,7 +94,7 @@ class GitRepo:
             return os.environ.get("BITBUCKET_COMMIT")
         elif runtime.is_circleci:
             return os.environ["CIRCLE_SHA1"]
-        elif runtime.is_jenkins:
+        elif runtime.is_jenkins:  # todo: support jenkins
             raise NotImplementedError
         else:
             raise NotImplementedError
@@ -105,10 +125,22 @@ class GitRepo:
 
     @cached_property
     def semantic_branch_part(self) -> str:
+        """
+        An abstract method to get the part of the full branch name to detect
+        the semantic name.
+
+        For example, in mono-repo setup, you may have multiple projects in
+        one git repo and the full branch name would have the project name
+        as the common prefix, in this example, the method should strip the
+        project name and return the rest part of the branch name.
+        """
         raise NotImplementedError
 
     @cached_property
     def semantic_branch_name(self) -> str:
+        """
+        Get the semantic branch name.
+        """
         return self.sem_branch_rule.parse_semantic_name(self.semantic_branch_part)
 
     # --------------------------------------------------------------------------

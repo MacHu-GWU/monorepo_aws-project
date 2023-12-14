@@ -28,4 +28,6 @@ def detect_current_env() -> str:
     # from your local laptop to run application code, tests, ...
     # ----------------------------------------------------------------------
     # return EnvNameEnum.prd.value
+
+    # use the aws_ops_alpha recommended setup
     return aws_ops_alpha.detect_current_env(runtime, EnvNameEnum)

@@ -9,7 +9,7 @@ import dataclasses
 
 from s3pathlib import S3Path
 
-from ..constants import CommonEnvNameEnum
+from ..constants import CommonEnvNameEnum, EnvVarNameEnum, AwsTagNameEnum
 
 if T.TYPE_CHECKING:  # pragma: no cover
     from .main import BaseEnv
@@ -50,9 +50,9 @@ class AppMixin:
         It is primarily for "self awareness" (detect who I am, which environment I am in).
         """
         return {
-            "PARAMETER_NAME": self.parameter_name,
-            "PROJECT_NAME": self.project_name,
-            "ENV_NAME": self.env_name,
+            EnvVarNameEnum.PARAMETER_NAME.value: self.parameter_name,
+            EnvVarNameEnum.PROJECT_NAME.value: self.project_name,
+            EnvVarNameEnum.ENV_NAME.value: self.env_name,
         }
 
     @property
@@ -61,8 +61,8 @@ class AppMixin:
         Common AWS resources tags for all resources in devops environment.
         """
         return {
-            "tech:project_name": self.project_name,
-            "tech:env_name": CommonEnvNameEnum.devops.value,
+            AwsTagNameEnum.tech_project_name.value: self.project_name,
+            AwsTagNameEnum.tech_env_name.value: CommonEnvNameEnum.devops.value,
         }
 
     @property
@@ -71,6 +71,6 @@ class AppMixin:
         Common AWS resources tags for all resources in workload environment.
         """
         return {
-            "tech:project_name": self.project_name,
-            "tech:env_name": self.env_name,
+            AwsTagNameEnum.tech_project_name.value: self.project_name,
+            AwsTagNameEnum.tech_env_name.value: self.env_name,
         }

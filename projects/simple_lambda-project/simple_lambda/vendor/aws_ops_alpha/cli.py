@@ -19,7 +19,7 @@ class Command:
             print(__version__)
             return
 
-        print("type aws_ops_alpha -h for help")
+        print("type 'aws_ops_alpha -h' for help")
 
     def display(self, name: T.Optional[str] = None):
         """
@@ -29,9 +29,9 @@ class Command:
         """
         if name is None:
             dir_here = Path(__file__).absolute().parent
-            dir_workflow = dir_here / "workflow"
+            dir_project = dir_here / "project"
             name_list = list()
-            for dir_folder in dir_workflow.iterdir():
+            for dir_folder in dir_project.iterdir():
                 if dir_folder.is_dir():
                     if dir_folder.joinpath("api.py").exists():
                         name_list.append(dir_folder.name)
@@ -42,7 +42,7 @@ class Command:
             for name in name_list:
                 print(f"aws_ops_alpha display {name}")
             return
-        importlib.import_module(f"aws_ops_alpha.workflow.{name}.api").rule_set.display()
+        importlib.import_module(f"aws_ops_alpha.project.{name}.api").rule_set.display()
 
 
 def main():

@@ -47,17 +47,66 @@ In ``aws_ops_alpha`` best practice, we have five environments:
 
 import typing as T
 import os
+import string
 
 import config_patterns.api as config_patterns
-from .vendor.emoji import Emoji
+from ..vendor.emoji import Emoji
 
-from .constants import CommonEnvNameEnum, EnvVarNameEnum
-from .runtime import Runtime
+from ..constants import CommonEnvNameEnum, EnvVarNameEnum
+from ..runtime.api import Runtime
+
+
+_lowercase = set(string.ascii_lowercase)
+_env_name_charset = set(string.ascii_lowercase + string.digits)
+
+
+class EnvNameValidationError(ValueError):
+    """
+    Raise this error when the environment name is invalid.
+    """
+
+
+def validate_env_name(env_name: str):  # pragma: no cover
+    """
+    Validate the environment name. It has to be ``[a-z0-9]``, first letter
+    has to be ``[a-z]``.
+    """
+    if env_name[0] not in _lowercase:
+        raise EnvNameValidationError(
+            f"{env_name!r} is an invalid env name, "
+            f"first letter of env_name has to be a-z!"
+        )
+    if len(set(env_name).difference(_env_name_charset)):
+        raise EnvNameValidationError(
+            f"{env_name!r} is an invalid env name, " f"env_name can only has a-z, 0-9"
+        )
 
 
 class BaseEnvNameEnum(config_patterns.multi_env_json.BaseEnvEnum):
     """
-    Base env enum for workload environments.
+    A base class for environment name enumerations.
+
+    This class facilitates the referencing of environment names in your code,
+    making it easier and more organized. Additionally, it provides several capabilities:
+
+    1. Validation of environment names.
+    2. Iteration over all available environment names.
+
+    To define your own environment name enumerations class, you need to subclass
+    this class. However, there are some restrictions:
+
+    1. You cannot create a "devops" environment as it does not qualify as a workload environment.
+    1. You must include at least a "devops", a "sbx" (sandbox) environment
+        and a "prd" (production) environment.
+    2. environment name has to be lower case, without
+
+    A base class for environment name enumerations.
+
+    It made easier to reference the environment name in the code. It also provides
+    additional capabilities like:
+
+    1. validate the environment name
+    2. iterate over all environment names
 
     You have to subclass this class to define your own workload environments.
     There are some restriction:
@@ -73,13 +122,15 @@ class BaseEnvNameEnum(config_patterns.multi_env_json.BaseEnvEnum):
             or cls.is_valid_value(CommonEnvNameEnum.sbx.value) is False
             or cls.is_valid_value(CommonEnvNameEnum.prd.value) is False
         ):
-            raise ValueError(
+            raise EnvNameValidationError(
                 f"you have to define at least "
                 f"a {CommonEnvNameEnum.devops.value!r}, "
                 f"a {CommonEnvNameEnum.sbx.value!r}, "
                 f"and a {CommonEnvNameEnum.prd.value!r} environment,"
                 f"you only have {list(cls)}."
             )
+        for env_name in cls:
+            validate_env_name(env_name.value)
 
     @classmethod
     def _get_devops(cls):
@@ -100,13 +151,14 @@ env_emoji_mapper = {
     CommonEnvNameEnum.dev.value: Emoji.dev,
     CommonEnvNameEnum.tst.value: Emoji.tst,
     CommonEnvNameEnum.stg.value: Emoji.stg,
+    CommonEnvNameEnum.qa.value: Emoji.qa,
     CommonEnvNameEnum.prd.value: Emoji.prd,
 }
 
 
 class EnvNameEnum(BaseEnvNameEnum):
     """
-    Base env enum for workload environments.
+    aws_ops_alphas recommended multi-environments setup.
     """
 
     devops = CommonEnvNameEnum.devops.value
@@ -118,7 +170,7 @@ class EnvNameEnum(BaseEnvNameEnum):
     @property
     def emoji(self) -> str:
         """
-        Return a emoji representation of the environment name.
+        Return an emoji representation of the environment name.
         """
         return env_emoji_mapper[self.value]
 
@@ -130,44 +182,30 @@ def detect_current_env(
     """
     Smartly detect the current environment name.
 
-    If it is a local runtime, by default, it is sandbox. User can override it
-    by setting the environment name in the environment variable ``USER_ENV_NAME``.
-
-    If it is a CI runtime or the application runtime, it uses the value
-    of environment variable ``USER_ENV_NAME``.
+    1. If it is a local runtime, by default it is sandbox. User can override it
+        by setting the environment name in the environment variable ``USER_ENV_NAME``.
+    2. If it is a ci runtime or an app runtime, if prioritize to
+        use ``USER_ENV_NAME`` environment variable, if it is not set,
+        it will use the ``ENV_NAME`` environment variable.
 
     :param runtime: the :class:`aws_ops_alpha.runtime.Runtime` object, that
         is the entry point of all kinds of runtime related variables, methods..
     :param env_name_enum_class: a subclass of ``BaseEnvNameEnum``, note that
-        this is NOT a instance, it is the enum class
+        this is NOT an instance, it is the enum class
     """
-    # ----------------------------------------------------------------------
     # Validate the implementation of the enum.
-    # ----------------------------------------------------------------------
     env_name_enum_class.validate()
 
-    # ----------------------------------------------------------------------
-    # For local laptop, by default we use sbx environment
-    # But you can use the "USER_ENV_NAME" environment variable to override it
-    # ----------------------------------------------------------------------
-    if runtime.is_local:
+    if runtime.is_local_runtime_group:
         if EnvVarNameEnum.USER_ENV_NAME.value in os.environ:
             return os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
         return env_name_enum_class._get_sbx().value
-    # ----------------------------------------------------------------------
-    # For ci runtime, the job runtime should use the  "USER_ENV_NAME"
-    # environment variable to identify the env name. If it is "devops"
-    # we skip the env name validation
-    # ----------------------------------------------------------------------
-    elif runtime.is_ci:
-        env_name = os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
+    elif runtime.is_ci_runtime_group or runtime.is_app_runtime_group:
+        if EnvVarNameEnum.USER_ENV_NAME.value in os.environ:
+            env_name = os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
+        else:
+            env_name = os.environ[EnvVarNameEnum.ENV_NAME.value]
         env_name_enum_class.ensure_is_valid_value(env_name)
         return env_name
-    # ----------------------------------------------------------------------
-    # For app runtime, it should use the  "USER_ENV_NAME" environment variable
-    # to identify the env name. It should NEVER be "devops"
-    # ----------------------------------------------------------------------
-    else:
-        env_name = os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
-        env_name_enum_class.ensure_is_valid_value(env_name)
-        return env_name
+    else: # pragma: no cover
+        raise NotImplementedError

@@ -15,7 +15,7 @@ from ...vendor import semantic_branch as sem_branch
 
 # modules from this project
 from ...logger import logger
-from ...runtime import runtime
+from ...runtime.api import runtime
 
 # modules from this submodule
 from .constants import StepEnum, GitBranchNameEnum
@@ -28,19 +28,19 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 
 semantic_branch_rules = {
-    GitBranchNameEnum.main: ["main", "master"],
-    GitBranchNameEnum.feature: ["feature", "feat"],
-    GitBranchNameEnum.fix: ["fix"],
-    GitBranchNameEnum.test: ["test"],
-    GitBranchNameEnum.doc: ["doc"],
-    GitBranchNameEnum.release: ["release", "rls"],
+    GitBranchNameEnum.main.value: ["main", "master"],
+    GitBranchNameEnum.feature.value: ["feature", "feat"],
+    GitBranchNameEnum.fix.value: ["fix"],
+    GitBranchNameEnum.test.value: ["test"],
+    GitBranchNameEnum.doc.value: ["doc"],
+    GitBranchNameEnum.release.value: ["release", "rls"],
 }
 
 semantic_branch_rule = sem_branch.SemanticBranchRule(
     rules=semantic_branch_rules,
 )
 
-quiet = True if runtime.is_ci else False
+quiet = True if runtime.is_ci_runtime_group else False
 
 
 def pip_install(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover

@@ -21,8 +21,8 @@ from ...vendor import semantic_branch as sem_branch
 # modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
-from ...runtime import Runtime
-from ...environment import BaseEnvNameEnum, EnvNameEnum
+from ...runtime.api import Runtime
+from ...multi_env.api import BaseEnvNameEnum
 from ...config.api import BaseConfig, BaseEnv
 
 # modules from this submodule
