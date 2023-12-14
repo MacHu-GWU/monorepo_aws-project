@@ -143,6 +143,13 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
     aws_region: T.Optional[str] = dataclasses.field(default=None)
     default_app_env_name: str = dataclasses.field(default=CommonEnvNameEnum.sbx.value)
 
+    def __post_init__(self):
+        if self.default_app_env_name == CommonEnvNameEnum.devops.value:
+            raise ValueError(
+                "default_app_env_name cannot be 'devops'! "
+                "'devops' is NOT an app environment."
+            )
+
     @abc.abstractmethod
     def get_env_role_arn(self, env_name: str) -> str:
         """
@@ -177,15 +184,25 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
     def get_devops_bsm(self) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for devops AWS account.
+
+        1. for local laptop, you should use the devops AWS cli profile
+        2. for AWS cloud 9, the cloud 9 default IAM role is the devops role
+        3. for ci runtime, the default IAM principal is the devops role
         """
-        if self.runtime.is_local:
-            kwargs = dict(
-                profile_name=self.env_to_profile_mapper[CommonEnvNameEnum.devops.value]
-            )
-            if self.aws_region:
-                kwargs["region_name"] = self.aws_region
-            return BotoSesManager(**kwargs)
-        elif self.runtime.is_ci or self.runtime.is_aws_cloud9:
+        if self.runtime.is_local_runtime_group:
+            if self.runtime.is_aws_cloud9:
+                if self.aws_region:
+                    return BotoSesManager(region_name=self.aws_region)
+                else:
+                    return BotoSesManager()
+            else:
+                kwargs = dict(
+                    profile_name=self.env_to_profile_mapper[CommonEnvNameEnum.devops.value]
+                )
+                if self.aws_region:
+                    kwargs["region_name"] = self.aws_region
+                return BotoSesManager(**kwargs)
+        elif self.runtime.is_ci_runtime_group:
             if self.aws_region:
                 return BotoSesManager(region_name=self.aws_region)
             else:
@@ -208,6 +225,16 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         Developers can also use this method to explicitly switch to the AWS account
         of a specific environment.
 
+        1. for local laptop, but not AWS cloud 9, you should use the AWS CLI named profile
+        2. for ci runtime or AWS cloud 9, you should use the devops role to assume the
+            given workload role. But if the env_name is devops, then return the devops role
+            immediately without assuming any role.
+            there's a pitfall in CI, sometimes you may force to set the workload role
+            as the default AWS CLI profile, in that case the default role is workload role,
+            NOT the devops role. so we have to add additional logic to handle this edge case.
+            we compare the default role to the workload role we want to assume,
+            if they are the same, we just use the default role (it is already the workload role)
+
         :param env_name: the environment name, for example, ``sbx``, ``tst``, ``prd``.
         :param role_session_name: the session name for the assumed role.
         :param duration_seconds: the duration in seconds for the assumed role.
@@ -220,11 +247,10 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
             if self.aws_region:
                 kwargs["region_name"] = self.aws_region
             return BotoSesManager(**kwargs)
-        elif self.runtime.is_ci or self.runtime.is_aws_cloud9:
+        elif self.runtime.is_ci_runtime_group or self.runtime.is_aws_cloud9:
             bsm_devops = self.get_devops_bsm()
             if env_name == CommonEnvNameEnum.devops.value:
                 return bsm_devops
-
             role_arn = self.get_env_role_arn(env_name)
             # ------------------------------------------------------------------
             # usually, the default boto session should be the devops bsm
@@ -266,10 +292,16 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
 
         This bsm is used to access the environment specific AWS resource
         for application code logic, unit test, integration test, etc.
+
+        1. For local, we use the default app env AWS CLI profile.
+        2. For ci runtime, if the current env is devops, in other words,
+            we are in artifacts building phase, then we should switch to the
+            default app env. if the current env is workload env, then
+            we just use the corresponding IAM role.
         """
-        if self.runtime.is_local or self.runtime.is_aws_cloud9:
+        if self.runtime.is_local_runtime_group:
             return self.get_env_bsm(env_name=self.default_app_env_name)
-        elif self.runtime.is_ci:
+        elif self.runtime.is_ci_runtime_group:
             env_name = self.get_current_env()
             if env_name == CommonEnvNameEnum.devops.value:
                 return self.get_env_bsm(env_name=self.default_app_env_name)
