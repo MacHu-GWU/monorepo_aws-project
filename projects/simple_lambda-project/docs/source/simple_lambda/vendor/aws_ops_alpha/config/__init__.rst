@@ -1,7 +1,7 @@
 config
 ======
 
-.. automodule:: simple_lambda.config
+.. automodule:: simple_lambda.vendor.aws_ops_alpha.config
     :members:
 
 sub packages and modules
@@ -10,8 +10,9 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
-    define <define/__init__>
     api <api>
-    backup <backup>
-    load <load>
+    app <app>
+    deploy <deploy>
+    main <main>
+    name <name>
     

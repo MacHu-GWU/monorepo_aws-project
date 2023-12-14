@@ -1,7 +1,7 @@
-config
-======
+runtime
+=======
 
-.. automodule:: simple_lambda.config
+.. automodule:: simple_lambda.vendor.aws_ops_alpha.runtime
     :members:
 
 sub packages and modules
@@ -10,8 +10,6 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
-    define <define/__init__>
     api <api>
-    backup <backup>
-    load <load>
+    impl <impl>
     

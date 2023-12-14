@@ -197,11 +197,11 @@ def detect_current_env(
     env_name_enum_class.validate()
 
     if runtime.is_local_runtime_group:
-        if EnvVarNameEnum.USER_ENV_NAME.value in os.environ:
+        if os.environ.get(EnvVarNameEnum.USER_ENV_NAME.value):
             return os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
         return env_name_enum_class._get_sbx().value
     elif runtime.is_ci_runtime_group or runtime.is_app_runtime_group:
-        if EnvVarNameEnum.USER_ENV_NAME.value in os.environ:
+        if os.environ.get(EnvVarNameEnum.USER_ENV_NAME.value):
             env_name = os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
         else:
             env_name = os.environ[EnvVarNameEnum.ENV_NAME.value]

@@ -10,10 +10,9 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
+    api <api>
     app <app>
-    deploy <deploy>
     lbd_deploy <lbd_deploy>
     lbd_func <lbd_func>
     main <main>
-    name <name>
     

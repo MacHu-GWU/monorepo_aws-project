@@ -13,15 +13,14 @@ sub packages and modules
     config <config/__init__>
     iac <iac/__init__>
     lbd <lbd/__init__>
-    ops <ops/__init__>
     vendor <vendor/__init__>
     _api <_api>
     boto_ses <boto_ses>
-    compat <compat>
     constants <constants>
     env <env>
     git <git>
     logger <logger>
+    ops <ops>
     paths <paths>
     pyproject <pyproject>
     runtime <runtime>

@@ -114,6 +114,8 @@ def view_cov():
 
 
 def build_doc(check: bool = True):
+    if runtime.is_local_runtime_group:
+        check = False
     simple_python_project.build_doc(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
