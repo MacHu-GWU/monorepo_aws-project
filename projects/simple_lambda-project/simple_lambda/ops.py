@@ -133,6 +133,8 @@ def view_doc():
 
 
 def deploy_versioned_doc(check: bool = True):
+    if runtime.is_local_runtime_group:
+        check = False
     simple_python_project.deploy_versioned_doc(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
@@ -146,6 +148,8 @@ def deploy_versioned_doc(check: bool = True):
 
 
 def deploy_latest_doc(check: bool = True):
+    if runtime.is_local_runtime_group:
+        check = False
     simple_python_project.deploy_latest_doc(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
