@@ -326,7 +326,7 @@ def create_config_snapshot(
         if flag is False:
             return
 
-    s3path = config_class.smart_backup(
+    s3path, flag = config_class.smart_backup(
         runtime=runtime,
         bsm_devops=bsm_devops,
         env_name_enum_class=env_name_enum_class,
@@ -336,5 +336,9 @@ def create_config_snapshot(
         path_config_secret_json=path_config_secret_json,
     )
 
-    logger.info(f"config snapshot is saved to {s3path.uri}")
+    if flag:
+        logger.info(f"{Emoji.green_circle} config snapshot is saved to {s3path.uri}")
+    else:
+        logger.info(f"{Emoji.red_circle} config snapshot already exists at {s3path.uri}")
     logger.info(f"preview it at: {s3path.console_url}")
+

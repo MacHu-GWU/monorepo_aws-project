@@ -217,7 +217,8 @@ class BaseConfig(
         version: str,
         path_config_json: T.Optional[Path] = None,
         path_config_secret_json: T.Optional[Path] = None,
-    ) -> "S3Path":  # pragma: no cover
+        raise_error: bool = False,
+    ) -> T.Tuple["S3Path", bool]:  # pragma: no cover
         """
         Create a backup of the current production config data in S3. The version
         is the project semantic version x.y.z. The version file is immutable.
@@ -232,6 +233,7 @@ class BaseConfig(
             it is where you store the non-sensitive config data json file.
         :param path_config_secret_json: you need this parameter when loading data from local.
             it is where you store the sensitive config data json file.
+        :param raise_error: if True, raises error when backup failed.
         """
         if runtime.is_local_runtime_group:
             config = cls.read(
@@ -263,11 +265,14 @@ class BaseConfig(
         config_data = {"data": config.data, "secret_data": config.secret_data}
         s3path = config.devops.s3dir_config.joinpath(f"{version}.json")
         if s3path.exists(bsm=bsm_devops):
-            raise FileExistsError(
-                f"{version}.json already exists!"
-                f"You can not overwrite existing config snapshot backup!"
-                f"You should consider bump to a new version!"
-            )
+            if raise_error:
+                raise FileExistsError(
+                    f"{version}.json already exists!"
+                    f"You can not overwrite existing config snapshot backup!"
+                    f"You should consider bump to a new version!"
+                )
+            else:
+                return s3path, False
         tags = {
             "tech:note": (
                 "this file is for production config data backup "
@@ -280,7 +285,7 @@ class BaseConfig(
             bsm=bsm_devops,
             tags=tags,
         )
-        return s3path
+        return s3path, True
 
 
 T_BASE_CONFIG = T.TypeVar("T_BASE_CONFIG", bound=BaseConfig)
