@@ -70,7 +70,7 @@ def run_unit_test(check: bool = True):
     simple_python_project.run_unit_test(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         check=check,
         rule_set=simple_lambda_project.rule_set,
@@ -81,7 +81,7 @@ def deploy_config(check: bool = True):
     simple_config_project.deploy_config(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         config=config,
         bsm={
             "all": boto_ses_factory.bsm_devops,
@@ -100,7 +100,7 @@ def run_cov_test(check: bool = True):
     simple_python_project.run_cov_test(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         check=check,
         rule_set=simple_lambda_project.rule_set,
@@ -117,7 +117,7 @@ def build_doc(check: bool = True):
     simple_python_project.build_doc(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         check=check,
         rule_set=simple_lambda_project.rule_set,
@@ -134,7 +134,7 @@ def deploy_versioned_doc(check: bool = True):
     simple_python_project.deploy_versioned_doc(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
@@ -147,7 +147,7 @@ def deploy_latest_doc(check: bool = True):
     simple_python_project.deploy_latest_doc(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
@@ -178,7 +178,7 @@ def publish_lambda_layer(
     return simple_lambda_project.publish_lambda_layer(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         bsm_devops=boto_ses_factory.bsm_devops,
         workload_bsm_list=boto_ses_factory.workload_bsm_list,
         pyproject_ops=pyproject_ops,
@@ -200,7 +200,7 @@ def deploy_app(
     return simple_lambda_project.deploy_app(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=env_name,
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         lbd_func_name_list=config.env.lambda_function_name_list,
@@ -223,7 +223,7 @@ def delete_app(
     return simple_lambda_project.delete_app(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
@@ -239,7 +239,7 @@ def publish_lambda_version(
     return simple_lambda_project.publish_lambda_version(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         lbd_func_name_list=config.env.lambda_function_name_list,
         check=check,
@@ -254,7 +254,7 @@ def run_int_test(check: bool = True):
     simple_lambda_project.run_int_test(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         wait=wait,
         check=check,
@@ -265,7 +265,7 @@ def create_config_snapshot(check: bool = True):
     simple_lambda_project.create_config_snapshot(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         runtime=runtime,
         bsm_devops=boto_ses_factory.bsm_devops,
         env_name_enum_class=EnvNameEnum,
@@ -282,7 +282,7 @@ def delete_config(check: bool = True):
     simple_config_project.delete_config(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
-        runtime_name=runtime.local_or_ci,
+        runtime_name=runtime.current_runtime_group,
         config=config,
         bsm={
             "all": boto_ses_factory.bsm_devops,
