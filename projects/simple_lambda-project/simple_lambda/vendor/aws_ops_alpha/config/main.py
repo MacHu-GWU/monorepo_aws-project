@@ -252,7 +252,7 @@ class BaseConfig(
                 EnvEnum=env_name_enum_class,
                 version="not-applicable",
             )
-            return cls.read(
+            config = cls.read(
                 env_class=env_class,
                 env_enum_class=env_name_enum_class,
                 bsm=bsm_devops,
