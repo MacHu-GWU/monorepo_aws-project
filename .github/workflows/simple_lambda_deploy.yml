@@ -84,5 +84,9 @@ jobs:
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_07_create_config_snapshot.py
+      - name: 🗑 Delete Lambda App
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_06_delete_app.py
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
