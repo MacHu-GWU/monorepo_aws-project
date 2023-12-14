@@ -12,7 +12,7 @@ import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
 
 # modules from this project
 from ._version import __version__
-from .config.api import Config, Env, EnvNameEnum, config
+from .config.api import Config, Env, config
 from ._api import (
     paths,
     runtime,
@@ -20,9 +20,6 @@ from ._api import (
     EnvNameEnum,
     detect_current_env,
     boto_ses_factory,
-    bsm,
-    logger,
-    pyproject_ops,
 )
 from .pyproject import pyproject_ops
 

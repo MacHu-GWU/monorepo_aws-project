@@ -12,7 +12,7 @@ from .define.api import EnvNameEnum, Env, Config
 def smart_backup():
     return Config.smart_backup(
         runtime=runtime,
-        boto_ses_factory=boto_ses_factory,
+        bsm_devops=boto_ses_factory.bsm_devops,
         env_name_enum_class=EnvNameEnum,
         env_class=Env,
         version=__version__,
