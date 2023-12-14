@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+This lambda function is triggered by S3 put event and copy the file from source
+to target bucket. The target bucket is defined in the configuration.
+"""
+
 from s3pathlib import S3Path
 from aws_lambda_event import S3PutEvent
 

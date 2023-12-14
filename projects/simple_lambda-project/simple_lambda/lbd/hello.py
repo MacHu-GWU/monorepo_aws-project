@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 
+"""
+This lambda function takes a name as input and echo back ``hello {name}``
+
+Sample input::
+
+    {"name": "Alice}
+
+Sample output::
+
+    {"message": "hello Alice"}
+"""
+
 from ..logger import logger
 
 
