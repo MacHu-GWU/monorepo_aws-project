@@ -25,6 +25,7 @@ jobs:
     name: 🚀 Deploy to ${{ inputs.user_env_name }}
     runs-on: ubuntu-latest
     environment:
+      # note that the ${{ env.ENV_NAME }} context is not available, we have to use ${{ inputs.user_env_name }}
       name: ${{ inputs.user_env_name }}
     env:
       USER_ENV_NAME: ${{ inputs.user_env_name }}
