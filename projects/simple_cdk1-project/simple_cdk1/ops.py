@@ -173,6 +173,10 @@ def view_latest_doc():
 def deploy_app(
     check: bool = True,
 ):
+    boto_ses_factory.bsm_devops.print_who_am_i()
+    boto_ses_factory.bsm_sbx.print_who_am_i()
+    boto_ses_factory.bsm_tst.print_who_am_i()
+    boto_ses_factory.bsm_prd.print_who_am_i()
     env_name = detect_current_env()
     if runtime.is_local:
         skip_prompt = False

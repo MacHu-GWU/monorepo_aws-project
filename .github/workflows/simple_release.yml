@@ -1,0 +1,14 @@
+name: simple_release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'simple_release/release*'
+      - 'simple_release/rls*'
+      - 'simple_release/cleanup*'
+      - 'simple_release/clean*'
+
+jobs:
+  simple_cdk1:
+    uses: ./.github/workflows/simple_cdk1.yml
