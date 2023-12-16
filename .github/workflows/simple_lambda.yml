@@ -3,6 +3,12 @@ name: simple_lambda
 on:
   workflow_dispatch:
   push:
+    # note: we have to use double *, because we may have / in the branch name
+    # for example, all following branches will be matched:
+    # - 'simple_lambda/feature'
+    # - 'simple_lambda/feature-123'
+    # - 'simple_lambda/feature/description'
+    # - 'simple_lambda/feature-123/description'
     branches:
       - 'simple_lambda/feature**'
       - 'simple_lambda/feat**'

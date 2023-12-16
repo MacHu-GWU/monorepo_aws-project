@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'simple_release/release*'
-      - 'simple_release/rls*'
-      - 'simple_release/cleanup*'
-      - 'simple_release/clean*'
+      - 'simple_release/release**'
+      - 'simple_release/rls**'
+      - 'simple_release/cleanup**'
+      - 'simple_release/clean**'
 
 jobs:
   simple_cdk1:

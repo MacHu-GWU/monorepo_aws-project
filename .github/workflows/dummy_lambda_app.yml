@@ -22,14 +22,14 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'dummy_lambda_app/feature*'
-      - 'dummy_lambda_app/feature*'
-      - 'dummy_lambda_app/fix*'
-      - 'dummy_lambda_app/doc*'
-      - 'dummy_lambda_app/layer*'
-      - 'dummy_lambda_app/lambda*'
-      - 'dummy_lambda_app/release/'
-      - 'dummy_lambda_app/cleanup*'
+      - 'dummy_lambda_app/feature**'
+      - 'dummy_lambda_app/feature**'
+      - 'dummy_lambda_app/fix**'
+      - 'dummy_lambda_app/doc**'
+      - 'dummy_lambda_app/layer**'
+      - 'dummy_lambda_app/lambda**'
+      - 'dummy_lambda_app/release**'
+      - 'dummy_lambda_app/cleanup**'
 
 # Set common environment for all jobs and all steps
 env:

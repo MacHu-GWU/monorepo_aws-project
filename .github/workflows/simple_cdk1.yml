@@ -3,6 +3,12 @@ name: simple_cdk1
 on:
   workflow_dispatch:
   push:
+    # note: we have to use double *, because we may have / in the branch name
+    # for example, all following branches will be matched:
+    # - 'simple_cdk1/feature'
+    # - 'simple_cdk1/feature-123'
+    # - 'simple_cdk1/feature/description'
+    # - 'simple_cdk1/feature-123/description'
     branches:
       - 'simple_cdk1/feature**'
       - 'simple_cdk1/feat**'
