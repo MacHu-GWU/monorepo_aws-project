@@ -106,7 +106,7 @@ def cdk_destroy(
             EnvNameEnum.prd.value: StepEnum.DELETE_CDK_STACK_IN_PRD.value,
         }
         flag = rule_set.should_we_do_it(
-            step=StepEnum.DEPLOY_CDK_STACK,
+            step=_mapper[env_name],
             git_branch_name=git_branch_name,
             env_name=env_name,
             runtime_name=runtime_name,
