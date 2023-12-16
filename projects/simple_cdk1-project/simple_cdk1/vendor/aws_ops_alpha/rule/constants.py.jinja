@@ -1,0 +1,17 @@
+# -*- coding: utf-8 -*-
+
+import enum
+
+
+class StepEnum(str, enum.Enum):
+    {%- for step in rule_set.steps %}
+    {{ step }} = "{{ step }}"
+    {%- endfor %}
+
+{% for truth_table_name, truth_table in rule_set.truth_table_mapper.items() %}
+class {{ snake_to_camel(truth_table_name) }}Enum(str, enum.Enum):
+    {%- for condition in truth_table.conditions %}
+    {{ condition }} = "{{ condition }}"
+    {%- endfor %}
+
+{% endfor %}

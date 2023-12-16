@@ -51,7 +51,7 @@ try:
     from .project.api import simple_python_project
     from .project.api import simple_cdk_project
     from .project.api import simple_config_project
-    from .project.api import simple_cdk1_project
+    from .project.api import simple_lambda_project
 except ImportError:  # pragma: no cover
     pass
 #
