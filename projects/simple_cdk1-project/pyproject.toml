@@ -7,7 +7,7 @@
 [tool.poetry]
 name = "simple_cdk1"
 version = "0.1.1"
-description = "A sample AWS Lambda Python project with production ready set up"
+description = "A sample AWS CDK project with production ready set up"
 authors = ["Sanhe Hu <husanhe@gmail.com>"]
 
 # ------------------------------------------------------------------------------
@@ -40,11 +40,15 @@ pysecret = "2.2.4"
 config_patterns = "1.0.6"
 # create url for AWS console
 aws_console_url = "1.4.1"
+# build AWS lambda layer and deployment package
+aws_lambda_layer = "0.5.1"
 # AWS devops best practices
 #aws_ops_alpha = "0.0.5"
 # ------------------------------------------------------------------------------
 # Helper libraries
 # ------------------------------------------------------------------------------
+# AWS Lambda event parser
+aws_lambda_event = "2.0.2"
 # helper functions
 boltons = "21.0.0"
 
