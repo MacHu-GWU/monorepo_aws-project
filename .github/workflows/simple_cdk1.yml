@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'simple_cdk1/feature*'
-      - 'simple_cdk1/feat*'
-      - 'simple_cdk1/fix*'
-      - 'simple_cdk1/doc*'
-      - 'simple_cdk1/app*'
-      - 'simple_cdk1/release*'
-      - 'simple_cdk1/rls*'
-      - 'simple_cdk1/cleanup*'
-      - 'simple_cdk1/clean*'
+      - 'simple_cdk1/feature**'
+      - 'simple_cdk1/feat**'
+      - 'simple_cdk1/fix**'
+      - 'simple_cdk1/doc**'
+      - 'simple_cdk1/app**'
+      - 'simple_cdk1/release**'
+      - 'simple_cdk1/rls**'
+      - 'simple_cdk1/cleanup**'
+      - 'simple_cdk1/clean**'
 
 env:
   AWS_REGION: "us-east-1"
