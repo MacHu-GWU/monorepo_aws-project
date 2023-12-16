@@ -16,6 +16,7 @@ from ...paths import (
     path_source_zip,
 )
 from ...git import git_repo
+from ...boto_ses import boto_ses_factory
 from ...vendor.hashes import hashes
 
 if T.TYPE_CHECKING:  # pragma: no cover
@@ -41,7 +42,7 @@ class LambdaMixin:
                 # layer_arn can be either a full arn or a layer version id (1, 2, ...)
                 if not layer_arn.startswith("arn:"):  # pragma: no cover
                     final_layer_arn = (
-                        f"arn:aws:lambda:{cdk.Aws.REGION}:{cdk.Aws.ACCOUNT_ID}:layer"
+                        f"arn:aws:lambda:{boto_ses_factory.bsm_devops.aws_region}:{boto_ses_factory.bsm_devops.aws_account_id}:layer"
                         f":{self.env.lambda_layer_name}:{layer_arn}"
                     )
                 else:
