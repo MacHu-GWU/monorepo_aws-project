@@ -29,59 +29,16 @@ class IamMixin:
             ],
         )
 
-        self.stat_s3_bucket_read = iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=[
-                "s3:ListBucket",
-                "s3:GetObject",
-                "s3:GetObjectAttributes",
-                "s3:GetObjectTagging",
-            ],
-            resources=[
-                f"arn:aws:s3:::{self.env.s3dir_env_data.bucket}",
-                f"arn:aws:s3:::{self.env.s3dir_env_data.bucket}/{self.env.s3dir_data.key}*",
-            ],
-        )
-
-        self.stat_s3_bucket_write = iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=[
-                "s3:PutObject",
-                "s3:DeleteObject",
-                "s3:PutObjectTagging",
-                "s3:DeleteObjectTagging",
-            ],
-            resources=[
-                f"arn:aws:s3:::{self.env.s3dir_env_data.bucket}",
-                f"arn:aws:s3:::{self.env.s3dir_env_data.bucket}/{self.env.s3dir_data.key}*",
-            ],
-        )
-
-        # declare iam role
-        self.iam_role_for_lambda = iam.Role(
+        self.iam_managed_policy_dummy = iam.ManagedPolicy(
             self,
-            "IamRoleForLambda",
-            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
-            role_name=f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-lambda",
-            managed_policies=[
-                iam.ManagedPolicy.from_aws_managed_policy_name(
-                    "service-role/AWSLambdaBasicExecutionRole"
-                ),
-            ],
-            inline_policies={
-                f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-lambda": iam.PolicyDocument(
-                    statements=[
-                        self.stat_parameter_store,
-                        self.stat_s3_bucket_read,
-                        self.stat_s3_bucket_write,
-                    ]
-                )
-            },
+            "IamManagedPolicy",
+            managed_policy_name=f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-dummy",
+            document=iam.PolicyDocument(statements=[self.stat_parameter_store]),
         )
 
-        self.output_iam_role_for_lambda_arn = cdk.CfnOutput(
+        self.iam_managed_policy_dummy_arn = cdk.CfnOutput(
             self,
-            "IamRoleForLambdaArn",
-            value=self.iam_role_for_lambda.role_arn,
-            export_name=f"{self.env.prefix_name_slug}-lambda-role-arn",
+            "IamManagedPolicyArn",
+            value=self.iam_managed_policy_dummy.managed_policy_arn,
+            export_name=f"{self.env.prefix_name_slug}-dummy-policy-arn",
         )

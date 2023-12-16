@@ -3,8 +3,6 @@
 import typing as T
 import dataclasses
 
-from s3pathlib import S3Path
-
 from ..._version import __version__
 
 if T.TYPE_CHECKING:  # pragma: no cover
@@ -13,17 +11,6 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 @dataclasses.dataclass
 class AppMixin:
-    username: T.Optional[str] = dataclasses.field(default=None)
-    password: T.Optional[str] = dataclasses.field(default=None)
-
-    @property
-    def s3dir_source(self: "Env") -> S3Path:
-        return self.s3dir_env_data.joinpath("source").to_dir()
-
-    @property
-    def s3dir_target(self: "Env") -> S3Path:
-        return self.s3dir_env_data.joinpath("target").to_dir()
-
     @property
     def env_vars(self: "Env") -> T.Dict[str, str]:
         """

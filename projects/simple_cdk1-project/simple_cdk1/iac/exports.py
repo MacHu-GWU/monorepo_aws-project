@@ -61,8 +61,8 @@ class StackExports:
     # --------------------------------------------------------------------------
     # access output value via export name
     # --------------------------------------------------------------------------
-    def get_iam_role_for_lambda_arn(self) -> str:
+    def get_iam_managed_policy_dummy_arn(self) -> str:
         # use output key
         # return self._outputs["IamRoleForLambdaArn"]
         # use export name
-        return self._exports[f"{self.prefix_name_slug}-lambda-role-arn"]
+        return self._exports[f"{self.prefix_name_slug}-dummy-policy-arn"]

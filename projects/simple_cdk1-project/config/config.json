@@ -5,63 +5,24 @@
         // ---------------------------------------------------------------------
         "*.project_name": "simple_cdk1",
         "*.s3bucket_docs": "bmt-app-devops-us-east-1-doc-host",
-        "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/simple_cdk1/",
+        "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/simple_cdk1/"
         // ---------------------------------------------------------------------
         // Application related
-        //
-        // please read the :class:`simple_cdk1.config.define.lbd_func.LambdaFunction`
-        // class to understand the config data model
         //
         // note that if a json node been set by two expression multiple times,
         // the first one will be used
         // ---------------------------------------------------------------------
-        "*.lambda_functions": {
-            "hello": {},
-            "s3sync": {}
-        },
-        "*.lambda_functions.*.layers": [
-            "10"
-        ],
-        "*.lambda_functions.s3sync.timeout": 60,
-        "*.lambda_functions.*.timeout": 3,
-        "*.lambda_functions.*.memory": 128,
-        "*.lambda_functions.*.iam_role": null,
-        "*.lambda_functions.*.subnet_ids": null,
-        "*.lambda_functions.*.security_group_ids": null,
-        "*.lambda_functions.*.reserved_concurrency": null,
-        "*.lambda_functions.*.live_version1": null,
-        "*.lambda_functions.*.live_version2": null,
-        "*.lambda_functions.*.live_version2_percentage": null,
-        "*.lambda_functions.hello.handler": "hello_handler",
-        "*.lambda_functions.s3sync.handler": "s3sync_handler"
     },
     "devops": {
         "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_cdk1/"
     },
     "sbx": {
-        "username": "sbx.user",
-        "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_cdk1/",
-        "lambda_functions": {
-            "hello": {
-//                "live_version1": "1"
-            },
-            "s3sync": {}
-        }
+        "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_cdk1/"
     },
     "tst": {
-        "username": "tst.user",
-        "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/simple_cdk1/",
-        "lambda_functions": {
-            "hello": {},
-            "s3sync": {}
-        }
+        "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/simple_cdk1/"
     },
     "prd": {
-        "username": "prd.user",
-        "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_cdk1/",
-        "lambda_functions": {
-            "hello": {},
-            "s3sync": {}
-        }
+        "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_cdk1/"
     }
 }
