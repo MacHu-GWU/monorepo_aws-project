@@ -11,5 +11,6 @@ from .constants import GitBranchNameEnum
 from .constants import EnvNameEnum
 from .constants import RuntimeNameEnum
 from .rule import rule_set
+from .step import semantic_branch_rule
 from .step import cdk_deploy
 from .step import cdk_destroy
