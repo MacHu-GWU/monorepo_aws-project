@@ -27,7 +27,8 @@ from .pyproject import pyproject_ops
 # Emoji = aws_ops_alpha.Emoji
 simple_python_project = aws_ops_alpha.simple_python_project
 simple_config_project = aws_ops_alpha.simple_config_project
-simple_cdk1_project = aws_ops_alpha.simple_cdk1_project
+simple_cdk_project = aws_ops_alpha.simple_cdk_project
+simple_lambda_project = aws_ops_alpha.simple_lambda_project
 
 
 def pip_install():
@@ -73,7 +74,7 @@ def run_unit_test(check: bool = True):
         runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -92,7 +93,7 @@ def deploy_config(check: bool = True):
         },
         parameter_with_encryption=True,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -103,7 +104,7 @@ def run_cov_test(check: bool = True):
         runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -122,7 +123,7 @@ def build_doc(check: bool = True):
         runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -143,7 +144,7 @@ def deploy_versioned_doc(check: bool = True):
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -158,7 +159,7 @@ def deploy_latest_doc(check: bool = True):
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -166,32 +167,6 @@ def view_latest_doc():
     simple_python_project.view_latest_doc(
         pyproject_ops=pyproject_ops,
         bucket=config.env.s3bucket_docs,
-    )
-
-
-def build_lambda_source(
-    verbose: bool = False,
-):
-    return simple_cdk1_project.build_lambda_source(
-        pyproject_ops=pyproject_ops,
-        verbose=verbose,
-    )
-
-
-def publish_lambda_layer(
-    check: bool = True,
-):
-    return simple_cdk1_project.publish_lambda_layer(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
-        runtime_name=runtime.current_runtime_group,
-        bsm_devops=boto_ses_factory.bsm_devops,
-        workload_bsm_list=boto_ses_factory.workload_bsm_list,
-        pyproject_ops=pyproject_ops,
-        layer_name=config.env.lambda_layer_name,
-        s3dir_lambda=config.env.s3dir_lambda,
-        tags=config.env.devops_aws_tags,
-        check=check,
     )
 
 
@@ -203,13 +178,11 @@ def deploy_app(
         skip_prompt = False
     else:
         skip_prompt = True
-    return simple_cdk1_project.deploy_app(
+    return simple_cdk_project.cdk_deploy(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=env_name,
         runtime_name=runtime.current_runtime_group,
-        pyproject_ops=pyproject_ops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
-        lbd_func_name_list=config.env.lambda_function_name_list,
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
         # skip_prompt=skip_prompt,
@@ -226,7 +199,7 @@ def delete_app(
         skip_prompt = False
     else:
         skip_prompt = True
-    return simple_cdk1_project.delete_app(
+    return simple_cdk_project.cdk_destroy(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.current_runtime_group,
@@ -238,32 +211,19 @@ def delete_app(
     )
 
 
-def publish_lambda_version(
-    check: bool = True,
-):
-    env_name = detect_current_env()
-    return simple_cdk1_project.publish_lambda_version(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
-        runtime_name=runtime.current_runtime_group,
-        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
-        lbd_func_name_list=config.env.lambda_function_name_list,
-        check=check,
-    )
-
-
 def run_int_test(check: bool = True):
     if runtime.is_local:
         wait = False
     else:
         wait = True
-    simple_cdk1_project.run_int_test(
+    simple_lambda_project.run_int_test(
         git_branch_name=git_repo.semantic_branch_name,
         env_name=detect_current_env(),
         runtime_name=runtime.current_runtime_group,
         pyproject_ops=pyproject_ops,
         wait=wait,
         check=check,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -281,7 +241,7 @@ def create_config_snapshot(check: bool = True):
         path_config_json=paths.path_config_json,
         path_config_secret_json=paths.path_config_secret_json,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
 
 
@@ -300,5 +260,5 @@ def delete_config(check: bool = True):
         },
         use_parameter_store=True,
         check=check,
-        rule_set=simple_cdk1_project.rule_set,
+        rule_set=simple_cdk_project.rule_set,
     )
