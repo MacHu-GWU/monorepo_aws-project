@@ -32,8 +32,8 @@ if T.TYPE_CHECKING:  # pragma: no cover
 )
 def cdk_deploy(
     semantic_branch_name: str,
-    env_name: str,
     runtime_name: str,
+    env_name: str,
     bsm_workload: "BotoSesManager",
     dir_cdk: Path,
     stack_name: str,
@@ -75,8 +75,8 @@ def cdk_deploy(
 )
 def cdk_destroy(
     semantic_branch_name: str,
-    env_name: str,
     runtime_name: str,
+    env_name: str,
     bsm_workload: "BotoSesManager",
     dir_cdk: Path,
     stack_name: str,

@@ -6,42 +6,30 @@ Developer note:
     every function in the ``workflow.py`` module should have visualized logging.
 """
 
-# standard library
+# --- standard library
 import typing as T
 from pathlib import Path
 
-# third party library (include vendor)
+# --- third party library (include vendor)
 from config_patterns.logger import logger as config_patterns_logger
+import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
-from ...vendor import semantic_branch as sem_branch
 
-
-# modules from this project
+# --- modules from this project
 from ...logger import logger
 from ...constants import CommonEnvNameEnum
 from ...runtime.api import Runtime
 from ...multi_env.api import BaseEnvNameEnum
 from ...config.api import BaseConfig, BaseEnv, T_BASE_CONFIG
+from ...rule_set import should_we_do_it
 
+# --- modules from this submodule
+from .simple_config_truth_table import StepEnum, truth_table
 
-# modules from this submodule
-from .constants import StepEnum, GitBranchNameEnum
-from .rule import RuleSet, rule_set as default_rule_set
-
-# type hint
+# --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover
-    import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
 
-
-semantic_branch_rules = {
-    GitBranchNameEnum.main: ["main", "master"],
-    GitBranchNameEnum.release: ["release", "rls"],
-}
-
-semantic_branch_rule = sem_branch.SemanticBranchRule(
-    rules=semantic_branch_rules,
-)
 
 # fmt: off
 @logger.emoji_block(
@@ -49,9 +37,9 @@ semantic_branch_rule = sem_branch.SemanticBranchRule(
     emoji=Emoji.config,
 )
 def deploy_config(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     config: T_BASE_CONFIG,
     bsm: T.Union[
         "BotoSesManager",
@@ -65,15 +53,19 @@ def deploy_config(
         ]
     ] = None,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.deploy_config.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
 # fmt: on
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.CREATE_CONFIG_SNAPSHOT,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -93,9 +85,9 @@ def deploy_config(
     emoji=Emoji.config,
 )
 def delete_config(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     config: T_BASE_CONFIG,
     bsm: T.Union[
         "BotoSesManager",
@@ -110,15 +102,19 @@ def delete_config(
     ] = None,
     include_history: bool = False,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.delete_config.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
 # fmt: on
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.CREATE_CONFIG_SNAPSHOT,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -138,9 +134,9 @@ def delete_config(
     emoji=Emoji.config,
 )
 def create_config_snapshot(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     runtime: Runtime,
     bsm_devops: "BotoSesManager",
     env_name_enum_class: T.Union[BaseEnvNameEnum, T.Type[BaseEnvNameEnum]],
@@ -150,18 +146,22 @@ def create_config_snapshot(
     path_config_json: T.Optional[Path] = None,
     path_config_secret_json: T.Optional[Path] = None,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.create_config_snapshot.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     logger.info(
         f"Now we are in {env_name!r}, "
         f"Create Config Snapshot in {CommonEnvNameEnum.devops.value!r} environment ..."
     )
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.CREATE_CONFIG_SNAPSHOT,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return

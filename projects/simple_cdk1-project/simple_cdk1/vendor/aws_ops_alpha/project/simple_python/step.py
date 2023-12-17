@@ -79,8 +79,8 @@ def poetry_export(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
 )
 def run_unit_test(
     semantic_branch_name: str,
-    env_name: str,
     runtime_name: str,
+    env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
     step: str = StepEnum.run_code_coverage_test.value,
@@ -107,8 +107,8 @@ def run_unit_test(
 )
 def run_cov_test(
     semantic_branch_name: str,
-    env_name: str,
     runtime_name: str,
+    env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
     step: str = StepEnum.run_code_coverage_test.value,
@@ -139,8 +139,8 @@ def view_cov(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
 )
 def build_doc(
     semantic_branch_name: str,
-    env_name: str,
     runtime_name: str,
+    env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
     step: str = StepEnum.build_documentation.value,
@@ -172,8 +172,8 @@ def view_doc(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
 )
 def deploy_versioned_doc(
     semantic_branch_name: str,
-    env_name: str,
     runtime_name: str,
+    env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bucket: str,
@@ -204,8 +204,8 @@ def deploy_versioned_doc(
 )
 def deploy_latest_doc(
     semantic_branch_name: str,
-    env_name: str,
     runtime_name: str,
+    env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bucket: str,
