@@ -75,4 +75,5 @@ def should_we_do_it(
                 ):
                     dct.pop(SHOULD_WE_DO_IT)
                     logger.info(f"- {encode_case(dct)}")
+
     return flag

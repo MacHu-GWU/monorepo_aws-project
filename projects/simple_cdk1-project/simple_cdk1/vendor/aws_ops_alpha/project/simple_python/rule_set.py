@@ -5,12 +5,12 @@ from ...vendor import semantic_branch as sem_branch
 from .simple_python_truth_table import SemanticBranchNameEnum
 
 semantic_branch_rules = {
-    SemanticBranchNameEnum.main: ["main", "master"],
-    SemanticBranchNameEnum.feature: ["feature", "feat"],
-    SemanticBranchNameEnum.fix: ["fix"],
-    SemanticBranchNameEnum.doc: ["doc"],
-    SemanticBranchNameEnum.test: ["test"],
-    SemanticBranchNameEnum.release: ["release", "rls"],
+    SemanticBranchNameEnum.main.value: ["main", "master"],
+    SemanticBranchNameEnum.feature.value: ["feature", "feat"],
+    SemanticBranchNameEnum.fix.value: ["fix"],
+    SemanticBranchNameEnum.doc.value: ["doc"],
+    SemanticBranchNameEnum.test.value: ["test"],
+    SemanticBranchNameEnum.release.value: ["release", "rls"],
 }
 
 semantic_branch_rule = sem_branch.SemanticBranchRule(

@@ -67,22 +67,11 @@ def poetry_export():
     simple_python_project.poetry_export(pyproject_ops=pyproject_ops)
 
 
-def run_unit_test(check: bool = True):
-    simple_python_project.run_unit_test(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
-        runtime_name=runtime.current_runtime_group,
-        pyproject_ops=pyproject_ops,
-        check=check,
-        rule_set=simple_cdk_project.rule_set,
-    )
-
-
 def deploy_config(check: bool = True):
     simple_config_project.deploy_config(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         config=config,
         bsm={
             "all": boto_ses_factory.bsm_devops,
@@ -93,18 +82,35 @@ def deploy_config(check: bool = True):
         },
         parameter_with_encryption=True,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.deploy_config.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
+    )
+
+
+def run_unit_test(check: bool = True):
+    simple_python_project.run_unit_test(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
+        pyproject_ops=pyproject_ops,
+        check=check,
+        step=simple_cdk_project.StepEnum.run_code_coverage_test.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
 def run_cov_test(check: bool = True):
     simple_python_project.run_cov_test(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.run_code_coverage_test.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
@@ -118,12 +124,14 @@ def build_doc(check: bool = True):
     if runtime.is_local_runtime_group:
         check = False
     simple_python_project.build_doc(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.build_documentation.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
@@ -137,14 +145,16 @@ def deploy_versioned_doc(check: bool = True):
     if runtime.is_local_runtime_group:
         check = False
     simple_python_project.deploy_versioned_doc(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.update_documentation.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
@@ -152,14 +162,16 @@ def deploy_latest_doc(check: bool = True):
     if runtime.is_local_runtime_group:
         check = False
     simple_python_project.deploy_latest_doc(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bucket=config.env.s3bucket_docs,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.update_documentation.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
@@ -183,15 +195,18 @@ def deploy_app(
     else:
         skip_prompt = True
     return simple_cdk_project.cdk_deploy(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=env_name,
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
         # skip_prompt=skip_prompt,
         skip_prompt=True,
         check=check,
+        step=simple_cdk_project.StepEnum.deploy_cdk_stack.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
@@ -204,14 +219,17 @@ def delete_app(
     else:
         skip_prompt = True
     return simple_cdk_project.cdk_destroy(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
         skip_prompt=skip_prompt,
         check=check,
+        step=simple_cdk_project.StepEnum.delete_cdk_stack.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
@@ -221,21 +239,23 @@ def run_int_test(check: bool = True):
     else:
         wait = True
     simple_lambda_project.run_int_test(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
         wait=wait,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.run_integration_test.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
 def create_config_snapshot(check: bool = True):
     simple_config_project.create_config_snapshot(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         runtime=runtime,
         bsm_devops=boto_ses_factory.bsm_devops,
         env_name_enum_class=EnvNameEnum,
@@ -245,15 +265,17 @@ def create_config_snapshot(check: bool = True):
         path_config_json=paths.path_config_json,
         path_config_secret_json=paths.path_config_secret_json,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.create_artifact_snapshot.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
 
 
 def delete_config(check: bool = True):
     simple_config_project.delete_config(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         config=config,
         bsm={
             "all": boto_ses_factory.bsm_devops,
@@ -264,5 +286,7 @@ def delete_config(check: bool = True):
         },
         use_parameter_store=True,
         check=check,
-        rule_set=simple_cdk_project.rule_set,
+        step=simple_cdk_project.StepEnum.delete_config.value,
+        truth_table=simple_cdk_project.truth_table,
+        url=simple_cdk_project.google_sheet_url,
     )
