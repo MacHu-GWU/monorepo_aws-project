@@ -4,48 +4,34 @@
 This module implements the automation to deploy CloudFormation stack via CDK.
 """
 
-# standard library
+# --- standard library
 import typing as T
 from pathlib import Path
 
-# third party library (include vendor)
+# --- third party library (include vendor)
 import aws_console_url.api as aws_console_url
+import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
 
-# modules from this project
+# --- modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers
-from ...vendor import semantic_branch as sem_branch
+from ...rule_set import should_we_do_it
 
-# modules from this submodule
-from .constants import StepEnum, GitBranchNameEnum, EnvNameEnum
-from .rule import RuleSet, rule_set as default_rule_set
+#--- modules from this submodule
+from .simple_cdk_truth_table import StepEnum, truth_table
 
-# type hint
+# --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover
     from boto_session_manager import BotoSesManager
 
-
-semantic_branch_rules = {
-    GitBranchNameEnum.main: ["main", "master"],
-    GitBranchNameEnum.feature: ["feature", "feat"],
-    GitBranchNameEnum.fix: ["fix"],
-    GitBranchNameEnum.doc: ["doc"],
-    GitBranchNameEnum.app: ["app"],
-    GitBranchNameEnum.release: ["release", "rls"],
-    GitBranchNameEnum.cleanup: ["cleanup", "clean"],
-}
-
-semantic_branch_rule = sem_branch.SemanticBranchRule(
-    rules=semantic_branch_rules,
-)
 
 @logger.emoji_block(
     msg="Run 'cdk deploy'",
     emoji=Emoji.cloudformation,
 )
 def cdk_deploy(
-    git_branch_name: str,
+    semantic_branch_name: str,
     env_name: str,
     runtime_name: str,
     bsm_workload: "BotoSesManager",
@@ -53,17 +39,21 @@ def cdk_deploy(
     stack_name: str,
     skip_prompt: bool = False,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.deploy_cdk_stack.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     """
     Run ``cdk deploy ...`` command.
     """
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.DEPLOY_CDK_STACK,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -84,7 +74,7 @@ def cdk_deploy(
     emoji=Emoji.cloudformation,
 )
 def cdk_destroy(
-    git_branch_name: str,
+    semantic_branch_name: str,
     env_name: str,
     runtime_name: str,
     bsm_workload: "BotoSesManager",
@@ -92,24 +82,21 @@ def cdk_destroy(
     stack_name: str,
     skip_prompt: bool = False,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.delete_cdk_stack.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     """
     Run ``cdk destroy ...`` command.
     """
     if check:
-        _mapper = {
-            EnvNameEnum.devops.value: StepEnum.DELETE_CDK_STACK_IN_SBX.value,
-            EnvNameEnum.sbx.value: StepEnum.DELETE_CDK_STACK_IN_SBX.value,
-            EnvNameEnum.tst.value: StepEnum.DELETE_CDK_STACK_IN_TST.value,
-            EnvNameEnum.stg.value: StepEnum.DELETE_CDK_STACK_IN_STG.value,
-            EnvNameEnum.prd.value: StepEnum.DELETE_CDK_STACK_IN_PRD.value,
-        }
-        flag = rule_set.should_we_do_it(
-            step=_mapper[env_name],
-            git_branch_name=git_branch_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             env_name=env_name,
             runtime_name=runtime_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return

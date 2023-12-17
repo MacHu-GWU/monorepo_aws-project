@@ -65,6 +65,9 @@ smart-open==6.2.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0
 termcolor==2.4.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:9297c0df9c99445c2412e832e882a7884038a25617c60cea2ad69488d4040d63 \
     --hash=sha256:aab9e56047c8ac41ed798fa36d892a37aca6b3e9159f3e0c24bc64a9b3ac7b7a
+tt4human==0.2.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:0756c048c2ffa00bfd654fb42ce8838954327ffcec7e0c7e3d5ce1ccb3047209 \
+    --hash=sha256:92663ac8a037f1a7a94dce1ebff6653ad9ef7b3883b86bda7eeaf56eb6412afc
 typing-extensions==4.9.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783 \
     --hash=sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd

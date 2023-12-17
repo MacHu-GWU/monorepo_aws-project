@@ -1,44 +1,33 @@
 # -*- coding: utf-8 -*-
 
 """
+This module implements the automation to maintain an importable Python library.
+
 Developer note:
 
     every function in the ``workflow.py`` module should have visualized logging.
 """
 
-# standard library
+# --- standard library
 import typing as T
 
-# third party library (include vendor)
+# --- third party library (include vendor)
+import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
-from ...vendor import semantic_branch as sem_branch
 
-# modules from this project
+# --- modules from this project
 from ...logger import logger
 from ...runtime.api import runtime
+from ...rule_set import should_we_do_it
 
-# modules from this submodule
-from .constants import StepEnum, GitBranchNameEnum
-from .rule import RuleSet, rule_set as default_rule_set
+# --- modules from this submodule
+from .simple_python_truth_table import StepEnum, truth_table
 
-# type hint
+# --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
 
-
-semantic_branch_rules = {
-    GitBranchNameEnum.main.value: ["main", "master"],
-    GitBranchNameEnum.feature.value: ["feature", "feat"],
-    GitBranchNameEnum.fix.value: ["fix"],
-    GitBranchNameEnum.test.value: ["test"],
-    GitBranchNameEnum.doc.value: ["doc"],
-    GitBranchNameEnum.release.value: ["release", "rls"],
-}
-
-semantic_branch_rule = sem_branch.SemanticBranchRule(
-    rules=semantic_branch_rules,
-)
 
 quiet = True if runtime.is_ci_runtime_group else False
 
@@ -89,19 +78,23 @@ def poetry_export(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     emoji=Emoji.test,
 )
 def run_unit_test(
-    git_branch_name: str,
+    semantic_branch_name: str,
     env_name: str,
     runtime_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.run_code_coverage_test.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.RUN_CODE_COVERAGE_TEST,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -113,19 +106,23 @@ def run_unit_test(
     emoji=Emoji.test,
 )
 def run_cov_test(
-    git_branch_name: str,
+    semantic_branch_name: str,
     env_name: str,
     runtime_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.run_code_coverage_test.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.RUN_CODE_COVERAGE_TEST,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -141,19 +138,23 @@ def view_cov(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     emoji=Emoji.doc,
 )
 def build_doc(
-    git_branch_name: str,
+    semantic_branch_name: str,
     env_name: str,
     runtime_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.build_documentation.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.PUBLISH_DOCUMENTATION_WEBSITE,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -170,21 +171,25 @@ def view_doc(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
     emoji=Emoji.doc,
 )
 def deploy_versioned_doc(
-    git_branch_name: str,
+    semantic_branch_name: str,
     env_name: str,
     runtime_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bucket: str,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.update_documentation.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.PUBLISH_DOCUMENTATION_WEBSITE,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -198,21 +203,25 @@ def deploy_versioned_doc(
     emoji=Emoji.doc,
 )
 def deploy_latest_doc(
-    git_branch_name: str,
+    semantic_branch_name: str,
     env_name: str,
     runtime_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bucket: str,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.update_documentation.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.PUBLISH_DOCUMENTATION_WEBSITE,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
