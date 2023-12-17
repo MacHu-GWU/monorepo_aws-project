@@ -134,6 +134,34 @@ def view_cov(pyproject_ops: "pyops.PyProjectOps"):  # pragma: no cover
 
 
 @logger.emoji_block(
+    msg="Run Unit Test",
+    emoji=Emoji.test,
+)
+def run_int_test(
+    semantic_branch_name: str,
+    runtime_name: str,
+    env_name: str,
+    pyproject_ops: "pyops.PyProjectOps",
+    check: bool = True,
+    step: str = StepEnum.run_integration_test.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
+):  # pragma: no cover
+    if check:
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
+            runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
+        )
+        if flag is False:
+            return
+    pyproject_ops.run_int_test()
+
+
+@logger.emoji_block(
     msg="Build Documentation Site Locally",
     emoji=Emoji.doc,
 )

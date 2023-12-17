@@ -24,6 +24,7 @@ from .step import poetry_lock
 from .step import poetry_export
 from .step import run_unit_test
 from .step import run_cov_test
+from .step import run_int_test
 from .step import view_cov
 from .step import build_doc
 from .step import view_doc

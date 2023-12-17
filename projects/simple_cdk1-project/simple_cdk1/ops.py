@@ -28,7 +28,6 @@ from .pyproject import pyproject_ops
 simple_python_project = aws_ops_alpha.simple_python_project
 simple_config_project = aws_ops_alpha.simple_config_project
 simple_cdk_project = aws_ops_alpha.simple_cdk_project
-simple_lambda_project = aws_ops_alpha.simple_lambda_project
 
 
 def pip_install():
@@ -236,12 +235,11 @@ def run_int_test(check: bool = True):
         wait = False
     else:
         wait = True
-    simple_lambda_project.run_int_test(
+    simple_python_project.run_int_test(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
         env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
-        wait=wait,
         check=check,
         step=simple_cdk_project.StepEnum.run_integration_test.value,
         truth_table=simple_cdk_project.truth_table,
