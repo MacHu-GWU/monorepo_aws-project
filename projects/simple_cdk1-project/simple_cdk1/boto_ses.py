@@ -10,7 +10,7 @@ from functools import cached_property
 
 from s3pathlib import context
 
-import simple_cdk1.vendor.aws_ops_alpha.api as aws_ops_alpha
+from simple_cdk1.vendor.import_agent import aws_ops_alpha
 
 from .env import EnvNameEnum, detect_current_env
 from .runtime import runtime

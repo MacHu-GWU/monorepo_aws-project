@@ -5,10 +5,9 @@ Build artifacts related automation.
 """
 
 # standard library
-import typing as T
 
 # third party library (include vendor)
-import simple_cdk1.vendor.aws_ops_alpha.api as aws_ops_alpha
+from simple_cdk1.vendor.import_agent import aws_ops_alpha
 
 # modules from this project
 from ._version import __version__
@@ -190,6 +189,7 @@ def deploy_app(
         skip_prompt = False
     else:
         skip_prompt = True
+    skip_prompt = True  # uncomment this if you always want to skip prompt
     return simple_cdk_project.cdk_deploy(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
@@ -197,8 +197,7 @@ def deploy_app(
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
-        # skip_prompt=skip_prompt,
-        skip_prompt=True,
+        skip_prompt=skip_prompt,
         check=check,
         step=simple_cdk_project.StepEnum.deploy_cdk_stack.value,
         truth_table=simple_cdk_project.truth_table,
@@ -215,6 +214,7 @@ def delete_app(
         skip_prompt = False
     else:
         skip_prompt = True
+    skip_prompt = True # uncomment this if you always want to skip prompt
     return simple_cdk_project.cdk_destroy(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
@@ -231,10 +231,6 @@ def delete_app(
 
 
 def run_int_test(check: bool = True):
-    if runtime.is_local:
-        wait = False
-    else:
-        wait = True
     simple_python_project.run_int_test(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,

@@ -4,7 +4,7 @@
 Define the multi-environments setup for this project.
 """
 
-import simple_cdk1.vendor.aws_ops_alpha.api as aws_ops_alpha
+from simple_cdk1.vendor.import_agent import aws_ops_alpha
 
 from .runtime import runtime
 
