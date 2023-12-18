@@ -76,6 +76,24 @@ class RunTimeEnum(str, enum.Enum):
     unknown = "unknown"
 
 
+runtime_emoji_mapper = {
+    "local": "💻",
+    "aws_cloud9": "💻",
+    "aws_codebuild": "🔨",
+    "github_action": "🔨",
+    "gitlab_ci": "🔨",
+    "bitbucket_pipeline": "🔨",
+    "circleci": "🔨",
+    "jenkins": "🔨",
+    "aws_lambda": "🚀",
+    "aws_batch": "🚀",
+    "aws_glue": "🚀",
+    "aws_ec2": "🚀",
+    "aws_ecs": "🚀",
+    "unknown": "❓",
+}
+
+
 def _check_user_env_var(expect: str) -> bool:
     return os.environ.get(USER_RUNTIME_NAME, "__unknown") == expect
 
@@ -258,10 +276,7 @@ class Runtime:
         """
         Return the human friendly name of the current runtime.
         """
-        if (
-            os.environ.get(USER_RUNTIME_NAME, "__unknown")
-            != "__unknown"
-        ):
+        if os.environ.get(USER_RUNTIME_NAME, "__unknown") != "__unknown":
             return os.environ[USER_RUNTIME_NAME]
 
         if self.is_aws_codebuild:

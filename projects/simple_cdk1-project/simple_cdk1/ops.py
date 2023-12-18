@@ -214,7 +214,7 @@ def delete_app(
         skip_prompt = False
     else:
         skip_prompt = True
-    skip_prompt = True # uncomment this if you always want to skip prompt
+    skip_prompt = True  # uncomment this if you always want to skip prompt
     return simple_cdk_project.cdk_destroy(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
@@ -281,4 +281,14 @@ def delete_config(check: bool = True):
         step=simple_cdk_project.StepEnum.delete_config.value,
         truth_table=simple_cdk_project.truth_table,
         url=simple_cdk_project.google_sheet_url,
+    )
+
+
+def show_context_info():
+    simple_python_project.show_context_info(
+        git_branch_name=git_repo.git_branch_name,
+        runtime_name=runtime.current_runtime,
+        env_name=detect_current_env(),
+        git_commit_id=git_repo.git_commit_id,
+        git_commit_message=git_repo.git_commit_message,
     )

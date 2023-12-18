@@ -31,3 +31,4 @@ from .step import view_doc
 from .step import deploy_versioned_doc
 from .step import deploy_latest_doc
 from .step import view_latest_doc
+from .step import show_context_info

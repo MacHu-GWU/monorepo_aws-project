@@ -17,7 +17,8 @@ from ...vendor.emoji import Emoji
 
 # --- modules from this project
 from ...logger import logger
-from ...runtime.api import runtime
+from ...multi_env.api import env_emoji_mapper
+from ...runtime.api import runtime, runtime_emoji_mapper
 from ...rule_set import should_we_do_it
 
 # --- modules from this submodule
@@ -263,3 +264,25 @@ def view_latest_doc(
     bucket: str,
 ):  # pragma: no cover
     pyproject_ops.view_latest_doc(bucket=bucket)
+
+
+@logger.emoji_block(
+    msg="Show context info",
+    emoji=Emoji.eye,
+)
+def show_context_info(
+    git_branch_name: str,
+    runtime_name: str,
+    env_name: str,
+    git_commit_id: T.Optional[str] = None,
+    git_commit_message: T.Optional[str] = None,
+):
+    git_commit_id = git_commit_id or "❓"
+    git_commit_message = git_commit_message or "❓"
+    logger.info(f"Current git branch is 🔀 {git_branch_name!r}")
+    logger.info(f"Current git commit is ✅ {git_commit_id!r}")
+    logger.info(f"Current git commit message is ✅ {git_commit_message!r}")
+    runtime_emoji = runtime_emoji_mapper.get(runtime_name, "❓")
+    logger.info(f"Current runtime is {runtime_emoji} {runtime_name!r}")
+    env_emoji = env_emoji_mapper.get(env_name, "❓")
+    logger.info(f"Current environment name is {env_emoji} {env_name!r}")
