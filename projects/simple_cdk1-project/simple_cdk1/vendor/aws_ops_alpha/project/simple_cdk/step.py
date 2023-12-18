@@ -46,6 +46,11 @@ def cdk_deploy(
     """
     Run ``cdk deploy ...`` command.
     """
+    logger.info(f"deploy cloudformation to {env_name!r} env ...")
+    aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
+    console_url = aws_console.cloudformation.filter_stack(name=stack_name)
+    logger.info(f"preview cloudformation stack: {console_url}")
+
     if check:
         flag = should_we_do_it(
             step=step,
@@ -57,10 +62,7 @@ def cdk_deploy(
         )
         if flag is False:
             return
-    logger.info(f"deploy cloudformation to {env_name!r} env ...")
-    aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
-    url = aws_console.cloudformation.filter_stack(name=stack_name)
-    logger.info(f"preview cloudformation stack: {url}")
+
     aws_cdk_helpers.cdk_deploy(
         bsm_workload=bsm_workload,
         env_name=env_name,
@@ -89,6 +91,11 @@ def cdk_destroy(
     """
     Run ``cdk destroy ...`` command.
     """
+    logger.info(f"delete cloudformation from {env_name!r} env ...")
+    aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
+    console_url = aws_console.cloudformation.filter_stack(name=stack_name)
+    logger.info(f"preview cloudformation stack: {console_url}")
+
     if check:
         flag = should_we_do_it(
             step=step,
@@ -100,10 +107,7 @@ def cdk_destroy(
         )
         if flag is False:
             return
-    logger.info(f"delete cloudformation from {env_name!r} env ...")
-    aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
-    url = aws_console.cloudformation.filter_stack(name=stack_name)
-    logger.info(f"preview cloudformation stack: {url}")
+
     aws_cdk_helpers.cdk_destroy(
         bsm_workload=bsm_workload,
         env_name=env_name,

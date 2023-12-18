@@ -32,6 +32,13 @@ import sys
 import enum
 from functools import cached_property
 
+try:
+    from ..constants import EnvVarNameEnum
+
+    USER_RUNTIME_NAME = EnvVarNameEnum.USER_RUNTIME_NAME.value
+except ImportError:
+    USER_RUNTIME_NAME = "USER_RUNTIME_NAME"
+
 
 class RunTimeGroupEnum(str, enum.Enum):
     """
@@ -69,6 +76,10 @@ class RunTimeEnum(str, enum.Enum):
     unknown = "unknown"
 
 
+def _check_user_env_var(expect: str) -> bool:
+    return os.environ.get(USER_RUNTIME_NAME, "__unknown") == expect
+
+
 class Runtime:
     """
     Detect the current runtime information by inspecting environment variables.
@@ -89,6 +100,8 @@ class Runtime:
 
         - https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
         """
+        if _check_user_env_var(RunTimeEnum.aws_codebuild.value):  # pragma: no cover
+            return True
         return "CODEBUILD_BUILD_ID" in os.environ
 
     @cached_property
@@ -98,6 +111,8 @@ class Runtime:
 
         - https://docs.github.com/en/actions/learn-github-actions/variables
         """
+        if _check_user_env_var(RunTimeEnum.github_action.value):  # pragma: no cover
+            return True
         return "GITHUB_ACTION" in os.environ
 
     @cached_property
@@ -107,6 +122,8 @@ class Runtime:
 
         - https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
         """
+        if _check_user_env_var(RunTimeEnum.gitlab_ci.value):  # pragma: no cover
+            return True
         return "CI_PROJECT_ID" in os.environ
 
     @cached_property
@@ -116,6 +133,10 @@ class Runtime:
 
         - https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/
         """
+        if _check_user_env_var(
+            RunTimeEnum.bitbucket_pipeline.value
+        ):  # pragma: no cover
+            return True
         return "BITBUCKET_BUILD_NUMBER" in os.environ
 
     @cached_property
@@ -125,6 +146,8 @@ class Runtime:
 
         - https://circleci.com/docs/variables/
         """
+        if _check_user_env_var(RunTimeEnum.circleci.value):  # pragma: no cover
+            return True
         return "CIRCLECI" in os.environ
 
     @cached_property
@@ -134,6 +157,8 @@ class Runtime:
 
         - https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#using-environment-variables
         """
+        if _check_user_env_var(RunTimeEnum.jenkins.value):  # pragma: no cover
+            return True
         return "BUILD_TAG" in os.environ and "EXECUTOR_NUMBER" in os.environ
 
     @cached_property
@@ -143,6 +168,8 @@ class Runtime:
 
         - https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html
         """
+        if _check_user_env_var(RunTimeEnum.aws_lambda.value):  # pragma: no cover
+            return True
         return "AWS_LAMBDA_FUNCTION_NAME" in os.environ
 
     @cached_property
@@ -152,10 +179,14 @@ class Runtime:
 
         - https://docs.aws.amazon.com/batch/latest/userguide/job_env_vars.html
         """
+        if _check_user_env_var(RunTimeEnum.aws_batch.value):  # pragma: no cover
+            return True
         return "AWS_BATCH_JOB_ID" in os.environ
 
     @cached_property
     def is_aws_glue(self) -> bool:
+        if _check_user_env_var(RunTimeEnum.aws_glue.value):  # pragma: no cover
+            return True
         return "--JOB_RUN_ID" in sys.argv
 
     @cached_property
@@ -169,6 +200,8 @@ class Runtime:
 
         - https://docs.aws.amazon.com/cloud9/latest/user-guide/env-vars.html
         """
+        if _check_user_env_var(RunTimeEnum.aws_cloud9.value):  # pragma: no cover
+            return True
         return "C9" in os.environ
 
     @cached_property
@@ -177,6 +210,8 @@ class Runtime:
         There's no official way to detect if it is ec2 instance,
         you could set a custom environment variable for all your ec2 instances
         """
+        if _check_user_env_var(RunTimeEnum.aws_ec2.value):  # pragma: no cover
+            return True
         return "IS_AWS_EC2" in os.environ
 
     @cached_property
@@ -189,6 +224,8 @@ class Runtime:
 
         - https://docs.aws.amazon.com/AmazonECS/latest/userguide/taskdef-envfiles.html
         """
+        if _check_user_env_var(RunTimeEnum.aws_ecs.value):  # pragma: no cover
+            return True
         return "IS_AWS_ECS_TASK" in os.environ
 
     @cached_property
@@ -196,6 +233,9 @@ class Runtime:
         """
         If it is not a CI or app runtimes, it is local.
         """
+        if _check_user_env_var(RunTimeEnum.local.value):  # pragma: no cover
+            return True
+
         # or is a short-circuit operator, the performance is good
         flag = (
             self.is_aws_codebuild
@@ -218,6 +258,12 @@ class Runtime:
         """
         Return the human friendly name of the current runtime.
         """
+        if (
+            os.environ.get(USER_RUNTIME_NAME, "__unknown")
+            != "__unknown"
+        ):
+            return os.environ[USER_RUNTIME_NAME]
+
         if self.is_aws_codebuild:
             return RunTimeEnum.aws_codebuild.value
         if self.is_github_action:
