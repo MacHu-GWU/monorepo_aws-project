@@ -5,6 +5,7 @@ from .. import paths
 dir_seed_project = paths.dir_projects.joinpath("simple_lambda-project")
 
 # fmt: off
+# use this to create your new project
 # mapper = [
 #     ("simple_lambda", "package_name", "your_package_name"),
 #     ("Sanhe Hu", "author_name", "your name"),
@@ -18,6 +19,7 @@ dir_seed_project = paths.dir_projects.joinpath("simple_lambda-project")
 #     ("us-east-1", "aws_region", "us-east-1"),
 # ]
 
+# I personally use this because I don't want to type too much
 mapper = [
     ("simple_lambda", "package_name", "your_package_name"),
     ("Sanhe Hu", "author_name", "Sanhe Hu"),

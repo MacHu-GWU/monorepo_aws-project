@@ -7,6 +7,6 @@
 """
 
 import fire
-from pylib.cli import Command
+from more_project_like_this.cli import Command
 
 fire.Fire(Command())

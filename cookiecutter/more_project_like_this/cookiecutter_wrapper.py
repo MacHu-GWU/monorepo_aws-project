@@ -66,11 +66,14 @@ def new_project(
     """
     Create a new project based on a seed project.
 
-    It imports the ``dir_seed_project, mapper, exclude`` from the ``pylib.seeds.${seed}``
-    module and call the :func:`_new_project` function.
+    It imports the ``dir_seed_project, mapper, exclude`` from the
+    ``more_project_like_this.seeds.${seed}`` module and call the
+    :func:`_new_project` function.
+
+    :param seed: the seed project name
     """
     print(f"🚀 Create a new project like {seed!r}")
-    module = importlib.import_module(f"pylib.seeds.{seed}")
+    module = importlib.import_module(f"more_project_like_this.seeds.{seed}")
     _new_project(
         dir_seed_project=module.dir_seed_project,
         mapper=module.mapper,

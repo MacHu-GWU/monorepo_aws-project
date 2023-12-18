@@ -1,3 +1,7 @@
+# Dependencies for creating more project like the seed project
+# create new project from template project
 cookiecutter>=2.1.0,<3.0.0
+# convert a seed project into a template project
 cookiecutter_maker>=0.3.1,<1.0.0
+# CLI interface
 fire>=0.5.0,<1.0.0

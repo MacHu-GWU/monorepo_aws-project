@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys
 from pathlib import Path
-
-# ------------------------------------------------------------------------------
-# Caller Python related
-# ------------------------------------------------------------------------------
-path_caller_python = Path(sys.executable)
-path_caller_pip = path_caller_python.parent.joinpath("pip")
-path_caller_virtualenv = path_caller_python.parent.joinpath("virtualenv")
 
 # ------------------------------------------------------------------------------
 # Virtualenv related
