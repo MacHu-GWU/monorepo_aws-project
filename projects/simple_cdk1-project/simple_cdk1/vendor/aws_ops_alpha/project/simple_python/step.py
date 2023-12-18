@@ -10,6 +10,8 @@ Developer note:
 
 # --- standard library
 import typing as T
+import subprocess
+from textwrap import dedent
 
 # --- third party library (include vendor)
 import tt4human.api as tt4human
@@ -276,7 +278,7 @@ def show_context_info(
     env_name: str,
     git_commit_id: T.Optional[str] = None,
     git_commit_message: T.Optional[str] = None,
-):
+):  # pragma: no cover
     git_commit_id = git_commit_id or "❓"
     git_commit_message = git_commit_message or "❓"
     logger.info(f"Current git branch is 🔀 {git_branch_name!r}")
@@ -286,3 +288,24 @@ def show_context_info(
     logger.info(f"Current runtime is {runtime_emoji} {runtime_name!r}")
     env_emoji = env_emoji_mapper.get(env_name, "❓")
     logger.info(f"Current environment name is {env_emoji} {env_name!r}")
+
+
+@logger.emoji_block(
+    msg="bump version",
+    emoji=Emoji.label,
+)
+def bump_version(
+    pyproject_ops: "pyops.PyProjectOps",
+    major: bool = False,
+    minor: bool = False,
+    patch: bool = False,
+    minor_start_from: int = 0,
+    micro_start_from: int = 0,
+):  # pragma: no cover
+    pyproject_ops.bump_version(
+        major=major,
+        minor=minor,
+        patch=patch,
+        minor_start_from=minor_start_from,
+        micro_start_from=micro_start_from,
+    )

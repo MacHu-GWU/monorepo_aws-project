@@ -1590,13 +1590,13 @@ tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "pyproject-ops"
-version = "0.6.3"
+version = "0.7.1"
 description = "Python project Ops automation."
 optional = false
 python-versions = "*"
 files = [
-    {file = "pyproject_ops-0.6.3-py3-none-any.whl", hash = "sha256:354f231c941b904a65e439e98757c849af2abb9a769527251774ddc311a40243"},
-    {file = "pyproject_ops-0.6.3.tar.gz", hash = "sha256:b12d66670857700578650f5825b33f3a7179f157bd84f37fda972aef25684aa8"},
+    {file = "pyproject_ops-0.7.1-py3-none-any.whl", hash = "sha256:782d9de5adcf64760dd51891de1a8e7c9590dfa801e11734d495a8c3a2769baa"},
+    {file = "pyproject_ops-0.7.1.tar.gz", hash = "sha256:7ec09d18df0c03ce839fa72ab74dca4d5cdae8bcfb95807ed16951540481cb32"},
 ]
 
 [package.dependencies]
@@ -2658,4 +2658,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "c6e883cd775b233d76d54b55dd2ae882587fae833e5f880a08d264e3e1c07c96"
+content-hash = "438d6f086902783f24676549721a8779493212ae162511b15b9d2597b76ca0bc"
