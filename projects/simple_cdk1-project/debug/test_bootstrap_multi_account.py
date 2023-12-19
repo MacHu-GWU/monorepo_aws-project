@@ -73,8 +73,8 @@ def run_setup_cdk_bootstrap():
 def run_setup_cross_account_iam_permission():
     setup_cross_account_iam_permission(
         bsm_devops=bsm_devops,
-        devops_role_name=devops_role_name,
         devops_stack_name=devops_stack_name,
+        devops_role_name=devops_role_name,
         devops_policy_name=devops_policy_name,
         workload_account_iam_permission_setup_list=workload_account_iam_permission_setup_list,
     )
@@ -101,8 +101,8 @@ def run_teardown_cdk_bootstrap():
 def run_teardown_cross_account_iam_permission():
     teardown_cross_account_iam_permission(
         bsm_devops=bsm_devops,
-        devops_role_name=devops_role_name,
         devops_stack_name=devops_stack_name,
+        devops_role_name=devops_role_name,
         devops_policy_name=devops_policy_name,
         workload_account_iam_permission_setup_list=workload_account_iam_permission_setup_list,
     )
