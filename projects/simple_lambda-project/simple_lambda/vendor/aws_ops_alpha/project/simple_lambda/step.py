@@ -7,46 +7,30 @@ Developer note:
 
 """
 
-# standard library
+# --- standard library
 import typing as T
 import time
 from pathlib import Path
 
-# third party library (include vendor)
+# --- third party library (include vendor)
 import aws_console_url.api as aws_console_url
+import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
 from ...vendor.aws_lambda_version_and_alias import publish_version
-from ...vendor import semantic_branch as sem_branch
+from ...rule_set import should_we_do_it
 
-# modules from this project
+# --- modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
 
-# modules from this submodule
-from .constants import StepEnum, GitBranchNameEnum, EnvNameEnum
-from .rule import RuleSet, rule_set as default_rule_set
+# --- modules from this submodule
+from .simple_lambda_truth_table import StepEnum, truth_table
 
-# type hint
+# --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
     from s3pathlib import S3Path
-
-
-semantic_branch_rules = {
-    GitBranchNameEnum.main: ["main", "master"],
-    GitBranchNameEnum.feature: ["feature", "feat"],
-    GitBranchNameEnum.fix: ["fix"],
-    GitBranchNameEnum.doc: ["doc"],
-    GitBranchNameEnum.layer: ["layer"],
-    GitBranchNameEnum.app: ["app"],
-    GitBranchNameEnum.release: ["release", "rls"],
-    GitBranchNameEnum.cleanup: ["cleanup", "clean"],
-}
-
-semantic_branch_rule = sem_branch.SemanticBranchRule(
-    rules=semantic_branch_rules,
-)
 
 
 @logger.start_and_end(
@@ -76,9 +60,9 @@ def build_lambda_source(
     pipe=Emoji.awslambda,
 )
 def publish_lambda_layer(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     bsm_devops: "BotoSesManager",
     workload_bsm_list: T.List["BotoSesManager"],
     pyproject_ops: "pyops.PyProjectOps",
@@ -86,14 +70,18 @@ def publish_lambda_layer(
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
     check=True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.publish_lambda_layer.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.PUBLISH_LAMBDA_LAYER,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -129,23 +117,27 @@ def publish_lambda_layer(
     emoji=Emoji.awslambda,
 )
 def publish_lambda_version(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     bsm_workload: "BotoSesManager",
     lbd_func_name_list: T.List[str],
     check=True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.publish_new_lambda_version.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     """
     Publish a new lambda version from latest.
     """
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.PUBLISH_NEW_LAMBDA_VERSION,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -165,9 +157,9 @@ def publish_lambda_version(
     pipe=Emoji.deploy,
 )
 def deploy_app(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     bsm_workload: "BotoSesManager",
     lbd_func_name_list: T.List[str],
@@ -175,19 +167,24 @@ def deploy_app(
     stack_name: str,
     skip_prompt: bool = False,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.deploy_cdk_stack.value,
+    publish_new_lambda_version_step: str = StepEnum.publish_new_lambda_version.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     logger.info(f"deploy app to {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
-    url = aws_console.cloudformation.filter_stack(name=stack_name)
-    logger.info(f"preview cloudformation stack: {url}")
+    console_url = aws_console.cloudformation.filter_stack(name=stack_name)
+    logger.info(f"preview cloudformation stack: {console_url}")
 
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.DEPLOY_LAMBDA_APP_VIA_CDK,
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -201,13 +198,15 @@ def deploy_app(
             skip_prompt=skip_prompt,
         )
         publish_lambda_version(
-            git_branch_name=git_branch_name,
-            env_name=env_name,
+            semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
+            env_name=env_name,
             bsm_workload=bsm_workload,
             lbd_func_name_list=lbd_func_name_list,
             check=check,
-            rule_set=rule_set,
+            step=publish_new_lambda_version_step,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
 
 
@@ -219,35 +218,31 @@ def deploy_app(
     pipe=Emoji.delete,
 )
 def delete_app(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     bsm_workload: "BotoSesManager",
     dir_cdk: Path,
     stack_name: str,
     skip_prompt: bool = False,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.delete_cdk_stack.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     logger.info(f"delete app from {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
-    url = aws_console.cloudformation.filter_stack(name=stack_name)
-    logger.info(f"preview cloudformation stack: {url}")
+    console_url = aws_console.cloudformation.filter_stack(name=stack_name)
+    logger.info(f"preview cloudformation stack: {console_url}")
 
     if check:
-        _mapper = {
-            EnvNameEnum.devops.value: StepEnum.DELETE_LAMBDA_APP_IN_SBX.value,
-            EnvNameEnum.sbx.value: StepEnum.DELETE_LAMBDA_APP_IN_SBX.value,
-            EnvNameEnum.tst.value: StepEnum.DELETE_LAMBDA_APP_IN_TST.value,
-            EnvNameEnum.stg.value: StepEnum.DELETE_LAMBDA_APP_IN_STG.value,
-            EnvNameEnum.prd.value: StepEnum.DELETE_LAMBDA_APP_IN_PRD.value,
-        }
-
-        flag = rule_set.should_we_do_it(
-            step=_mapper[env_name],
-            git_branch_name=git_branch_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             env_name=env_name,
             runtime_name=runtime_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return
@@ -266,21 +261,25 @@ def delete_app(
     emoji=Emoji.test,
 )
 def run_int_test(
-    git_branch_name: str,
-    env_name: str,
+    semantic_branch_name: str,
     runtime_name: str,
+    env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
     wait: bool = False,
     check: bool = True,
-    rule_set: RuleSet = default_rule_set,
+    step: str = StepEnum.run_integration_test.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
 ):  # pragma: no cover
     logger.info(f"Run integration test in {env_name!r} env...")
     if check:
-        flag = rule_set.should_we_do_it(
-            step=StepEnum.RUN_INTEGRATION_TEST,
-            git_branch_name=git_branch_name,
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
             env_name=env_name,
             runtime_name=runtime_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
         )
         if flag is False:
             return

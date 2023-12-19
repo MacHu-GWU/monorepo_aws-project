@@ -157,7 +157,7 @@ class BaseConfig(
                 }
                 for env_name in env_name_enum_class:
                     initial_config_secret_data[env_name] = {
-                        "_comment": "make sure secret config match your config object definition"
+                        "make sure secret config match your config object definition": "...",
                     }
                 config_secret_content = json.dumps(initial_config_secret_data, indent=4)
                 path_config_secret_json.write_text(config_secret_content)

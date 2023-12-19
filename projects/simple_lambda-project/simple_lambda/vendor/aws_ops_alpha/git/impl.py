@@ -18,10 +18,13 @@ from ..vendor.git_cli import (
     get_commit_message_by_commit_id,
 )
 
-from ..constants import AwsOpsSemanticBranchEnum
+from ..constants import AwsOpsSemanticBranchEnum, EnvVarNameEnum
 from ..logger import logger
 from ..runtime.api import runtime
 
+USER_GIT_BRANCH_NAME = EnvVarNameEnum.USER_GIT_BRANCH_NAME
+USER_GIT_COMMIT_ID = EnvVarNameEnum.USER_GIT_COMMIT_ID
+USER_GIT_COMMIT_MESSAGE = EnvVarNameEnum.USER_GIT_COMMIT_MESSAGE
 
 InvalidSemanticNameError = sem_branch.InvalidSemanticNameError
 SemanticBranchRule = sem_branch.SemanticBranchRule
@@ -60,6 +63,10 @@ class GitRepo:
         Return the human friendly git branch name. Some CI vendor would use
         ``refs/heads/branch_name``, we only keep the ``branch_name`` part.
         """
+        user_git_branch_name = os.environ.get(USER_GIT_BRANCH_NAME, "__unknown")
+        if user_git_branch_name != "__unknown" and bool(user_git_branch_name) is True:
+            return user_git_branch_name
+
         if runtime.is_local_runtime_group:
             return get_git_branch_from_git_cli(self.dir_repo)
         elif runtime.is_aws_codebuild:
@@ -82,6 +89,10 @@ class GitRepo:
         """
         Return the git commit sha1 hash value.
         """
+        user_git_commit_id = os.environ.get(USER_GIT_COMMIT_ID, "__unknown")
+        if user_git_commit_id != "__unknown" and bool(user_git_commit_id) is True:
+            return user_git_commit_id
+
         if runtime.is_local:
             return get_git_commit_id_from_git_cli(self.dir_repo)
         elif runtime.is_aws_codebuild:
@@ -104,13 +115,17 @@ class GitRepo:
         """
         Return the git commit message.
         """
+        user_git_commit_message = os.environ.get(USER_GIT_COMMIT_MESSAGE, "__unknown")
+        if user_git_commit_message != "__unknown" and bool(user_git_commit_message) is True:
+            return user_git_commit_message
+
         if runtime.is_local:
             return get_commit_message_by_commit_id(self.dir_repo, self.git_commit_id)
         # note that there's no native way to get commit message from most of
         # CI/CD service vendor, you have to get it yourself and inject that
         # into "USER_GIT_COMMIT_MESSAGE" environment variable.
         elif runtime.is_ci:
-            return os.environ.get("USER_GIT_COMMIT_MESSAGE")
+            return os.environ.get(USER_GIT_COMMIT_MESSAGE)
         else:
             raise NotImplementedError
 

@@ -54,4 +54,9 @@ try:
     from .project.api import simple_lambda_project
 except ImportError:  # pragma: no cover
     pass
-#
+
+
+try:
+    from .boostrap import api as boostrap
+except ImportError:  # pragma: no cover
+    pass
