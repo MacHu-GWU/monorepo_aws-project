@@ -12,3 +12,6 @@ on:
 jobs:
   simple_cdk1:
     uses: ./.github/workflows/simple_cdk1.yml
+  simple_cdk2:
+    uses: ./.github/workflows/simple_cdk2.yml
+    needs: [simple_cdk1]
