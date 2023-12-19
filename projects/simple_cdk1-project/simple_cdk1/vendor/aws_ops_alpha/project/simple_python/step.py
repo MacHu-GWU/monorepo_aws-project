@@ -10,8 +10,6 @@ Developer note:
 
 # --- standard library
 import typing as T
-import subprocess
-from textwrap import dedent
 
 # --- third party library (include vendor)
 import tt4human.api as tt4human
