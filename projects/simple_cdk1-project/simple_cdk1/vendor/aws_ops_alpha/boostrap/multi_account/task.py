@@ -45,6 +45,9 @@ def setup_cdk_bootstrap(
     bsm_devops: "BotoSesManager",
     workload_bsm_list: T.List["BotoSesManager"],
 ):
+    """
+    Run `cdk bootstrap` in the devops and all workload AWS accounts.
+    """
     for bsm in [bsm_devops, *workload_bsm_list]:
         cdk_bootstrap_one_aws_account(bsm=bsm)
 
@@ -53,13 +56,27 @@ def teardown_cdk_bootstrap(
     bsm_devops: "BotoSesManager",
     workload_bsm_list: T.List["BotoSesManager"],
 ):
-    # for bsm in [bsm_devops, *workload_bsm_list]:
-    for bsm in [bsm_devops]:
+    """
+    Delete the resources created `cdk bootstrap` in the devops and
+    all workload AWS accounts.
+    """
+    for bsm in [bsm_devops, *workload_bsm_list]:
         remove_cdk_bootstrap_stack(bsm=bsm)
 
 
 @dataclasses.dataclass
 class WorkloadAccountIamPermissionSetup:
+    """
+    Per workload account IAM permission setup.
+
+    :param bsm: the workload account boto session manager, it is used to
+        create the CloudFormation stack that includes IAM role and the IAM policy.
+    :param stack_name: the CloudFormation stack name.
+    :param role_name: the IAM role name.
+    :param policy_name: the IAM policy name.
+    :param policy_document: the IAM policy document.
+    """
+
     bsm: "BotoSesManager" = dataclasses.field()
     stack_name: str = dataclasses.field()
     role_name: str = dataclasses.field()
@@ -70,15 +87,15 @@ class WorkloadAccountIamPermissionSetup:
 # fmt: off
 def create_grantee_and_owners(
     bsm_devops: "BotoSesManager",
-    gh_action_role_name: str,
     devops_stack_name: str,
+    devops_role_name: str,
     devops_policy_name: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
 ) -> T.Tuple[cross_aws_account_iam_role.Grantee, T.List[cross_aws_account_iam_role.Owner]]:
 # fmt: on
     iam_arn = cross_aws_account_iam_role.IamRoleArn(
         account=bsm_devops.aws_account_id,
-        name=gh_action_role_name,
+        name=devops_role_name,
     )
     grantee = cross_aws_account_iam_role.Grantee(
         bsm=bsm_devops,
@@ -103,16 +120,29 @@ def create_grantee_and_owners(
 # fmt: off
 def setup_cross_account_iam_permission(
     bsm_devops: "BotoSesManager",
-    devops_role_name: str,
     devops_stack_name: str,
+    devops_role_name: str,
     devops_policy_name: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
 ):
+    """
+    Create IAM role in workload accounts and grant the devops account IAM role
+    permission to assume the workload account IAM role.
+
+    :param bsm_devops: the devops account boto session manager.
+    :param devops_stack_name: the devops account CloudFormation stack name.
+    :param devops_role_name: the devops account IAM role name that performs
+        CI/CD tasks, it should be able to assume the workload account IAM role.
+    :param devops_policy_name: the devops account IAM policy name that defines
+        the permission to assume the workload account IAM role.
+    :param workload_account_iam_permission_setup_list: list of
+        :class`WorkloadAccountIamPermissionSetup` objects.
+    """
 # fmt: on
     grantee, owner_list = create_grantee_and_owners(
         bsm_devops=bsm_devops,
-        gh_action_role_name=devops_role_name,
         devops_stack_name=devops_stack_name,
+        devops_role_name=devops_role_name,
         devops_policy_name=devops_policy_name,
         workload_account_iam_permission_setup_list=workload_account_iam_permission_setup_list,
     )
@@ -126,16 +156,19 @@ def setup_cross_account_iam_permission(
 # fmt: off
 def teardown_cross_account_iam_permission(
     bsm_devops: "BotoSesManager",
-    devops_role_name: str,
     devops_stack_name: str,
+    devops_role_name: str,
     devops_policy_name: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
 ):
+    """
+    Delete the resources created by `setup_cross_account_iam_permission`.
+    """
 # fmt: on
     grantee, owner_list = create_grantee_and_owners(
         bsm_devops=bsm_devops,
-        gh_action_role_name=devops_role_name,
         devops_stack_name=devops_stack_name,
+        devops_role_name=devops_role_name,
         devops_policy_name=devops_policy_name,
         workload_account_iam_permission_setup_list=workload_account_iam_permission_setup_list,
     )
@@ -151,6 +184,7 @@ def setup_devops_account_s3_bucket(
     docs_s3_bucket: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
     artifacts_s3_prefix: str = "",
+    docs_s3_prefix: str = "",
     white_list_your_ip: bool = False,
 ):
     """
@@ -159,7 +193,17 @@ def setup_devops_account_s3_bucket(
     1. artifacts bucket: used to store artifacts from CI/CD pipeline
     2. docs bucket: used to store static website for documentation
 
-    :param artifacts_s3_prefix:
+    This function creates the two buckets, grant the workload account IAM role
+    permission to access the artifacts bucket, and configure the docs bucket
+    for static website hosting.
+
+    :param bsm_devops: the devops account boto session manager.
+    :param artifacts_s3_bucket: the artifacts bucket name.
+    :param docs_s3_bucket: the docs bucket name.
+    :param workload_account_iam_permission_setup_list: list of
+        :class`WorkloadAccountIamPermissionSetup` objects.
+    :param artifacts_s3_prefix: optional S3 prefix for the artifacts bucket.
+    :param docs_s3_prefix: optional S3 prefix for the docs bucket.
     :param white_list_your_ip: whether to white list your IP address to access
         the docs bucket.
     """
@@ -237,6 +281,9 @@ def setup_devops_account_s3_bucket(
         kwargs["allowed_iam_role_id_list"] = [
             bsm_devops.aws_account_user_id,
         ]
+
+    if docs_s3_prefix:
+        kwargs["s3_key_prefix_list"] = [docs_s3_prefix]
 
     # if white_list_your_ip is True, then we will white list your IP address
     if white_list_your_ip is True:
