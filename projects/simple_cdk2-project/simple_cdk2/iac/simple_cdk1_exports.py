@@ -39,11 +39,11 @@ class StackExports:
     _exports: T.Dict[str, str] = dataclasses.field(default_factory=dict)
 
     @property
-    def prefix_name_snake(self) -> str: # pragma: no cover
+    def prefix_name_snake(self) -> str:  # pragma: no cover
         return f"{project_name_snake}-{self.env_name}"
 
     @property
-    def prefix_name_slug(self) -> str: # pragma: no cover
+    def prefix_name_slug(self) -> str:  # pragma: no cover
         return f"{project_name_slug}-{self.env_name}"
 
     @property
@@ -66,10 +66,3 @@ class StackExports:
         # return self._outputs["IamRoleForLambdaArn"]
         # use export name
         return self._exports[f"{self.prefix_name_slug}-dummy-policy-arn"]
-
-from ..boto_ses import boto_ses_factory
-from ..env import detect_current_env
-
-env_name = detect_current_env()
-stack_exports = StackExports(env_name=env_name)
-stack_exports.load(boto_ses_factory.get_env_bsm(env_name=env_name).cloudformation_client)
