@@ -111,7 +111,7 @@ def run_teardown_cross_account_iam_permission():
 if __name__ == "__main__":
     # run_setup_cdk_bootstrap()
     # run_setup_cross_account_iam_permission()
-    # run_setup_devops_account_s3_bucket()
+    run_setup_devops_account_s3_bucket()
 
     # run_teardown_cross_account_iam_permission()
     # run_teardown_cdk_bootstrap()

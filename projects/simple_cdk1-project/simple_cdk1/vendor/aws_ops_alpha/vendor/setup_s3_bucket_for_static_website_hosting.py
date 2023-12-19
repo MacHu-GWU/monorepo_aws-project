@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+An automation script to configure an S3 bucket for static website hosting.
+"""
+
 import typing as T
 import json
 from urllib import request
@@ -11,10 +15,15 @@ if T.TYPE_CHECKING:
     from mypy_boto3_s3 import S3Client
 
 
+__version__ = "0.1.1"
+
 checkip_url = "https://checkip.amazonaws.com"
 
 
 def get_public_ip() -> str:
+    """
+    Get your public IP address.
+    """
     with request.urlopen(checkip_url) as response:
         return response.read().decode("utf-8").strip()
 
@@ -23,6 +32,11 @@ def get_bucket_website(
     s3_client: "S3Client",
     bucket: str,
 ) -> T.Optional[dict]:
+    """
+    Get your existing bucket website configuration.
+
+    :return: the website configuration if it exists, otherwise None
+    """
     try:
         return s3_client.get_bucket_website(Bucket=bucket)
     except botocore.exceptions.ClientError as e:
@@ -39,11 +53,9 @@ def enable_bucket_static_website_hosting(
     error_document: T.Optional[str] = None,
 ) -> dict:
     """
-        Reference:
+    Reference:
 
-        - Enable static website hosting
-
-    : https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html#step2-create-bucket-config-as-website
+    - Enable static website hosting: https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html#step2-create-bucket-config-as-website
     """
     website_configuration = dict(
         IndexDocument=dict(Suffix="index.html"),
@@ -63,6 +75,9 @@ def turn_off_block_public_access(
     bucket: str,
 ):
     """
+    You have to turn off "block public access" settings in order to make your
+    bucket serving static website.
+
     Reference:
 
     - Edit Block Public Access settings: https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html#step3-edit-block-public-access
@@ -79,11 +94,126 @@ def turn_off_block_public_access(
     )
 
 
+def get_bucket_policy(
+    s3_client: "S3Client",
+    bucket: str,
+) -> T.Optional[dict]:
+    """
+    Get your existing bucket policy.
+
+    Reference:
+
+    - Get bucket policy: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/get_bucket_policy.html
+
+    :return: the bucket policy if it exists, otherwise None
+    """
+    try:
+        res = s3_client.get_bucket_policy(Bucket=bucket)
+        return json.loads(res["Policy"])
+    except botocore.exceptions.ClientError as e:
+        if e.response["Error"]["Code"] == "NoSuchBucketPolicy":
+            return None
+        else:
+            raise e
+
+
+def update_policy_statement(
+    policy: dict,
+    statements: T.List[dict],
+) -> dict:
+    """
+    Update a IAM policy statement in-place. It updates the statement based on the
+    statement id.
+
+    Sample policy::
+
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                ...
+            ]
+        }
+
+    Sample statements::
+
+        [
+            {
+                "Sid": ...,
+                "Effect": ...,
+                "Principal": ...,
+                "Action": ...,
+                "Resource": ...,
+            }
+        ]
+
+    Example::
+
+        >>> policy = {
+        ...     "Version": "2012-10-17",
+        ...     "Statement": [
+        ...         {
+        ...             "Sid": "s-01",
+        ...             ...,
+        ...         },
+        ...         {
+        ...             "Sid": "s-02",
+        ...             "Effect": "Allow",
+        ...             ...
+        ...         },
+        ...     ]
+        ... }
+        >>> statements = [
+        ...     {
+        ...         "Sid": "s-02",
+        ...         "Effect": "Deny",
+        ...         ...
+        ...     }
+        ... ]
+        >>> update_policy_statement(policy, statements)
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "s-01",
+                    ...,
+                },
+                {
+                    "Sid": "s-02",
+                    "Effect": "Deny",
+                    ...
+                },
+            ]
+        }
+
+    :param policy: the policy to update
+    :param statement: the statement to update
+    """
+    id_iterator = iter([f"AutoStatementId{i}" for i in range(1, 100 + 1)])
+    statement_mapper: T.Dict[str, dict] = {
+        s.get("Sid", next(id_iterator)): s for s in policy["Statement"]
+    }
+    for statement in statements:
+        if "Sid" not in statement:
+            raise ValueError(
+                f"Your statement {statement!r} doesn't have an 'Sid' field."
+            )
+    for statement in statements:
+        statement_mapper[statement["Sid"]] = statement
+    policy["Statement"] = list(statement_mapper.values())
+    return policy
+
+
 def put_bucket_policy_for_public_website_hosting(
     s3_client: "S3Client",
     bucket: str,
     s3_key_prefix_list: T.Optional[T.List[str]] = None,
 ):
+    """
+    Use this function to make your bucket absolutely public readable without
+    restriction. This is useful when you want to host a public facing website.
+
+    :param s3_key_prefix_list: ptional list of S3 key prefixes to allow public read access
+    """
     if s3_key_prefix_list is None:
         allow_resource = f"arn:aws:s3:::{bucket}/*"
     else:
@@ -97,12 +227,10 @@ def put_bucket_policy_for_public_website_hosting(
         "Action": "s3:GetObject",
         "Resource": allow_resource,
     }
-    bucket_policy = {
-        "Version": "2012-10-17",
-        "Statement": [
-            allow_statement,
-        ],
-    }
+    bucket_policy = get_bucket_policy(s3_client, bucket)
+    if bucket_policy is None:
+        bucket_policy = dict(Version="2012-10-17", Statement=[])
+    update_policy_statement(bucket_policy, [allow_statement])
     s3_client.put_bucket_policy(Bucket=bucket, Policy=json.dumps(bucket_policy))
 
 
@@ -119,12 +247,14 @@ def put_bucket_policy_for_website_hosting(
     allowed_iam_role_id_list: T.Optional[T.List[str]] = None,
 ):
     """
+    Use this function to make your bucket absolutely public readable with
+    some restrictions (e.g. only from a specific IP address or VPC).
+    This is useful when you want to host a internal facing website.
+
     Reference:
 
     - Add a bucket policy that makes your bucket content publicly available: https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html#step4-add-bucket-policy-make-content-public
     - How can I restrict access to my Amazon S3 bucket using specific VPC endpoints or IP addresses?: https://repost.aws/knowledge-center/block-s3-traffic-vpc-ip
-
-    TODO: it should use SID to update the policy instead of overwrite the policy
 
     :param s3_client:
     :param bucket:
@@ -137,8 +267,10 @@ def put_bucket_policy_for_website_hosting(
     :param allowed_vpc_ip_cidr_block_list:
     :param allowed_vpc_endpoint_list:
     :param allowed_aws_account_id_list:
-    :param allowed_iam_user_id_list:
-    :param allowed_iam_role_id_list:
+    :param allowed_iam_user_id_list: IAM user id is the ``UserId`` field in the
+        boto3.client("sts").get_caller_identity() response
+    :param allowed_iam_role_id_list: IAM role id is the ``UserId`` field in the
+        boto3.client("sts").get_caller_identity() response
     """
     if is_public is True:
         # all of them has to be None
@@ -233,14 +365,10 @@ def put_bucket_policy_for_website_hosting(
             "you set 'is_public' to False, but none of allowed_xyz condition is specified!"
         )
 
-    bucket_policy = {
-        "Version": "2012-10-17",
-        "Statement": [
-            allow_statement,
-            deny_statement,
-        ],
-    }
-
+    bucket_policy = get_bucket_policy(s3_client, bucket)
+    if bucket_policy is None:
+        bucket_policy = dict(Version="2012-10-17", Statement=[])
+    update_policy_statement(bucket_policy, [allow_statement, deny_statement])
     s3_client.put_bucket_policy(Bucket=bucket, Policy=json.dumps(bucket_policy))
 
 
