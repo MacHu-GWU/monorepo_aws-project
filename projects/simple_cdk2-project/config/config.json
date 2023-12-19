@@ -1,0 +1,28 @@
+{
+    "_shared": {
+        // ---------------------------------------------------------------------
+        // shared by all environments
+        // ---------------------------------------------------------------------
+        "*.project_name": "simple_cdk2",
+        "*.s3bucket_docs": "bmt-app-devops-us-east-1-doc-host",
+        "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/simple_cdk2/"
+        // ---------------------------------------------------------------------
+        // Application related
+        //
+        // note that if a json node been set by two expression multiple times,
+        // the first one will be used
+        // ---------------------------------------------------------------------
+    },
+    "devops": {
+        "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_cdk2/"
+    },
+    "sbx": {
+        "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_cdk2/"
+    },
+    "tst": {
+        "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/simple_cdk2/"
+    },
+    "prd": {
+        "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_cdk2/"
+    }
+}
