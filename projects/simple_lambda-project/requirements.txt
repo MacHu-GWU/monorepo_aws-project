@@ -41,9 +41,9 @@ jmespath==1.0.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" 
 pathlib-mate==1.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:0cd0a8b742941efdc5a3b3c46e75da6430c3f869fe6a5fb490025c0bc39a5c2d \
     --hash=sha256:6ef576ccefac39a8a1bb4b7d93fcd50f73113a34ddd01cc46ca149b947f7dc0e
-pyproject-ops==0.6.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:354f231c941b904a65e439e98757c849af2abb9a769527251774ddc311a40243 \
-    --hash=sha256:b12d66670857700578650f5825b33f3a7179f157bd84f37fda972aef25684aa8
+pyproject-ops==0.7.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:782d9de5adcf64760dd51891de1a8e7c9590dfa801e11734d495a8c3a2769baa \
+    --hash=sha256:7ec09d18df0c03ce839fa72ab74dca4d5cdae8bcfb95807ed16951540481cb32
 pysecret==2.2.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:7880d933f5647032a21113b79ab83ed0718e852a4f50a41999128a4a55377e16 \
     --hash=sha256:abd780868a39388897ac4b6cd59973b586bc8f18771154168925d268466dea29
@@ -65,6 +65,9 @@ smart-open==6.2.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0
 termcolor==2.4.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:9297c0df9c99445c2412e832e882a7884038a25617c60cea2ad69488d4040d63 \
     --hash=sha256:aab9e56047c8ac41ed798fa36d892a37aca6b3e9159f3e0c24bc64a9b3ac7b7a
+tt4human==0.2.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:0756c048c2ffa00bfd654fb42ce8838954327ffcec7e0c7e3d5ce1ccb3047209 \
+    --hash=sha256:92663ac8a037f1a7a94dce1ebff6653ad9ef7b3883b86bda7eeaf56eb6412afc
 typing-extensions==4.9.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783 \
     --hash=sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd

@@ -30,6 +30,8 @@ boto_session_manager = "1.6.1"
 pathlib_mate = "1.2.1"
 # Python project DevOps automation
 pyproject_ops = "0.7.1"
+# Automation rule truth table management
+tt4human = "0.2.2"
 # smart IO, dependency of s3pathlib
 smart-open = "6.2.0"
 # AWS s3 SDK manipulation
