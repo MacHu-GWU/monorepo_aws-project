@@ -26,7 +26,7 @@ class StackExports:
         >>> cf_client = boto3.client("cloudformation")
         >>> stack_exports = StackExports(env_name="sbx")
         >>> stack_exports.load(cf_client)
-        >>> stack_exports.get_iam_managed_policy_dummy_arn()
+        >>> stack_exports.get_iam_role_for_lambda_arn()
         aws:iam::123456789012:role/...
 
     :param env_name: environment name, sbx, tst, prd, etc ...
@@ -63,6 +63,13 @@ class StackExports:
     # --------------------------------------------------------------------------
     def get_iam_managed_policy_dummy_arn(self) -> str:
         # use output key
-        # return self._outputs["IamManagedPolicyArn"]
+        # return self._outputs["IamRoleForLambdaArn"]
         # use export name
         return self._exports[f"{self.prefix_name_slug}-dummy-policy-arn"]
+
+from ..boto_ses import boto_ses_factory
+from ..env import detect_current_env
+
+env_name = detect_current_env()
+stack_exports = StackExports(env_name=env_name)
+stack_exports.load(boto_ses_factory.get_env_bsm(env_name=env_name).cloudformation_client)

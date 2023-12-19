@@ -26,7 +26,7 @@ class StackExports:
         >>> cf_client = boto3.client("cloudformation")
         >>> stack_exports = StackExports(env_name="sbx")
         >>> stack_exports.load(cf_client)
-        >>> stack_exports.get_iam_role_for_lambda_arn()
+        >>> stack_exports.get_iam_role_dummy_arn()
         aws:iam::123456789012:role/...
 
     :param env_name: environment name, sbx, tst, prd, etc ...
@@ -61,8 +61,8 @@ class StackExports:
     # --------------------------------------------------------------------------
     # access output value via export name
     # --------------------------------------------------------------------------
-    def get_iam_managed_policy_dummy_arn(self) -> str:
+    def get_iam_role_dummy_arn(self) -> str:
         # use output key
-        # return self._outputs["IamRoleForLambdaArn"]
+        # return self._outputs["IamRoleDummyArn"]
         # use export name
-        return self._exports[f"{self.prefix_name_slug}-dummy-policy-arn"]
+        return self._exports[f"{self.prefix_name_slug}-dummy-arn"]
