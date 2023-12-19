@@ -54,4 +54,10 @@ try:
     from .project.api import simple_lambda_project
 except ImportError:  # pragma: no cover
     pass
-#
+
+
+try:
+    from .boostrap.api import multi_account
+    from .boostrap.api import github_action
+except ImportError:  # pragma: no cover
+    pass
