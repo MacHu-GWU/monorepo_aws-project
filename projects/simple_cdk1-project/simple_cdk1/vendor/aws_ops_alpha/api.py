@@ -57,7 +57,6 @@ except ImportError:  # pragma: no cover
 
 
 try:
-    from .boostrap.api import multi_account
-    from .boostrap.api import github_action
+    from .boostrap import api as boostrap
 except ImportError:  # pragma: no cover
     pass
