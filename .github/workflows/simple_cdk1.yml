@@ -2,6 +2,7 @@ name: simple_cdk1
 
 on:
   workflow_dispatch:
+  workflow_call:
   push:
     # note: we have to use double *, because we may have / in the branch name
     # for example, all following branches will be matched:
