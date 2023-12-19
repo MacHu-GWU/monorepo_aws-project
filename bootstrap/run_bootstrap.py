@@ -21,12 +21,14 @@ github_stack_name = "monorepo-aws-github-oidc"
 github_org = "MacHu-GWU"
 github_repo = "monorepo_aws-project"
 gh_action_role_name = "monorepo-aws-github-oidc"
+# use this if it is first time to setup GitHub OIDC connection in your AWS Account
 # oidc_provider_arn = ""
+# use this if it is NOT first time to setup GitHub OIDC connection in your AWS Account
 oidc_provider_arn = f"arn:aws:iam::{bsm_devops.aws_account_id}:oidc-provider/token.actions.githubusercontent.com"
 
-sbx_res_name = f"monorepo-aws-sbx-deployer-{bsm_sbx.aws_region}"
-tst_res_name = f"monorepo-aws-tst-deployer-{bsm_sbx.aws_region}"
-prd_res_name = f"monorepo-aws-prd-deployer-{bsm_sbx.aws_region}"
+sbx_res_name = f"monorepo_aws-sbx-deployer-{bsm_sbx.aws_region}"
+tst_res_name = f"monorepo_aws-tst-deployer-{bsm_sbx.aws_region}"
+prd_res_name = f"monorepo_aws-prd-deployer-{bsm_sbx.aws_region}"
 
 workload_account_iam_policy_document = {
     "Version": "2012-10-17",
@@ -42,21 +44,21 @@ docs_s3_bucket = "bmt-app-devops-us-east-1-doc-host"
 workload_account_iam_permission_setup_list = [
     aws_ops_alpha.boostrap.multi_account.WorkloadAccountIamPermissionSetup(
         bsm=bsm_sbx,
-        stack_name=sbx_res_name,
+        stack_name=sbx_res_name.replace("_", "-"),
         role_name=sbx_res_name,
         policy_name=sbx_res_name,
         policy_document=workload_account_iam_policy_document,
     ),
     aws_ops_alpha.boostrap.multi_account.WorkloadAccountIamPermissionSetup(
         bsm=bsm_tst,
-        stack_name=tst_res_name,
+        stack_name=tst_res_name.replace("_", "-"),
         role_name=tst_res_name,
         policy_name=tst_res_name,
         policy_document=workload_account_iam_policy_document,
     ),
     aws_ops_alpha.boostrap.multi_account.WorkloadAccountIamPermissionSetup(
         bsm=bsm_prd,
-        stack_name=prd_res_name,
+        stack_name=prd_res_name.replace("_", "-"),
         role_name=prd_res_name,
         policy_name=prd_res_name,
         policy_document=workload_account_iam_policy_document,
