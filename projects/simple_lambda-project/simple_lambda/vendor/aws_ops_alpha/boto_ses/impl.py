@@ -36,12 +36,13 @@ def bsm_backup(
 
     So the program can still distinguish the default profile from the temporary default profile.
     """
-    if isinstance(bsm.aws_session_token, str):
+    cred = bsm.boto_ses.get_credentials()
+    if isinstance(cred.token, str):
         bsm_credentials = dict(
             region_name=bsm.aws_region,
-            aws_access_key_id=bsm.aws_access_key_id,
-            aws_secret_access_key=bsm.aws_secret_access_key,
-            aws_session_token=bsm.aws_session_token,
+            aws_access_key_id=cred.access_key,
+            aws_secret_access_key=cred.secret_key,
+            aws_session_token=cred.token,
         )
     else:
         res = bsm.sts_client.get_session_token(DurationSeconds=expire)
