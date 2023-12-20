@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-
-LIVE = "LIVE"
+#
+# pragma: no cover

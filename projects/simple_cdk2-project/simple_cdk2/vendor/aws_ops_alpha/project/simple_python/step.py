@@ -206,6 +206,7 @@ def deploy_versioned_doc(
     pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bucket: str,
+    prefix: str = "projects/",
     check: bool = True,
     step: str = StepEnum.update_documentation.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
@@ -224,7 +225,7 @@ def deploy_versioned_doc(
             return
 
     with bsm_devops.awscli():
-        pyproject_ops.deploy_versioned_doc(bucket=bucket)
+        pyproject_ops.deploy_versioned_doc(bucket=bucket, prefix=prefix)
 
 
 @logger.emoji_block(
@@ -238,6 +239,7 @@ def deploy_latest_doc(
     pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bucket: str,
+    prefix: str = "projects/",
     check: bool = True,
     step: str = StepEnum.update_documentation.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
@@ -256,14 +258,15 @@ def deploy_latest_doc(
             return
 
     with bsm_devops.awscli():
-        pyproject_ops.deploy_latest_doc(bucket=bucket)
+        pyproject_ops.deploy_latest_doc(bucket=bucket, prefix=prefix)
 
 
 def view_latest_doc(
     pyproject_ops: "pyops.PyProjectOps",
     bucket: str,
+    prefix: str = "projects/",
 ):  # pragma: no cover
-    pyproject_ops.view_latest_doc(bucket=bucket)
+    pyproject_ops.view_latest_doc(bucket=bucket, prefix=prefix)
 
 
 @logger.emoji_block(

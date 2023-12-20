@@ -1,6 +1,6 @@
 Welcome to ``simple_cdk2`` Documentation
 ==============================================================================
-This is a sample project that demonstrates the best practices for a production ready AWS Lambda function project. It is also a project template can be used to create more project like "this".
+This is a sample project that demonstrates the best practices for a production ready AWS CDK project that depends on other CloudFormation stack. It is also a project template can be used to create more project like "this".
 
 For first time user, please run the following command to build project documentation website and read it::
 
@@ -15,5 +15,3 @@ For first time user, please run the following command to build project documenta
 
     # view documentation website in browser
     make view-doc
-
-If you are experiencing any difficulty to build the documentation website, you can read the document at ``./docs/source/01-Developer-Guide``.

@@ -4,8 +4,8 @@
         // shared by all environments
         // ---------------------------------------------------------------------
         "*.project_name": "simple_cdk1",
-        "*.s3bucket_docs": "bmt-app-devops-us-east-1-doc-host",
-        "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/monorepo_aws/simple_cdk1/"
+        "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/monorepo_aws/simple_cdk1/",
+        "*.s3uri_docs": "s3://bmt-app-devops-us-east-1-doc-host/projects/monorepo_aws/"
         // ---------------------------------------------------------------------
         // Application related
         //

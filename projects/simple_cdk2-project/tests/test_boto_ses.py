@@ -4,6 +4,8 @@ from simple_cdk2.boto_ses import boto_ses_factory
 
 
 def test():
+    _ = boto_ses_factory.get_current_env()
+
     _ = boto_ses_factory.bsm_devops.aws_account_alias
     _ = boto_ses_factory.bsm_sbx.aws_account_alias
     _ = boto_ses_factory.bsm_tst.aws_account_alias

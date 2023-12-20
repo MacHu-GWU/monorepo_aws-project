@@ -148,7 +148,8 @@ def deploy_versioned_doc(check: bool = True):
         env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
-        bucket=config.env.s3bucket_docs,
+        bucket=config.env.s3dir_docs.bucket,
+        prefix=config.env.s3dir_docs.key,
         check=check,
         step=simple_cdk_project.StepEnum.update_documentation.value,
         truth_table=simple_cdk_project.truth_table,
@@ -165,7 +166,8 @@ def deploy_latest_doc(check: bool = True):
         env_name=detect_current_env(),
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
-        bucket=config.env.s3bucket_docs,
+        bucket=config.env.s3dir_docs.bucket,
+        prefix=config.env.s3dir_docs.key,
         check=check,
         step=simple_cdk_project.StepEnum.update_documentation.value,
         truth_table=simple_cdk_project.truth_table,
@@ -176,7 +178,8 @@ def deploy_latest_doc(check: bool = True):
 def view_latest_doc():
     simple_python_project.view_latest_doc(
         pyproject_ops=pyproject_ops,
-        bucket=config.env.s3bucket_docs,
+        bucket=config.env.s3dir_docs.bucket,
+        prefix=config.env.s3dir_docs.key,
     )
 
 

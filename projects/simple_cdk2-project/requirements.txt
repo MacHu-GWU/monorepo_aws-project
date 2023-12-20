@@ -1,5 +1,3 @@
-atomicwrites==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:81b2c9071a49367a7f770170e5eec8cb66567cfbbc8c73d20ce5ca4a8d71cf11
 aws-arns==1.4.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:414ee10a4425b392b3f0d286ead33b1febc5d4205782b8a2c0395250ada33096 \
     --hash=sha256:bd5f9cba2553bb9e4c7cdc3bb5cf9010553df82a3a849b6b23d2f51e7eeeed81
@@ -38,12 +36,12 @@ iterproxy==0.3.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0"
 jmespath==1.0.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980 \
     --hash=sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe
-pathlib-mate==1.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:0cd0a8b742941efdc5a3b3c46e75da6430c3f869fe6a5fb490025c0bc39a5c2d \
-    --hash=sha256:6ef576ccefac39a8a1bb4b7d93fcd50f73113a34ddd01cc46ca149b947f7dc0e
-pyproject-ops==0.7.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:782d9de5adcf64760dd51891de1a8e7c9590dfa801e11734d495a8c3a2769baa \
-    --hash=sha256:7ec09d18df0c03ce839fa72ab74dca4d5cdae8bcfb95807ed16951540481cb32
+pathlib-mate==1.3.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:161c0400407afe959b5bef2fa29deb6cd18406a97cf7361f578fb3c9304399c1 \
+    --hash=sha256:884c50f06f2d8373aad6a8058bf8e8f110f2a7844f7f0252a5b3bd7198a59d9f
+pyproject-ops==0.7.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:86a3d56463d3c2003c9861926f0b6d9c2c991028452538b537f193279e8abaed \
+    --hash=sha256:ea3b258d2816cb11588523e3824d2db88c0e72972159948ec312468131015183
 pysecret==2.2.4 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:7880d933f5647032a21113b79ab83ed0718e852a4f50a41999128a4a55377e16 \
     --hash=sha256:abd780868a39388897ac4b6cd59973b586bc8f18771154168925d268466dea29
