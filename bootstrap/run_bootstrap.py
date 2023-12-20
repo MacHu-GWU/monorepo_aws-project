@@ -104,6 +104,7 @@ def run_setup_devops_account_s3_bucket():
         docs_s3_bucket=docs_s3_bucket,
         workload_account_iam_permission_setup_list=workload_account_iam_permission_setup_list,
         artifacts_s3_prefix="projects/monorepo_aws/",
+        docs_s3_prefix="projects/monorepo_aws/",
         white_list_your_ip=True,
     )
 
