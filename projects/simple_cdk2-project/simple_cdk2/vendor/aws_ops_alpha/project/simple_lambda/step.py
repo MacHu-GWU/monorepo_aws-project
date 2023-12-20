@@ -206,7 +206,7 @@ def deploy_app(
             check=check,
             step=publish_new_lambda_version_step,
             truth_table=truth_table,
-            google_sheet_url=url,
+            url=url,
         )
 
 

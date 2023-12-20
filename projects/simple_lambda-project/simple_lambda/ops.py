@@ -269,12 +269,15 @@ def publish_lambda_version(
 ):
     env_name = detect_current_env()
     return simple_lambda_project.publish_lambda_version(
-        git_branch_name=git_repo.semantic_branch_name,
-        env_name=detect_current_env(),
+        semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         lbd_func_name_list=config.env.lambda_function_name_list,
         check=check,
+        step=simple_lambda_project.StepEnum.publish_new_lambda_version.value,
+        truth_table=simple_lambda_project.truth_table,
+        url=simple_lambda_project.google_sheet_url,
     )
 
 
