@@ -5,7 +5,7 @@ help: ## ** Show this help message
 
 
 info: ## ** Show Project Information
-	python ./bin/s00_show_project_info.py
+	./.venv/bin/python ./bin/s00_show_project_info.py
 
 
 venv-create: ## ** Create Virtual Environment
@@ -48,8 +48,8 @@ poetry-lock: ## Resolve dependencies using poetry, update poetry.lock file
 	python ./bin/s02_08_poetry_lock.py
 
 
-show-env-info: ## Show Runtime, Environment and Git info
-	python ./bin/s02_09_show_runtime_env_git_info.py
+show-context-info: ## Show Runtime, Environment and Git info
+	python ./bin/s02_09_show_context_info.py
 
 
 test: install install-test test-only ## ** Run test
