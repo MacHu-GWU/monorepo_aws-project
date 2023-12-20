@@ -17,11 +17,11 @@ import aws_console_url.api as aws_console_url
 import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
 from ...vendor.aws_lambda_version_and_alias import publish_version
-from ...rule_set import should_we_do_it
 
 # --- modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
+from ...rule_set import should_we_do_it
 
 # --- modules from this submodule
 from .simple_lambda_truth_table import StepEnum, truth_table

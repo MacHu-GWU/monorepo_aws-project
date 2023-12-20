@@ -6,13 +6,44 @@
 
 import typing as T
 import abc
+import json
+import contextlib
 import dataclasses
+from pathlib import Path
 from functools import cached_property
 
 from boto_session_manager import BotoSesManager
 
 from ..constants import CommonEnvNameEnum
 from ..runtime.api import Runtime
+
+
+path_default_bsm_backup = Path.home().joinpath(".bsm-backup.json")
+
+
+@contextlib.contextmanager
+def bsm_backup(
+    bsm: "BotoSesManager",
+    path_backup: Path = path_default_bsm_backup,
+    expire: int = 15,
+) -> "BotoSesManager":
+    """
+    Temporarily backup the current boto session credential to a file,
+    and then automatically destroy the backup file after the context manager exits.
+    """
+    res = bsm.sts_client.get_session_token(DurationSeconds=expire)
+    bsm_credentials = dict(
+        region_name=bsm.aws_region,
+        aws_access_key_id=res["Credentials"]["AccessKeyId"],
+        aws_secret_access_key=res["Credentials"]["SecretAccessKey"],
+        aws_session_token=res["Credentials"]["SessionToken"],
+    )
+    path_backup.write_text(json.dumps(bsm_credentials))
+    try:
+        yield None
+    finally:
+        if path_backup.exists():
+            path_backup.unlink()
 
 
 @dataclasses.dataclass
@@ -181,7 +212,10 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         """
         raise NotImplementedError
 
-    def get_devops_bsm(self) -> "BotoSesManager":  # pragma: no cover
+    def get_devops_bsm(
+        self,
+        path_bsm_backup: Path = path_default_bsm_backup,
+    ) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for devops AWS account.
 
@@ -197,16 +231,29 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
                     return BotoSesManager()
             else:
                 kwargs = dict(
-                    profile_name=self.env_to_profile_mapper[CommonEnvNameEnum.devops.value]
+                    profile_name=self.env_to_profile_mapper[
+                        CommonEnvNameEnum.devops.value
+                    ]
                 )
                 if self.aws_region:
                     kwargs["region_name"] = self.aws_region
                 return BotoSesManager(**kwargs)
         elif self.runtime.is_ci_runtime_group:
             if self.aws_region:
-                return BotoSesManager(region_name=self.aws_region)
+                bsm_devops = BotoSesManager(region_name=self.aws_region)
             else:
-                return BotoSesManager()
+                bsm_devops = BotoSesManager()
+            # Sometimes, other program set the default AWS CLI profile to
+            # workload account, NOT devops account, we need special handling
+            #
+            # bsm_devops.principal_arn could be either
+            # arn:aws:iam::***:role/devops_role_name
+            # arn:aws:sts::***:assumed-role/workload_role_name/session_name
+            if ":assumed-role/" in bsm_devops.principal_arn:
+                bsm_credentials = json.loads(path_bsm_backup.read_text())
+                return BotoSesManager(**bsm_credentials)
+            else:
+                return bsm_devops
         else:  # pragma: no cover
             raise RuntimeError
 
@@ -217,6 +264,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         duration_seconds: int = 3600,
         region_name: T.Optional[str] = None,
         auto_refresh: bool = False,
+        path_bsm_backup: Path = path_default_bsm_backup,
     ) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for workload AWS account.
