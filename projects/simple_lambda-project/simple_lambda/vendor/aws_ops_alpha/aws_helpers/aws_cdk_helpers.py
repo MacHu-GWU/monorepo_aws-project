@@ -26,14 +26,13 @@ def cdk_deploy(
     """
     Run ``cdk deploy ...`` command.
     """
-    # with bsm_workload.awscli():
-    with temp_env_var({EnvVarNameEnum.USER_ENV_NAME.value: env_name}):
-        args = ["cdk", "deploy", "--role-arn", "arn:aws:iam::878625312159:role/monorepo_aws-sbx-deployer-us-east-1"]
-        # args = ["cdk", "deploy"]
-        if skip_prompt is True:
-            args.extend(["--require-approval", "never"])
-        with temp_cwd(dir_cdk):
-            subprocess.run(args, check=True)
+    with bsm_workload.awscli():
+        with temp_env_var({EnvVarNameEnum.USER_ENV_NAME.value: env_name}):
+            args = ["cdk", "deploy"]
+            if skip_prompt is True:
+                args.extend(["--require-approval", "never"])
+            with temp_cwd(dir_cdk):
+                subprocess.run(args, check=True)
 
 
 def cdk_destroy(
