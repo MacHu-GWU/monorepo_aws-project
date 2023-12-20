@@ -30,14 +30,27 @@ def bsm_backup(
     """
     Temporarily backup the current boto session credential to a file,
     and then automatically destroy the backup file after the context manager exits.
+
+    You should use this context manager when ever you need to manually set
+    the default AWS CLI profile to a different profile other than the default profile.
+
+    So the program can still distinguish the default profile from the temporary default profile.
     """
-    res = bsm.sts_client.get_session_token(DurationSeconds=expire)
-    bsm_credentials = dict(
-        region_name=bsm.aws_region,
-        aws_access_key_id=res["Credentials"]["AccessKeyId"],
-        aws_secret_access_key=res["Credentials"]["SecretAccessKey"],
-        aws_session_token=res["Credentials"]["SessionToken"],
-    )
+    if isinstance(bsm.aws_session_token, str):
+        bsm_credentials = dict(
+            region_name=bsm.aws_region,
+            aws_access_key_id=bsm.aws_access_key_id,
+            aws_secret_access_key=bsm.aws_secret_access_key,
+            aws_session_token=bsm.aws_session_token,
+        )
+    else:
+        res = bsm.sts_client.get_session_token(DurationSeconds=expire)
+        bsm_credentials = dict(
+            region_name=bsm.aws_region,
+            aws_access_key_id=res["Credentials"]["AccessKeyId"],
+            aws_secret_access_key=res["Credentials"]["SecretAccessKey"],
+            aws_session_token=res["Credentials"]["SessionToken"],
+        )
     path_backup.write_text(json.dumps(bsm_credentials))
     try:
         yield None
