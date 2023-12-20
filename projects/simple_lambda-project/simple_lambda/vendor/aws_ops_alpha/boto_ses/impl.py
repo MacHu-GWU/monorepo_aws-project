@@ -243,14 +243,10 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
                 bsm_devops = BotoSesManager(region_name=self.aws_region)
             else:
                 bsm_devops = BotoSesManager()
+            # THIS IS BASED ON GITHUB Action
             # Sometimes, other program set the default AWS CLI profile to
             # workload account, NOT devops account, we need special handling
-            #
-            # bsm_devops.principal_arn could be either
-            # arn:aws:iam::***:role/devops_role_name
-            # arn:aws:sts::***:assumed-role/workload_role_name/session_name
-            print(bsm_devops.principal_arn)
-            if ":assumed-role/" in bsm_devops.principal_arn:
+            if "devops_role_session" not in bsm_devops.principal_arn:
                 bsm_credentials = json.loads(path_bsm_backup.read_text())
                 return BotoSesManager(**bsm_credentials)
             else:
