@@ -249,6 +249,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
             # bsm_devops.principal_arn could be either
             # arn:aws:iam::***:role/devops_role_name
             # arn:aws:sts::***:assumed-role/workload_role_name/session_name
+            print(bsm_devops.principal_arn)
             if ":assumed-role/" in bsm_devops.principal_arn:
                 bsm_credentials = json.loads(path_bsm_backup.read_text())
                 return BotoSesManager(**bsm_credentials)
