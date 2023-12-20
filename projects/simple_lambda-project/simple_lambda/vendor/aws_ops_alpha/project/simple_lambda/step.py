@@ -161,6 +161,7 @@ def deploy_app(
     runtime_name: str,
     env_name: str,
     pyproject_ops: "pyops.PyProjectOps",
+    bsm_devops: "BotoSesManager",
     bsm_workload: "BotoSesManager",
     lbd_func_name_list: T.List[str],
     dir_cdk: Path,
@@ -192,6 +193,7 @@ def deploy_app(
     with logger.nested():
         build_lambda_source(pyproject_ops=pyproject_ops)
         aws_cdk_helpers.cdk_deploy(
+            bsm_devops=bsm_devops,
             bsm_workload=bsm_workload,
             dir_cdk=dir_cdk,
             env_name=env_name,

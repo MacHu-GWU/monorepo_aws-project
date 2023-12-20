@@ -25,7 +25,7 @@ path_default_bsm_backup = Path.home().joinpath(".bsm-backup.json")
 def bsm_backup(
     bsm: "BotoSesManager",
     path_backup: Path = path_default_bsm_backup,
-    expire: int = 15,
+    expire: int = 900,
 ) -> "BotoSesManager":
     """
     Temporarily backup the current boto session credential to a file,
