@@ -20,7 +20,7 @@
             "s3sync": {}
         },
         "*.lambda_functions.*.layers": [
-            "10"
+            "11"
         ],
         "*.lambda_functions.s3sync.timeout": 60,
         "*.lambda_functions.*.timeout": 3,
@@ -43,7 +43,6 @@
         "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_lambda/",
         "lambda_functions": {
             "hello": {
-//                "live_version1": "1"
             },
             "s3sync": {}
         }
