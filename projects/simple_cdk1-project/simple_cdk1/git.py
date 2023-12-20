@@ -4,7 +4,7 @@
 Define the Git repo and Git semantic branch setup for this project.
 """
 
-from simple_cdk1.vendor.import_agent import aws_ops_alpha
+from .vendor.import_agent import aws_ops_alpha
 
 from .paths import dir_project_root
 

@@ -7,7 +7,7 @@ Build artifacts related automation.
 # standard library
 
 # third party library (include vendor)
-from simple_cdk2.vendor.import_agent import aws_ops_alpha
+from .vendor.import_agent import aws_ops_alpha
 
 # modules from this project
 from ._version import __version__

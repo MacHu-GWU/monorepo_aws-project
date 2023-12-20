@@ -4,7 +4,7 @@
 Define the multi-environments setup for this project.
 """
 
-from simple_cdk2.vendor.import_agent import aws_ops_alpha
+from .vendor.import_agent import aws_ops_alpha
 
 from .runtime import runtime
 

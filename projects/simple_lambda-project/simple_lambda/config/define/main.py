@@ -3,8 +3,7 @@
 import dataclasses
 from functools import cached_property
 
-import config_patterns.api as config_patterns
-import simple_lambda.vendor.aws_ops_alpha.api as aws_ops_alpha
+from ...vendor.import_agent import aws_ops_alpha
 from ..._api import EnvNameEnum, detect_current_env
 
 # You may have a long list of config field definition

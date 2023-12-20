@@ -4,3 +4,6 @@
 - [ ] 解决 cookiecutter 没有模板化 github workflow yaml 的问题.
 - [ ] 研究 simple_cdk2 和 cdk1 联动的最佳模式.
 - [ ] 把 simple_lambda refactor 以下, 使用 simple_cdk1 中的最佳实践.
+- [ ] 修复 aws_ops_alpha.boto_ses.impl.Factory.get_devops_bsm 函数如果在运行的时候已经在 CDK bootstrap 的 context 下, 那么它 BotoSesManager() 获得的是 workload account 的 bsm, 而不是 devops account 的 bsm 的问题. 我们希望找到一个方式能稳定获得 devops bsm. 以前 simple_lambda 能 work 是因为在 layer 中我们用的是 full arn, account id 是 hardcode 的, 不需要用 bsm_devops 去找. 而因为我们现在只要 layer version 了, 就不是那么复杂了. 这里有两个 tip:
+    - 注意一定不要从 env var 去获得 AWS account id, 你这个 layer
+    - 不用 ``with bsm.awscli()`` 而是显式使用某个 role. cdk deploy
