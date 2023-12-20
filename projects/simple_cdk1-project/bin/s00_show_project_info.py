@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from automation.project_info import show_project_info
+from simple_cdk1.ops import show_project_info
 
 show_project_info()

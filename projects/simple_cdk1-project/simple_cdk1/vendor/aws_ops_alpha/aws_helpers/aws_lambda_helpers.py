@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-
+This module implements the automation to manage AWS lambda artifacts, versions, etc ...
 """
 
 import typing as T

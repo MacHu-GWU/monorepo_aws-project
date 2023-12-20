@@ -46,6 +46,12 @@ from .config.api import T_BASE_ENV
 from .aws_helpers import aws_cdk_helpers
 from .aws_helpers import aws_lambda_helpers
 
+# user may not need the following feature to write their application code
+# these features are typically used in CI/CD and devops only
+try:
+    from .aws_helpers import rich_helpers
+except ImportError: # pragma: no cover
+    pass
 
 try:
     from .project.api import simple_python_project
@@ -54,7 +60,6 @@ try:
     from .project.api import simple_lambda_project
 except ImportError:  # pragma: no cover
     pass
-
 
 try:
     from .boostrap import api as boostrap

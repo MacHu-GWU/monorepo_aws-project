@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-
+This module implements the automation to manage Python project.
 """
 
 import typing as T

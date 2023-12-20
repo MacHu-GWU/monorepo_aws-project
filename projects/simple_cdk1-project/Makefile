@@ -5,7 +5,7 @@ help: ## ** Show this help message
 
 
 info: ## ** Show Project Information
-	python ./bin/s00_show_project_info.py
+	./.venv/bin/python ./bin/s00_show_project_info.py
 
 
 venv-create: ## ** Create Virtual Environment
