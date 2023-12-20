@@ -34,7 +34,7 @@ class LambdaMixin:
         self.lambda_func_mapper: T.Dict[
             str : T.Dict[str, T.Union[lambda_.Function, lambda_.Alias]]
         ] = dict()
-
+        boto_ses_factory.print_who_am_i()
         for lbd_func_config in self.env.lambda_functions.values():
             # create layer declaration from config
             layers = list()
