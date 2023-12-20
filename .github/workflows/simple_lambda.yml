@@ -109,7 +109,7 @@ jobs:
   job_1_deploy_to_sbx:
     name: 🚀 Deploy App to 📦 sbx
     if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') || startsWith(github.ref, 'refs/heads/simple_lambda/app') || startsWith(github.ref, 'refs/heads/simple_lambda/cleanup') || startsWith(github.ref, 'refs/heads/simple_lambda/clean') || startsWith(github.ref, 'refs/heads/simple_release/release') || startsWith(github.ref, 'refs/heads/simple_release/rls') }}
-    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+    uses: ./.github/workflows/simple_lambda_deploy.yml
     with:
       user_env_name: sbx
     secrets: inherit
@@ -119,7 +119,7 @@ jobs:
     name: 🚀 Deploy App to 🧪 tst
     # we only run this from release branch
     if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') || startsWith(github.ref, 'refs/heads/simple_lambda/cleanup') || startsWith(github.ref, 'refs/heads/simple_lambda/clean') || startsWith(github.ref, 'refs/heads/simple_release/release') || startsWith(github.ref, 'refs/heads/simple_release/rls') }}
-    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+    uses: ./.github/workflows/simple_lambda_deploy.yml
     with:
       user_env_name: tst
     secrets: inherit
@@ -129,7 +129,7 @@ jobs:
     name: 🚀 Deploy App to 🏭 prd
     # we only run this from release branch
     if: ${{ startsWith(github.ref, 'refs/heads/simple_lambda/release') || startsWith(github.ref, 'refs/heads/simple_lambda/rls') || startsWith(github.ref, 'refs/heads/simple_lambda/cleanup') || startsWith(github.ref, 'refs/heads/simple_lambda/clean') || startsWith(github.ref, 'refs/heads/simple_release/release') || startsWith(github.ref, 'refs/heads/simple_release/rls') }}
-    uses: MacHu-GWU/monorepo_aws-project/.github/workflows/simple_lambda_deploy.yml@main
+    uses: ./.github/workflows/simple_lambda_deploy.yml
     with:
       user_env_name: prd
     secrets: inherit
