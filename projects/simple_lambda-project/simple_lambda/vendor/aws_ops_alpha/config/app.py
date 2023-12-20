@@ -22,12 +22,9 @@ class AppMixin:
 
     :param s3uri_data: an AWS project should always have a delegated s3 folder
         to store project data.
-    :param s3bucket_docs: an AWS project should always have a delegated s3 folder
-        to host the static documentation website.
     """
 
     s3uri_data: T.Optional[str] = dataclasses.field(default=None)
-    s3bucket_docs: T.Optional[str] = dataclasses.field(default=None)
 
     @property
     def s3dir_data(self) -> S3Path:

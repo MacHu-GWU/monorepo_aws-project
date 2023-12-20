@@ -50,6 +50,18 @@ class BotoSesFactory(aws_ops_alpha.AlphaBotoSesFactory):
             self.bsm_prd,
         ]
 
+    def print_who_am_i(self):  # pragma: no cover
+        masked = not runtime.is_local_runtime_group
+        for name, bsm in [
+            ("bsm_devops", boto_ses_factory.bsm_devops),
+            ("bsm_sbx", boto_ses_factory.bsm_sbx),
+            ("bsm_tst", boto_ses_factory.bsm_tst),
+            # ("bsm_stg", boto_ses_factory.bsm_tst),
+            ("bsm_prd", boto_ses_factory.bsm_prd),
+        ]:
+            print(f"--- {name} ---")
+            bsm.print_who_am_i(masked=masked)
+
 
 boto_ses_factory = BotoSesFactory(
     runtime=runtime,

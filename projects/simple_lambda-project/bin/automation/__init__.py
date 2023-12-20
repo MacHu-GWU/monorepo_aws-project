@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 
 """
-This library automates CI/CD processes by running terminal commands,
-building artifacts, and deploying applications. It follows a "shell scripting"
-style to implement most of the logic, effectively separating the
-automation processes from the main application source code. This design made
-this library reusable for other projects.
+At very beginning, we need create virtual environment and install some dependencies.
+However, setting up virtual environment and installing dependencies requires
+additional dependencies such as ``virtualenv``, ``poetry``, which may not be
+available in the global Python you use.
 
-Some automation requires config data from the "Real" application
-source code. However, we don't import any code from the "Real" application
-code base. Instead, we define arguments in the Python function that allow user
-to integrate the automation library with the "Real" application code base freely.
+This module can be run in any Python, and it automatically installs those
+bootstrap dependencies, and set up the virtualenv environment and project
+dependencies for you.
 
 Requirements:
 
-- Python >= 3.8
-- See requirements-automation.txt
+- Python >= 3.7
+- See requirements-jumpstart.txt
 """
 
 from ._version import __version__
