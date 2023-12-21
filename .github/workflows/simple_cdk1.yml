@@ -118,7 +118,7 @@ jobs:
     name: 🚀 Deploy App to 🧪 tst
     # we only run this from release branch
     if: ${{ 
-      startsWith(github.ref, 'refs/heads/simple_cdk1/release') 
+         startsWith(github.ref, 'refs/heads/simple_cdk1/release') 
       || startsWith(github.ref, 'refs/heads/simple_cdk1/rls') 
       || startsWith(github.ref, 'refs/heads/simple_cdk1/cleanup') 
       || startsWith(github.ref, 'refs/heads/simple_cdk1/clean') 
