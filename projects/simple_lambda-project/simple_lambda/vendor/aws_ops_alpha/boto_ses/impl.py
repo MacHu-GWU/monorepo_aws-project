@@ -177,6 +177,8 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         """
         raise NotImplementedError
 
+
+
     def get_current_env(self) -> str:
         """
         An abstract method to get the current environment name.
@@ -197,10 +199,13 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         if self.runtime.is_local_runtime_group:
             if self.runtime.is_aws_cloud9:
                 if self.aws_region:
-                    return BotoSesManager(region_name=self.aws_region)
+                    bsm_devops = BotoSesManager(region_name=self.aws_region)
                 else:
-                    return BotoSesManager()
-                # todo: may need BotoSesManager.from_snapshot_file logic for cloud9 too
+                    bsm_devops = BotoSesManager()
+                if "/i-" not in bsm_devops.principal_arn:
+                    return BotoSesManager.from_snapshot_file(path=path_bsm_snapshot)
+                else:
+                    return bsm_devops
             else:
                 kwargs = dict(
                     profile_name=self.env_to_profile_mapper[
