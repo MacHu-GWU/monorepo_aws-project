@@ -693,9 +693,9 @@ DEPLOY_CDK_STACK	app	local	devops	1
 DEPLOY_CDK_STACK	app	local	sbx	1
 DEPLOY_CDK_STACK	app	local	tst	1
 DEPLOY_CDK_STACK	app	local	stg	1
-DEPLOY_CDK_STACK	app	local	prd	1
-DEPLOY_CDK_STACK	app	ci	devops	0
-DEPLOY_CDK_STACK	app	ci	sbx	0
+DEPLOY_CDK_STACK	app	local	prd	0
+DEPLOY_CDK_STACK	app	ci	devops	1
+DEPLOY_CDK_STACK	app	ci	sbx	1
 DEPLOY_CDK_STACK	app	ci	tst	0
 DEPLOY_CDK_STACK	app	ci	stg	0
 DEPLOY_CDK_STACK	app	ci	prd	0
