@@ -42,8 +42,7 @@
         "username": "sbx.user",
         "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_lambda/",
         "lambda_functions": {
-            "hello": {
-            },
+            "hello": {},
             "s3sync": {}
         }
     },
@@ -59,8 +58,12 @@
         "username": "prd.user",
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_lambda/",
         "lambda_functions": {
-            "hello": {},
-            "s3sync": {}
+            "hello": {
+                "live_version1": "4"
+            },
+            "s3sync": {
+                "live_version1": "4"
+            }
         }
     }
 }
