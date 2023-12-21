@@ -109,7 +109,7 @@ jobs:
   job_1_deploy_to_sbx:
     name: 🚀 Deploy App to 📦 sbx
     if: ${{ 
-      startsWith(github.ref, 'refs/heads/simple_lambda/release') 
+         startsWith(github.ref, 'refs/heads/simple_lambda/release') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/rls') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/app') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/cleanup') 
@@ -127,7 +127,7 @@ jobs:
     name: 🚀 Deploy App to 🧪 tst
     # we only run this from release branch
     if: ${{ 
-      startsWith(github.ref, 'refs/heads/simple_lambda/release') 
+         startsWith(github.ref, 'refs/heads/simple_lambda/release') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/rls') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/cleanup') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/clean') 
@@ -144,7 +144,7 @@ jobs:
     name: 🚀 Deploy App to 🏭 prd
     # we only run this from release branch
     if: ${{ 
-      startsWith(github.ref, 'refs/heads/simple_lambda/release') 
+         startsWith(github.ref, 'refs/heads/simple_lambda/release') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/rls') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/cleanup') 
       || startsWith(github.ref, 'refs/heads/simple_lambda/clean') 

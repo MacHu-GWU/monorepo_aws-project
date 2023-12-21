@@ -73,10 +73,24 @@ jobs:
       - name: === ✅ START MAIN LOGICS ===
         run: echo "START MAIN LOGICS"
       - name: 🚀 Deploy CDK STACK
+        if: ${{
+          startsWith(github.ref, 'refs/heads/simple_cdk2/release')
+          || startsWith(github.ref, 'refs/heads/simple_cdk2/rls')
+          || startsWith(github.ref, 'refs/heads/simple_cdk2/app')
+          || startsWith(github.ref, 'refs/heads/simple_release/release')
+          || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_05_deploy_app.py
       - name: 🧪 Run Integration Test
+        if: ${{
+          startsWith(github.ref, 'refs/heads/simple_cdk2/release')
+          || startsWith(github.ref, 'refs/heads/simple_cdk2/rls')
+          || startsWith(github.ref, 'refs/heads/simple_cdk2/app')
+          || startsWith(github.ref, 'refs/heads/simple_release/release')
+          || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s03_04_run_int_test.py
@@ -86,6 +100,12 @@ jobs:
         run: |
           .venv/bin/python bin/s04_07_create_config_snapshot.py
       - name: 🗑 Delete CDK STACK
+        if: ${{
+             startsWith(github.ref, 'refs/heads/simple_cdk2/cleanup')
+          || startsWith(github.ref, 'refs/heads/simple_cdk2/clean')
+          || startsWith(github.ref, 'refs/heads/simple_release/cleanup')
+          || startsWith(github.ref, 'refs/heads/simple_release/clean')
+          }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_06_delete_app.py

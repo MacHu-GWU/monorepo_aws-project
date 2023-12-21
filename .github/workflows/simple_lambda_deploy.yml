@@ -73,10 +73,24 @@ jobs:
       - name: === ✅ START MAIN LOGICS ===
         run: echo "START MAIN LOGICS"
       - name: 🚀 Deploy Lambda App via CDK
+        if: ${{
+          startsWith(github.ref, 'refs/heads/simple_lambda/release')
+          || startsWith(github.ref, 'refs/heads/simple_lambda/rls')
+          || startsWith(github.ref, 'refs/heads/simple_lambda/app')
+          || startsWith(github.ref, 'refs/heads/simple_release/release')
+          || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_05_deploy_app.py
       - name: 🧪 Run Integration Test
+        if: ${{
+          startsWith(github.ref, 'refs/heads/simple_lambda/release')
+          || startsWith(github.ref, 'refs/heads/simple_lambda/rls')
+          || startsWith(github.ref, 'refs/heads/simple_lambda/app')
+          || startsWith(github.ref, 'refs/heads/simple_release/release')
+          || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s03_04_run_int_test.py
@@ -86,6 +100,12 @@ jobs:
         run: |
           .venv/bin/python bin/s04_07_create_config_snapshot.py
       - name: 🗑 Delete Lambda App
+        if: ${{
+             startsWith(github.ref, 'refs/heads/simple_lambda/cleanup')
+          || startsWith(github.ref, 'refs/heads/simple_lambda/clean')
+          || startsWith(github.ref, 'refs/heads/simple_release/cleanup')
+          || startsWith(github.ref, 'refs/heads/simple_release/clean')
+          }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_06_delete_app.py
