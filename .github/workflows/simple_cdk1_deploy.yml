@@ -95,7 +95,14 @@ jobs:
         run: |
           .venv/bin/python bin/s03_04_run_int_test.py
       - name: ⚙️ Create Config Snapshot
-        if: ${{ env.USER_ENV_NAME == 'prd' }}
+        if: ${{ 
+          env.USER_ENV_NAME == 'prd' && 
+          (
+               startsWith(github.ref, 'refs/heads/simple_cdk1/release')
+            || startsWith(github.ref, 'refs/heads/simple_release/release')
+            || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          )
+          }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_07_create_config_snapshot.py
