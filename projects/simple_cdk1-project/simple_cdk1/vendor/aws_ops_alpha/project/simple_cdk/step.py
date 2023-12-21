@@ -34,6 +34,7 @@ def cdk_deploy(
     semantic_branch_name: str,
     runtime_name: str,
     env_name: str,
+    bsm_devops: "BotoSesManager",
     bsm_workload: "BotoSesManager",
     dir_cdk: Path,
     stack_name: str,
@@ -64,6 +65,7 @@ def cdk_deploy(
             return
 
     aws_cdk_helpers.cdk_deploy(
+        bsm_devops=bsm_devops,
         bsm_workload=bsm_workload,
         env_name=env_name,
         dir_cdk=dir_cdk,
@@ -79,6 +81,7 @@ def cdk_destroy(
     semantic_branch_name: str,
     runtime_name: str,
     env_name: str,
+    bsm_devops: "BotoSesManager",
     bsm_workload: "BotoSesManager",
     dir_cdk: Path,
     stack_name: str,
@@ -109,6 +112,7 @@ def cdk_destroy(
             return
 
     aws_cdk_helpers.cdk_destroy(
+        bsm_devops=bsm_devops,
         bsm_workload=bsm_workload,
         env_name=env_name,
         dir_cdk=dir_cdk,

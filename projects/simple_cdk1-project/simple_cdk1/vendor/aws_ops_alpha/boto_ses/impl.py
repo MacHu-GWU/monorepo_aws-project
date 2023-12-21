@@ -6,10 +6,12 @@
 
 import typing as T
 import abc
+import json
 import dataclasses
+from pathlib import Path
 from functools import cached_property
 
-from boto_session_manager import BotoSesManager
+from boto_session_manager import BotoSesManager, PATH_DEFAULT_SNAPSHOT
 
 from ..constants import CommonEnvNameEnum
 from ..runtime.api import Runtime
@@ -175,38 +177,117 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_env_role_session_name(self, env_name: str) -> str:
+        """
+        An abstract method to get the workload AWS account IAM role session name
+        for assumed role. You have to subclass this class and implement this method.
+
+        Usually, you only need this method in CI environment, because on local,
+        you may just need to use AWS CLI named profile to assume the role.
+        But in CI, you don't have AWS CLI named profile, you have to use the
+        default role, which is the devops role to assume workload role.
+
+        A role session name is just an identifier for the assumed role session.
+        You can then check the principal arn to identify which environment the
+        session belongs to.
+
+            >>> def get_env_role_session_name(self, env_name: str) -> str:
+            ...     return f"{env_name}_role_session"
+        """
+        raise NotImplementedError
+
     def get_current_env(self) -> str:
         """
         An abstract method to get the current environment name.
         """
         raise NotImplementedError
 
-    def get_devops_bsm(self) -> "BotoSesManager":  # pragma: no cover
+    def is_devops_bsm(self, bsm: "BotoSesManager") -> bool:
+        """
+        Check if the boto session manager is for devops AWS account.
+        """
+        devops_role_session_name = self.get_env_role_session_name(
+            env_name=CommonEnvNameEnum.devops.value
+        )
+        if self.runtime.is_local_runtime_group:
+            # in aws cloud9 runtime, check if principal ARN is a devops role session,
+            # or it is the cloud 9 EC2 IAM role
+            if self.runtime.is_aws_cloud9:
+                if devops_role_session_name in bsm.principal_arn:
+                    return True
+                else:
+                    return "/i-" in bsm.principal_arn
+            # in local runtime, check the AWS profile
+            else:
+                expected = self.env_to_profile_mapper[CommonEnvNameEnum.devops.value]
+                return bsm.profile_name == expected
+        # in CI runtime, check if principal ARN is a devops role session,
+        elif self.runtime.is_ci_runtime_group:
+            return devops_role_session_name in bsm.principal_arn
+
+    def is_workload_bsm(self, bsm: "BotoSesManager", env_name: str) -> bool:
+        workload_role_session_name = self.get_env_role_session_name(env_name=env_name)
+        if self.runtime.is_local_runtime_group:
+            # in cloud9 runtime, check if principal ARN is a workload role session,
+            if self.runtime.is_aws_cloud9:
+                return workload_role_session_name in bsm.principal_arn
+            # in local runtime, check the AWS profile
+            else:
+                expected = self.env_to_profile_mapper[env_name]
+                return bsm.profile_name == expected
+        # in CI runtime, check if principal ARN is a workload role session,
+        elif self.runtime.is_ci_runtime_group:
+            return workload_role_session_name in bsm.principal_arn
+
+    def get_devops_bsm(
+        self,
+        path_bsm_snapshot: Path = PATH_DEFAULT_SNAPSHOT,
+    ) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for devops AWS account.
 
         1. for local laptop, you should use the devops AWS cli profile
         2. for AWS cloud 9, the cloud 9 default IAM role is the devops role
         3. for ci runtime, the default IAM principal is the devops role
+
+        There's an edge case in CI. Usually, we set the workload boto session
+        credentials as the default for the ``cdk deploy`` command runtime.
+        The ``cdk deploy`` command will launch another Python process to execute
+        the deployment. By default, we assume that the default AWS credential
+        is the DevOps role. However, in this case, the default AWS credential
+        is the workload role. If we discover that the default role is NOT
+        the DevOps role, we will load the credentials from a snapshot file.
+        A snapshot file is created by the ``BotoSesManager.temp_snapshot()``
+        context manager. Before running the cdk deploy command, it stores
+        the DevOps role credentials and automatically deletes this file
+        after the cdk deploy command finishes or when the program exits unexpectedly.
         """
         if self.runtime.is_local_runtime_group:
             if self.runtime.is_aws_cloud9:
                 if self.aws_region:
-                    return BotoSesManager(region_name=self.aws_region)
+                    bsm_devops = BotoSesManager(region_name=self.aws_region)
                 else:
-                    return BotoSesManager()
+                    bsm_devops = BotoSesManager()
+                if self.is_devops_bsm(bsm=bsm_devops):
+                    return bsm_devops
+                else:
+                    return BotoSesManager.from_snapshot_file(path=path_bsm_snapshot)
             else:
-                kwargs = dict(
-                    profile_name=self.env_to_profile_mapper[CommonEnvNameEnum.devops.value]
-                )
+                profile_name = self.env_to_profile_mapper[CommonEnvNameEnum.devops.value]
+                kwargs = dict(profile_name=profile_name)
                 if self.aws_region:
                     kwargs["region_name"] = self.aws_region
                 return BotoSesManager(**kwargs)
         elif self.runtime.is_ci_runtime_group:
             if self.aws_region:
-                return BotoSesManager(region_name=self.aws_region)
+                bsm_devops = BotoSesManager(region_name=self.aws_region)
             else:
-                return BotoSesManager()
+                bsm_devops = BotoSesManager()
+            if self.is_devops_bsm(bsm=bsm_devops):
+                return bsm_devops
+            else:
+                return BotoSesManager.from_snapshot_file(path=path_bsm_snapshot)
         else:  # pragma: no cover
             raise RuntimeError
 
@@ -217,6 +298,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         duration_seconds: int = 3600,
         region_name: T.Optional[str] = None,
         auto_refresh: bool = False,
+        path_bsm_snapshot: Path = PATH_DEFAULT_SNAPSHOT,
     ) -> "BotoSesManager":  # pragma: no cover
         """
         Get the boto session manager for workload AWS account.
@@ -251,25 +333,26 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
             bsm_devops = self.get_devops_bsm()
             if env_name == CommonEnvNameEnum.devops.value:
                 return bsm_devops
-            role_arn = self.get_env_role_arn(env_name)
             # ------------------------------------------------------------------
             # usually, the default boto session should be the devops bsm
             # but in CDK deploy shell script, we manually set the default
             # boto session as the workload bsm, in other words, the bsm_devops
             # is already the workload bsm. We need special handling here.
-            # ------------------------------------------------------------------
+            #
             # bsm_devops.principal_arn could be either
             # arn:aws:iam::***:role/devops_role_name
             # arn:aws:sts::***:assumed-role/workload_role_name/session_name
-            bsm_devops_role_name = bsm_devops.principal_arn.split("/", 1)[1]
-            # role_arn should be
-            # arn:aws:iam::***:role/workload_role_name
-            bsm_workload_role_name = role_arn.split("/")[1]
-            if bsm_devops_role_name.startswith(bsm_workload_role_name):
-                return bsm_devops
+            # ------------------------------------------------------------------
+            role_arn = self.get_env_role_arn(env_name)
+            # bsm_devops_role_name = bsm_devops.principal_arn.split("/", 1)[1]
+            # # role_arn should be
+            # # arn:aws:iam::***:role/workload_role_name
+            # bsm_workload_role_name = role_arn.split("/")[1]
+            # if bsm_devops_role_name.startswith(bsm_workload_role_name):
+            #     return bsm_devops
 
             if role_session_name is None:
-                role_session_name = f"{env_name}_session"
+                role_session_name = self.get_env_role_session_name(env_name)
             if region_name is None:
                 if self.aws_region is None:
                     region_name = bsm_devops.aws_region
