@@ -37,8 +37,6 @@ from .git.api import extract_semantic_branch_name_for_multi_repo
 from .git.api import extract_semantic_branch_name_for_mono_repo
 from .git.api import MultiGitRepo
 from .git.api import MonoGitRepo
-from .boto_ses.api import path_default_bsm_backup
-from .boto_ses.api import bsm_backup
 from .boto_ses.api import AbstractBotoSesFactory
 from .boto_ses.api import AlphaBotoSesFactory
 from .config.api import BaseConfig
