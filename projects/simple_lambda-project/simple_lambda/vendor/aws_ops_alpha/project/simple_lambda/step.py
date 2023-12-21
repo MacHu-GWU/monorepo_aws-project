@@ -223,6 +223,7 @@ def delete_app(
     semantic_branch_name: str,
     runtime_name: str,
     env_name: str,
+    pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bsm_workload: "BotoSesManager",
     dir_cdk: Path,
@@ -251,6 +252,7 @@ def delete_app(
             return
 
     with logger.nested():
+        build_lambda_source(pyproject_ops=pyproject_ops)
         aws_cdk_helpers.cdk_destroy(
             bsm_devops=bsm_devops,
             bsm_workload=bsm_workload,
