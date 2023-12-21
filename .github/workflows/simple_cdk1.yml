@@ -99,7 +99,10 @@ jobs:
 
   job_1_deploy_to_sbx:
     name: 🚀 Deploy App to 📦 sbx
-    if: ${{ startsWith(github.ref, 'refs/heads/simple_cdk1/release') || startsWith(github.ref, 'refs/heads/simple_cdk1/rls') || startsWith(github.ref, 'refs/heads/simple_cdk1/app') || startsWith(github.ref, 'refs/heads/simple_cdk1/cleanup') || startsWith(github.ref, 'refs/heads/simple_cdk2/clean') || startsWith(github.ref, 'refs/heads/simple_cdk1/clean') || startsWith(github.ref, 'refs/heads/simple_release/release') || startsWith(github.ref, 'refs/heads/simple_release/rls') }}
+    if: ${{ 
+      startsWith(github.ref, 'refs/heads/simple_cdk1/release') 
+      || startsWith(github.ref, 'refs/heads/simple_cdk1/rls') || startsWith(github.ref, 'refs/heads/simple_cdk1/app') || startsWith(github.ref, 'refs/heads/simple_cdk1/cleanup') || startsWith(github.ref, 'refs/heads/simple_cdk2/clean') || startsWith(github.ref, 'refs/heads/simple_cdk1/clean') || startsWith(github.ref, 'refs/heads/simple_release/release') || startsWith(github.ref, 'refs/heads/simple_release/rls') 
+      }}
     uses: ./.github/workflows/simple_cdk1_deploy.yml
     with:
       user_env_name: sbx
