@@ -13,9 +13,9 @@ aws-lambda-layer==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.1
 boltons==21.0.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:65e70a79a731a7fe6e98592ecfb5ccf2115873d01dbc576079874629e5c90f13 \
     --hash=sha256:b9bb7b58b2b420bbe11a6025fdef6d3e5edc9f76a42fb467afe7ca212ef9948b
-boto-session-manager==1.6.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:8d05f996cf0574eb3451b7c0078798ff75c86ae64dfc10a437358561a44f5ecd \
-    --hash=sha256:d09eef0a2a52e6870e82d6bf13bd2010955092784628f4c9e4569d8955b7424d
+boto-session-manager==1.7.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:75daac2b49d99129dadf5e6d22f51e5a9bc1304d57ae5725d10f20946e84d0f1 \
+    --hash=sha256:a88a72cf72b38482d5c7b4b4b4713b745f2eaa1d7dfb9462360c77cbb19d035c
 boto3==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:799fe8399ea132aa5aa868caf78c47ef9ed675d5ef61be97cb7131081bb8a861 \
     --hash=sha256:ebf6d86217c37986f965dbe35a3bbd0318127d23a65737ab6486667496decb54
