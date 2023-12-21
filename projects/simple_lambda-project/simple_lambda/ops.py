@@ -362,6 +362,7 @@ def create_important_path_table():
             ("path_secret_config_json", pyproject_ops.path_secret_config_json),
             ("dir_tests", pyproject_ops.dir_tests),
             ("dir_docs", pyproject_ops.dir_sphinx_doc_source),
+            ("dir_build_lambda", pyproject_ops.dir_build_lambda),
         ]
     )
 
@@ -373,6 +374,7 @@ def create_important_s3_location_table():
             ("s3dir_docs", config.env.s3dir_docs),
             ("s3dir_data", config.env.s3dir_data),
             ("s3dir_config", config.env.s3dir_config),
+            ("s3dir_lambda", config.env.s3dir_lambda),
         ]
     )
 
@@ -383,11 +385,12 @@ def create_important_url_table():
     aws = aws_console_url.AWSConsole.from_bsm(boto_ses_factory.bsm_devops)
     return aws_ops_alpha.rich_helpers.create_url_table(
         name_and_url_list=[
+            # fmt: off
             ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
-            (
-                "cloudformation stacks",
-                aws.cloudformation.filter_stack(config.project_name_slug),
-            ),
+            ("cloudformation stacks", aws.cloudformation.filter_stack(config.project_name_slug)),
+            ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
+            ("lambda layer", aws.awslambda.filter_layers(config.env.lambda_layer_name)),
+            # fmt: on
         ]
     )
 

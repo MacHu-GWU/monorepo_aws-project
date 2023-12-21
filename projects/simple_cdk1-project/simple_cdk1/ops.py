@@ -329,11 +329,10 @@ def create_important_url_table():
     aws = aws_console_url.AWSConsole.from_bsm(boto_ses_factory.bsm_devops)
     return aws_ops_alpha.rich_helpers.create_url_table(
         name_and_url_list=[
+            # fmt: off
             ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
-            (
-                "cloudformation stacks",
-                aws.cloudformation.filter_stack(config.project_name_slug),
-            ),
+            ("cloudformation stacks", aws.cloudformation.filter_stack(config.project_name_slug)),
+            # fmt: on
         ]
     )
 
