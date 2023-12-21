@@ -254,6 +254,7 @@ def delete_app(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
         env_name=detect_current_env(),
+        bsm_devops=boto_ses_factory.bsm_devops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
