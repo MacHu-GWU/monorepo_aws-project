@@ -12,6 +12,9 @@ name: check_cross_account_permission
 
 # Controls when the action will run.
 on:
+  # Run this workflow every 1 month
+  schedule:
+    - cron: '30 8 1 * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
