@@ -11,7 +11,7 @@ from rich.table import Table
 from rich.text import Text
 from rich.style import Style
 
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING: # pragma: no cover
     from pathlib_mate import T_PATH_ARG
     from s3pathlib import S3Path
 
@@ -50,6 +50,10 @@ def create_path_table(
     name_and_path_list: T.List[T.Tuple[str, "T_PATH_ARG"]],
     table_title: str = "Important Local Path",
 ) -> Table:
+    """
+    Create a table that presents a list of local file path.
+    It is the list version of :func:`file_row`.
+    """
     table = Table(title=table_title)
     table.add_column("Title", style="cyan", no_wrap=True)
     table.add_column("Path", no_wrap=True)
@@ -62,6 +66,10 @@ def create_s3path_table(
     name_and_s3path_list: T.List[T.Tuple[str, "S3Path"]],
     table_title: str = "Important S3 Location",
 ) -> Table:
+    """
+    Create a table that presents a list of AWS S3 path.
+    It is the list version of :func:`s3path_row`.
+    """
     table = Table(title=table_title)
     table.add_column("Title", style="cyan", no_wrap=True)
     table.add_column("S3 Console", no_wrap=True)
@@ -74,6 +82,10 @@ def create_url_table(
     name_and_url_list: T.List[T.Tuple[str, str]],
     table_title: str = "Important Url",
 ) -> Table:
+    """
+    Create a table that presents a list of URL.
+    It is the list version of :func:`url_row`.
+    """
     table = Table(title=table_title)
     table.add_column("Title", style="cyan", no_wrap=True)
     table.add_column("S3 Console", no_wrap=True)

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Bootstrap for Multi Workload AWS Accounts Setup.
+"""
+
 # --- standard library
 import typing as T
 import json

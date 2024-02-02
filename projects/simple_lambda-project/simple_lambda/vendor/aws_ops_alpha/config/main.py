@@ -29,7 +29,7 @@ from .name import NameMixin
 from .deploy import DeployMixin
 
 # type hint
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:  # pragma: no cover
     from s3pathlib import S3Path
     from boto_session_manager import BotoSesManager
 

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Bootstrap for GitHub Action.
+"""
+
 # --- standard library
 import typing as T
 from textwrap import dedent
@@ -26,6 +30,10 @@ def setup_github_action_open_id_connection(
     gh_action_role_name: str,
     oidc_provider_arn: str = "",
 ):
+    """
+    The OpenID Connect (OIDC) identity provider that allows the GitHub Actions
+    to assume the role in the DevOps account.
+    """
     with bsm_devops.awscli():
         gh_action_open_id_in_aws.setup_github_action_open_id_connection_in_aws(
             aws_profile=None,
@@ -67,6 +75,10 @@ def teardown_github_action_open_id_connection(
     bsm_devops: "BotoSesManager",
     stack_name: str,
 ):
+    """
+    Remove the OpenID Connect (OIDC) identity provider that allows the GitHub Actions
+    to assume the role in the DevOps account.
+    """
     aws_cf.remove_stack(
         bsm=bsm_devops,
         stack_name=stack_name,
