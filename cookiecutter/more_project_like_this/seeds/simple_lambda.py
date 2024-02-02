@@ -2,10 +2,11 @@
 
 from .. import paths
 
+# declare the path to the seed project
 dir_seed_project = paths.dir_projects.joinpath("simple_lambda-project")
 
+# declare string mapping and default values for new project
 # fmt: off
-# use this to create your new project
 # mapper = [
 #     ("simple_lambda", "package_name", "your_package_name"),
 #     ("Sanhe Hu", "author_name", "your name"),
@@ -34,6 +35,7 @@ mapper = [
 ]
 
 # fmt: on
+# declare files to ignore
 exclude = [
     # dir
     ".venv",
