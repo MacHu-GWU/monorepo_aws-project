@@ -145,7 +145,6 @@ class LambdaMixin:
                 KEY_ALIAS: lbd_func_alias,
             }
 
-        # fmt: on
         # ----------------------------------------------------------------------
         # Configure S3 Notification
         #
@@ -179,9 +178,7 @@ class LambdaMixin:
                 lambda_.Function.from_function_attributes(
                     self,
                     f"LambdaAliasAttribute{self.env.lbd_s3sync.short_name_camel}",
-                    function_arn=self.lambda_func_mapper[self.env.lbd_s3sync.name][
-                        KEY_ALIAS
-                    ].function_arn,
+                    function_arn=self.lambda_func_mapper[self.env.lbd_s3sync.name][KEY_ALIAS].function_arn,
                     same_environment=True,
                 ),
             ),
@@ -194,3 +191,4 @@ class LambdaMixin:
         for dct in self.lambda_func_mapper.values():
             lbd_func = dct[KEY_FUNC]
             cdk.Tags.of(lbd_func).add("tech:source_sha256", source_sha256)
+        # fmt: on

@@ -199,6 +199,7 @@ def deploy_app(
             env_name=env_name,
             skip_prompt=skip_prompt,
         )
+        # we use CDK to manage version creation and alias, no longer need this
         # publish_lambda_version(
         #     semantic_branch_name=semantic_branch_name,
         #     runtime_name=runtime_name,
