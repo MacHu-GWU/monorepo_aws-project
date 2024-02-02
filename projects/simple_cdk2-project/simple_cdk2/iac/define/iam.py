@@ -36,7 +36,7 @@ class IamMixin:
             boto_ses_factory.get_env_bsm(env_name=env_name).cloudformation_client,
         )
 
-        # reference a resource created by other project
+        # **reference a resource created by other project (CDK Stack)**
         iam_managed_policy = iam.ManagedPolicy.from_managed_policy_arn(
             self,
             "IamManagedPolicy",
