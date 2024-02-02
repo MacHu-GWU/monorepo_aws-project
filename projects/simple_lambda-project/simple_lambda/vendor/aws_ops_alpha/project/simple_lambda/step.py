@@ -199,17 +199,17 @@ def deploy_app(
             env_name=env_name,
             skip_prompt=skip_prompt,
         )
-        publish_lambda_version(
-            semantic_branch_name=semantic_branch_name,
-            runtime_name=runtime_name,
-            env_name=env_name,
-            bsm_workload=bsm_workload,
-            lbd_func_name_list=lbd_func_name_list,
-            check=check,
-            step=publish_new_lambda_version_step,
-            truth_table=truth_table,
-            url=url,
-        )
+        # publish_lambda_version(
+        #     semantic_branch_name=semantic_branch_name,
+        #     runtime_name=runtime_name,
+        #     env_name=env_name,
+        #     bsm_workload=bsm_workload,
+        #     lbd_func_name_list=lbd_func_name_list,
+        #     check=check,
+        #     step=publish_new_lambda_version_step,
+        #     truth_table=truth_table,
+        #     url=url,
+        # )
 
 
 @logger.start_and_end(
