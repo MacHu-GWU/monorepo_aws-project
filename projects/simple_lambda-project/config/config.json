@@ -59,10 +59,8 @@
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_lambda/",
         "lambda_functions": {
             "hello": {
-                "live_version1": "4"
             },
             "s3sync": {
-                "live_version1": "4"
             }
         }
     }
