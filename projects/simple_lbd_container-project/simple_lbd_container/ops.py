@@ -22,12 +22,14 @@ from ._api import (
     boto_ses_factory,
 )
 from .pyproject import pyproject_ops
+from .paths import path_dockerfile
 
 
 # Emoji = aws_ops_alpha.Emoji
 simple_python_project = aws_ops_alpha.simple_python_project
 simple_config_project = aws_ops_alpha.simple_config_project
 simple_cdk_project = aws_ops_alpha.simple_cdk_project
+simple_lambda_project = aws_ops_alpha.simple_lambda_project
 simple_lbd_container_project = aws_ops_alpha.simple_lbd_container_project
 
 
@@ -191,6 +193,26 @@ def build_lambda_source(
     return simple_lbd_container_project.build_lambda_source(
         pyproject_ops=pyproject_ops,
         verbose=verbose,
+    )
+
+
+def build_lambda_container(
+    check: bool = True,
+):
+    return simple_lbd_container_project.build_lambda_container(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
+        bsm_devops=boto_ses_factory.bsm_devops,
+        pyproject_ops=pyproject_ops,
+        repo_name=pyproject_ops.package_name,
+        parameter_name=config.parameter_name,
+        path_dockerfile=path_dockerfile,
+        use_arm=False,
+        check=check,
+        step=simple_lbd_container_project.StepEnum.build_lambda_container.value,
+        truth_table=simple_lbd_container_project.truth_table,
+        url=simple_lbd_container_project.google_sheet_url,
     )
 
 

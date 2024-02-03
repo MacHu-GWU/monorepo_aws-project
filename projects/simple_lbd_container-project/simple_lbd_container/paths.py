@@ -50,3 +50,4 @@ dir_cdk = dir_project_root / "cdk"
 # ------------------------------------------------------------------------------
 dir_lambda_deploy = dir_project_root.joinpath("build", "lambda", "deploy")
 path_source_zip = dir_project_root.joinpath("build", "lambda", "source.zip")
+path_dockerfile = dir_project_root.joinpath("Dockerfile")
