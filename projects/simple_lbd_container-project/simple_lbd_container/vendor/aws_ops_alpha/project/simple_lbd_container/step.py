@@ -34,6 +34,25 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 
 @logger.start_and_end(
+    msg="Build Lambda Source Artifacts",
+    start_emoji=f"{Emoji.build} {Emoji.awslambda}",
+    error_emoji=f"{Emoji.failed} {Emoji.build} {Emoji.awslambda}",
+    end_emoji=f"{Emoji.succeeded} {Emoji.build} {Emoji.awslambda}",
+    pipe=Emoji.awslambda,
+)
+def build_lambda_source(
+    pyproject_ops: "pyops.PyProjectOps",
+    verbose: bool = False,
+):  # pragma: no cover
+    source_sha256, path_source_zip = aws_lambda_helpers.build_lambda_source(
+        pyproject_ops=pyproject_ops,
+        verbose=verbose,
+    )
+    logger.info(f"review source artifacts at local: {path_source_zip}")
+    logger.info(f"review source artifacts sha256: {source_sha256}")
+
+
+@logger.start_and_end(
     msg="Build Lambda Container Image Locally",
     start_emoji=f"{Emoji.build} {Emoji.awslambda} {Emoji.package}",
     error_emoji=f"{Emoji.failed} {Emoji.awslambda} {Emoji.package}",
@@ -76,25 +95,7 @@ def build_lambda_container(
         use_arm=use_arm,
     )
 
-# @logger.start_and_end(
-#     msg="Build Lambda Source Artifacts",
-#     start_emoji=f"{Emoji.build} {Emoji.awslambda}",
-#     error_emoji=f"{Emoji.failed} {Emoji.build} {Emoji.awslambda}",
-#     end_emoji=f"{Emoji.succeeded} {Emoji.build} {Emoji.awslambda}",
-#     pipe=Emoji.awslambda,
-# )
-# def build_lambda_source(
-#     pyproject_ops: "pyops.PyProjectOps",
-#     verbose: bool = False,
-# ):  # pragma: no cover
-#     source_sha256, path_source_zip = aws_lambda_helpers.build_lambda_source(
-#         pyproject_ops=pyproject_ops,
-#         verbose=verbose,
-#     )
-#     logger.info(f"review source artifacts at local: {path_source_zip}")
-#     logger.info(f"review source artifacts sha256: {source_sha256}")
-#
-#
+
 # @logger.start_and_end(
 #     msg="Build Lambda Layer Artifacts",
 #     start_emoji=f"{Emoji.build} {Emoji.awslambda}",

@@ -31,7 +31,7 @@ RUN pip install --quiet --no-cache-dir -r requirements.txt
 # copy the source code to the working directory
 # this folder is chaging frequently, so we put it at the bottom of Dockerfile
 # to utilize the build cache
-COPY simple_lambda_container/ ${LAMBDA_TASK_ROOT}/simple_lambda_container
+COPY simple_lbd_container/ ${LAMBDA_TASK_ROOT}/simple_lbd_container
 COPY lambda_app/lambda_function.py ${LAMBDA_TASK_ROOT}
 
 # install the source package itself
