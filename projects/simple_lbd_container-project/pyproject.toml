@@ -1,0 +1,137 @@
+# ------------------------------------------------------------------------------
+# Reference:
+#
+# - The pyproject.toml file: https://python-poetry.org/docs/pyproject/
+# - Dependency specification: https://python-poetry.org/docs/dependency-specification/
+# ------------------------------------------------------------------------------
+[tool.poetry]
+name = "simple_lbd_container"
+version = "0.1.1"
+description = "A sample AWS Lambda Python project with production ready set up"
+authors = ["Sanhe Hu <husanhe@gmail.com>"]
+
+# ------------------------------------------------------------------------------
+# core dependencies for deployment
+# ------------------------------------------------------------------------------
+[tool.poetry.dependencies]
+python = "3.9.*"
+# ------------------------------------------------------------------------------
+# AWS Python SDK
+# ------------------------------------------------------------------------------
+# official AWS Python SDK
+botocore = "1.33.0"
+boto3 = "1.33.0"
+# advanced boto3 session manager
+boto_session_manager = "1.7.2"
+# ------------------------------------------------------------------------------
+# AWS DevOps tools
+# ------------------------------------------------------------------------------
+# path manipulation
+pathlib_mate = "1.3.2"
+# Python project DevOps automation
+pyproject_ops = "0.8.1"
+# Automation rule truth table management
+tt4human = "0.3.1"
+# smart IO, dependency of s3pathlib
+smart-open = "6.2.0"
+# AWS s3 SDK manipulation
+s3pathlib = "2.1.2"
+# AWS parameter store, secret manager integration
+pysecret = "2.2.4"
+# multi environment config management
+config_patterns = "1.0.6"
+# create url for AWS console
+aws_console_url = "1.4.1"
+# build AWS lambda layer and deployment package
+aws_lambda_layer = "0.5.1"
+# AWS devops best practices
+#aws_ops_alpha = "0.0.5"
+# ------------------------------------------------------------------------------
+# Helper libraries
+# ------------------------------------------------------------------------------
+# AWS Lambda event parser
+aws_lambda_event = "2.0.2"
+# helper functions
+boltons = "21.0.0"
+
+# ------------------------------------------------------------------------------
+# addtitional dependencies for development
+# ------------------------------------------------------------------------------
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+# publish package to PyPI
+twine = "3.8.0"
+# build wheel distribution format
+wheel = "0.37.1"
+# beautiful formatting for console output
+rich = "12.6.0"
+# build CLI app made easy
+fire = "0.5.0"
+# AWS CDK for infrastructure as code, we also need this for tests
+aws-cdk-lib = "2.111.0"
+constructs = "10.2.70"
+
+# ------------------------------------------------------------------------------
+# addtitional dependencies for building documentations
+# ------------------------------------------------------------------------------
+[tool.poetry.group.doc]
+optional = true
+
+[tool.poetry.group.doc.dependencies]
+Sphinx = "5.3.0"
+# enable jinja syntax in reStructuredText
+sphinx-jinja = "2.0.2"
+# add copy button to code block
+sphinx-copybutton = "0.5.1"
+# add additional design pattern to sphinx
+sphinx-design = "0.5.0"
+# add real-time search box
+readthedocs-sphinx-search = "0.3.1"
+# the sphinx theme
+furo = "2023.03.27"
+# generate reStructuredText in Python
+rstobj = "1.2.1"
+# automaticall generate .. toctree directives and API reference doc
+docfly = "2.0.3"
+# you need to install awscli to upload the documentation website to S3
+# awscli has werid dependency issue, so we install it out side of poetry
+
+# ------------------------------------------------------------------------------
+# addtitional dependencies for testing
+# ------------------------------------------------------------------------------
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+# pytest framework
+pytest = "6.2.5"
+# code coverage test
+pytest-cov = "2.12.1"
+# mock AWS service for testing
+moto = "4.2.10"
+# AWS CDK for infrastructure as code, we also need this for tests
+aws-cdk-lib = "2.111.0"
+constructs = "10.2.70"
+
+# ------------------------------------------------------------------------------
+# addtitional dependencies for automation shell scripts
+# ------------------------------------------------------------------------------
+[tool.poetry.group.auto]
+optional = true
+
+[tool.poetry.group.auto.dependencies]
+# Python dependency management
+poetry = "1.6.1" # this version should match the version in github action yml file
+# parse pyproject.toml file
+tomli = "2.0.1"
+# beautiful formatting for console output
+rich = "12.6.0"
+# build CLI app made easy
+fire = "0.5.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

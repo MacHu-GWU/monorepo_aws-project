@@ -1,0 +1,5 @@
+better_enum
+===========
+
+.. automodule:: simple_lbd_container.vendor.aws_ops_alpha.vendor.better_enum
+    :members:
