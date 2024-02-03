@@ -3,7 +3,7 @@
 """
 Usage example::
 
-    >>> import aws_ops_alpha.project.simple_lambda_container.api as simple_lambda_container_project
+    >>> import aws_ops_alpha.project.simple_lambda.api as simple_lambda_project
 """
 
 from .simple_python_truth_table import StepEnum

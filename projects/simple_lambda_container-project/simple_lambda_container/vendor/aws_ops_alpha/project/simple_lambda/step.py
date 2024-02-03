@@ -24,7 +24,7 @@ from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
 from ...rule_set import should_we_do_it
 
 # --- modules from this submodule
-from .simple_lambda_container_truth_table import StepEnum, truth_table
+from .simple_lambda_truth_table import StepEnum, truth_table
 
 # --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover

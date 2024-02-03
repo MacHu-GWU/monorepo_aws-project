@@ -52,7 +52,7 @@ class EnvNameEnum(BetterStrEnum):
 
 
 truth_table = TruthTable.from_csv(
-    path=Path(__file__).absolute().parent.joinpath("simple_lambda_container_truth_table.tsv"),
+    path=Path(__file__).absolute().parent.joinpath("simple_lambda_truth_table.tsv"),
 )
 
 if __name__ == "__main__":
