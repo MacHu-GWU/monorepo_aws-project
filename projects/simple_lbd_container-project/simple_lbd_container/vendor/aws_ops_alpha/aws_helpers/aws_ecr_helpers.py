@@ -6,6 +6,7 @@ import typing as T
 # --- third party library (include vendor)
 from pathlib import Path
 from ..vendor.aws_ecr import (
+    get_ecr_repo_uri,
     get_ecr_auth_token,
     docker_login,
     ecr_login as _ecr_login,

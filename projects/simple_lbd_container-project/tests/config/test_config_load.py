@@ -21,7 +21,6 @@ def test():
     _ = config.env.devops_aws_tags
     _ = config.env.workload_aws_tags
 
-    # deploy.py
     _ = config.env.s3uri_artifacts
     _ = config.env.s3uri_docs
 
@@ -30,6 +29,9 @@ def test():
     _ = config.env.s3dir_tmp
     _ = config.env.s3dir_config
     _ = config.env.s3dir_docs
+
+    # ecr.py
+    _ = config.env.ecr_repo_name
 
     # lbd_deploy.py
     _ = config.env.chalice_app_name

@@ -9,10 +9,11 @@ Developer note:
 
 # --- standard library
 import typing as T
-import time
+import json
 from pathlib import Path
 
 # --- third party library (include vendor)
+import botocore.exceptions
 import aws_console_url.api as aws_console_url
 import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
@@ -50,6 +51,74 @@ def build_lambda_source(
     )
     logger.info(f"review source artifacts at local: {path_source_zip}")
     logger.info(f"review source artifacts sha256: {source_sha256}")
+
+
+@logger.start_and_end(
+    msg="Create ECR Repository",
+    start_emoji=f"{Emoji.build} {Emoji.container}",
+    error_emoji=f"{Emoji.failed} {Emoji.container}",
+    end_emoji=f"{Emoji.succeeded} {Emoji.container}",
+    pipe=Emoji.container,
+)
+def create_ecr_repository(
+    bsm_devops: "BotoSesManager",
+    repo_name: str,
+    image_tag_mutability: str = "MUTABLE",
+    expire_untagged_after_days: int = 30,
+    tags: T.Optional[T.Dict[str, str]] = None,
+):
+    """
+    Create ECR repository and put life cycle policy.
+
+    Reference:
+
+    - https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ecr/client/describe_repositories.html
+    - https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ecr/client/create_repository.html
+    - https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ecr/client/put_lifecycle_policy.html
+    """
+    try:
+        bsm_devops.ecr_client.describe_repositories(repositoryNames=[repo_name])
+        logger.info("ECR repository already exists.")
+    except botocore.exceptions.ClientError as e:
+        logger.info("ECR repository doesn't exists, create it.")
+        if e.response["Error"]["Code"] == "RepositoryNotFoundException":
+            kwargs = dict(
+                repositoryName=repo_name,
+                imageTagMutability=image_tag_mutability,
+            )
+            if tags:
+                kwargs["tags"] = [{"Key": k, "Value": v} for k, v in tags.items()]
+            bsm_devops.ecr_client.create_repository(**kwargs)
+        else:  # pragma: no cover
+            raise e
+
+    logger.info("Put life cycle policy.")
+    life_cycle_policy = {
+        "rules": [
+            {
+                "rulePriority": 1,
+                "description": "string",
+                "selection": {
+                    "tagStatus": "untagged",
+                    "countType": "sinceImagePushed",
+                    "countUnit": "days",
+                    "countNumber": expire_untagged_after_days,
+                },
+                "action": {"type": "expire"},
+            }
+        ]
+    }
+    res = bsm_devops.ecr_client.put_lifecycle_policy(
+        repositoryName=repo_name,
+        lifecyclePolicyText=json.dumps(life_cycle_policy),
+    )
+
+    if tags:
+        logger.info(f"put tags to ECR repository.")
+        res = bsm_devops.ecr_client.tag_resource(
+            resourceArn=f"arn:aws:ecr:{bsm_devops.aws_region}:{bsm_devops.aws_account_id}:repository/{repo_name}",
+            tags=[{"Key": k, "Value": v} for k, v in tags.items()],
+        )
 
 
 @logger.start_and_end(

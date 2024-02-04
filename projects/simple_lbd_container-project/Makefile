@@ -120,6 +120,10 @@ delete-app: ## Delete Lambda app via CDK destroy
 	./.venv/bin/python ./bin/s04_06_delete_app.py
 
 
+create-ecr-repository: ## Create ECR Repository
+	./.venv/bin/python ./bin/s04_08_create_ecr_repository.py
+
+
 bump-patch: ## Bump patch version
 	./.venv/bin/python ./bin/cli bump_version --patch
 

@@ -12,6 +12,18 @@ if T.TYPE_CHECKING:  # pragma: no cover
     from boto_session_manager import BotoSesManager
 
 
+def get_ecr_repo_uri(
+    aws_account_id: str,
+    aws_region: str,
+    ecr_repo_name: str,
+    tag: str,
+) -> str:
+    """
+    Get the full ECR repo URI with image tag.
+    """
+    return f"{aws_account_id}.dkr.ecr.{aws_region}.amazonaws.com/{ecr_repo_name}:{tag}"
+
+
 def get_ecr_auth_token(bsm: "BotoSesManager") -> T.Tuple[str, str]:
     """
     Get ECR auth token using boto3 SDK.

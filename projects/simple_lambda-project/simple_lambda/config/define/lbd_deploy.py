@@ -32,6 +32,10 @@ class LambdaDeployMixin:
     def lambda_layer_name(self: "Env") -> str:
         """
         Lambda function layer name.
+
+        Because the Lambda layer is an immutable artifact, we only need one
+        lambda layer across all envs, so we don't need to include env name in the
+        layer name.
         """
         return self.project_name_snake
 

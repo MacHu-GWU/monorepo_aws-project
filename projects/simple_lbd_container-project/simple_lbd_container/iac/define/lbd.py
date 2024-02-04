@@ -27,7 +27,7 @@ USER_ENV_NAME = aws_ops_alpha.EnvVarNameEnum.USER_ENV_NAME.value
 
 
 class LambdaMixin:
-    def mk_rg2_lbd(self: "MainStack"):
+    def mk_rg3_lbd(self: "MainStack"):
         # fmt: off
         source_sha256 = hashes.of_paths([dir_lambda_deploy])
         KEY_FUNC = "func"
@@ -40,24 +40,6 @@ class LambdaMixin:
             ]
         ] = dict()
         for lbd_func_config in self.env.lambda_functions.values():
-            # create layer declaration from config
-            layers = list()
-            for ith, layer_arn in enumerate(lbd_func_config.layers, start=1):
-                # layer_arn can be either a full arn or a layer version id (1, 2, ...)
-                if not layer_arn.startswith("arn:"):  # pragma: no cover
-                    final_layer_arn = (
-                        f"arn:aws:lambda:{boto_ses_factory.bsm_devops.aws_region}:{boto_ses_factory.bsm_devops.aws_account_id}:layer"
-                        f":{self.env.lambda_layer_name}:{layer_arn}"
-                    )
-                else:
-                    final_layer_arn = layer_arn
-                layer = lambda_.LayerVersion.from_layer_version_arn(
-                    self,
-                    f"LambdaLayer{lbd_func_config.short_name_camel}{ith}",
-                    layer_version_arn=final_layer_arn,
-                )
-                layers.append(layer)
-
             # declare lambda function
             env_vars = self.env.env_vars
             env_vars.update(
@@ -70,9 +52,13 @@ class LambdaMixin:
             )
             kwargs = dict(
                 function_name=lbd_func_config.name,
-                code=lambda_.Code.from_asset(f"{path_source_zip}"),
-                handler=f"lambda_function.{lbd_func_config.handler}",
-                runtime=lambda_.Runtime.PYTHON_3_9,
+                code=lambda_.Code.from_ecr_image(
+                    repository=self.ecr_repo,
+                    tag_or_digest=self.config.version,
+                    cmd=[f"lambda_function.{lbd_func_config.handler}"]
+                ),
+                handler=lambda_.Handler.FROM_IMAGE,
+                runtime=lambda_.Handler.FROM_IMAGE,
                 memory_size=lbd_func_config.memory,
                 timeout=cdk.Duration.seconds(lbd_func_config.timeout),
                 layers=layers,

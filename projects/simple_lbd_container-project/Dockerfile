@@ -1,4 +1,8 @@
 # ECR Gallery https://gallery.ecr.aws/lambda/python
+# There's no such "slim" Lambda Python base image
+# Note that the base image on ECR gallery is around 180MB, this is the compressed size
+# If you pull it from ECR, it will be around 650MB on your local machine.
+# If you push it back to your own ECR, it will be around 180MB again.
 FROM public.ecr.aws/lambda/python:3.9
 
 # We need these two environment variables to run unit test
@@ -19,10 +23,14 @@ RUN env
 
 # copy the following file to working directory
 # these file are not changing frequently, so it should go to the top of Dockerfile as a layer cache
-COPY pyproject.toml ${LAMBDA_TASK_ROOT}
-COPY requirements.txt ${LAMBDA_TASK_ROOT}
-COPY requirements-dev.txt ${LAMBDA_TASK_ROOT}
-COPY requirements-test.txt ${LAMBDA_TASK_ROOT}
+# the ${LAMBDA_TASK_ROOT} is the path where the runtime searches dependencies first
+# see https://docs.aws.amazon.com/lambda/latest/dg/python-image.html
+COPY pyproject.toml \
+    requirements.txt \
+    requirements-dev.txt \
+    requirements-test.txt \
+    ${LAMBDA_TASK_ROOT}
+
 # install virtualenv, then create virtualenv, install main and test dependencies
 # since we are using Poetry to resolve the deterministic dependency,
 # this layer is not chaging frequently as before
