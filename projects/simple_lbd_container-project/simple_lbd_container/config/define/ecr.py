@@ -38,3 +38,12 @@ class EcrMixin:
         Get the full ECR repo URI with image tag.
         """
         return f"{bsm_devops.aws_account_id}.dkr.ecr.{bsm_devops.aws_region}.amazonaws.com/{self.ecr_repo_name}:{tag}"
+
+    def get_ecr_repo_arn(
+        self: "Env",
+        bsm_devops: "BotoSesManager",
+    ) -> str:  # pragma: no cover
+        """
+        Get the full ECR repo URI with image tag.
+        """
+        return f"arn:aws:ecr:{bsm_devops.aws_region}:{bsm_devops.aws_account_id}:repository/{self.ecr_repo_name}"

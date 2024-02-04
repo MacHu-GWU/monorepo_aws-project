@@ -3,7 +3,7 @@
 """
 Developer note:
 
-    every function in the ``workflow.py`` module should have visualized logging.
+    every function in the ``step.py`` module should have visualized logging.
 """
 
 # --- standard library

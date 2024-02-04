@@ -199,6 +199,7 @@ def build_lambda_source(
 def create_ecr_repository():
     simple_lbd_container_project.create_ecr_repository(
         bsm_devops=boto_ses_factory.bsm_devops,
+        workload_bsm_list=boto_ses_factory.workload_bsm_list,
         repo_name=config.env.ecr_repo_name,
         image_tag_mutability="MUTABLE",
         expire_untagged_after_days=30,

@@ -8,12 +8,13 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_s3_notifications as s3_notifications,
     aws_lambda as lambda_,
+    aws_ecr as ecr,
 )
 
 import simple_lbd_container.vendor.aws_ops_alpha.api as aws_ops_alpha
+from ..._version import __version__
 from ...paths import (
     dir_lambda_deploy,
-    path_source_zip,
 )
 from ...git import git_repo
 from ...boto_ses import boto_ses_factory
@@ -24,10 +25,11 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 
 USER_ENV_NAME = aws_ops_alpha.EnvVarNameEnum.USER_ENV_NAME.value
+PARAMETER_NAME = aws_ops_alpha.EnvVarNameEnum.PARAMETER_NAME.value
 
 
 class LambdaMixin:
-    def mk_rg3_lbd(self: "MainStack"):
+    def mk_rg2_lbd(self: "MainStack"):
         # fmt: off
         source_sha256 = hashes.of_paths([dir_lambda_deploy])
         KEY_FUNC = "func"
@@ -39,12 +41,18 @@ class LambdaMixin:
                 T.Union[lambda_.Function, lambda_.Alias]
             ]
         ] = dict()
+        ecr_repo = ecr.Repository.from_repository_arn(
+            self,
+            "EcrRepo",
+            repository_arn=self.config.env.get_ecr_repo_arn(boto_ses_factory.bsm_devops),
+        )
         for lbd_func_config in self.env.lambda_functions.values():
             # declare lambda function
             env_vars = self.env.env_vars
             env_vars.update(
                 {
                     USER_ENV_NAME: self.env.env_name,
+                    PARAMETER_NAME: self.env.parameter_name,
                     "SOURCE_SHA256": source_sha256,
                     "GIT_COMMIT_ID": git_repo.git_commit_id,
                     "CONFIG_VERSION": self.config.version,
@@ -53,15 +61,14 @@ class LambdaMixin:
             kwargs = dict(
                 function_name=lbd_func_config.name,
                 code=lambda_.Code.from_ecr_image(
-                    repository=self.ecr_repo,
-                    tag_or_digest=self.config.version,
+                    repository=ecr_repo,
+                    tag_or_digest=__version__,
                     cmd=[f"lambda_function.{lbd_func_config.handler}"]
                 ),
                 handler=lambda_.Handler.FROM_IMAGE,
-                runtime=lambda_.Handler.FROM_IMAGE,
+                runtime=lambda_.Runtime.FROM_IMAGE,
                 memory_size=lbd_func_config.memory,
                 timeout=cdk.Duration.seconds(lbd_func_config.timeout),
-                layers=layers,
                 environment=env_vars,
                 current_version_options=lambda_.VersionOptions(
                     removal_policy=cdk.RemovalPolicy.RETAIN,
