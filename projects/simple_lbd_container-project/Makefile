@@ -104,6 +104,14 @@ build-source: ## Build Lambda source artifacts
 	./.venv/bin/python ./bin/s04_03_lambda_build_source.py
 
 
+build-lambda-image: ## Build Lambda container image
+	./.venv/bin/python ./bin/s04_04_lambda_build_image.py
+
+
+push-lambda-image: ## Push Lambda container image to ECR repository
+	./.venv/bin/python ./bin/s04_04_lambda_push_image.py
+
+
 deploy-config: ## Deploy versioned config data to parameter store backend.
 	./.venv/bin/python ./bin/s04_01_deploy_config.py
 

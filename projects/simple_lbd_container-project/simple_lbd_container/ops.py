@@ -228,6 +228,24 @@ def build_lambda_container(
     )
 
 
+def push_lambda_container(
+    check: bool = True,
+):
+    return simple_lbd_container_project.push_lambda_container(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
+        bsm_devops=boto_ses_factory.bsm_devops,
+        pyproject_ops=pyproject_ops,
+        repo_name=pyproject_ops.package_name,
+        path_dockerfile=path_dockerfile,
+        check=check,
+        step=simple_lbd_container_project.StepEnum.build_lambda_container.value,
+        truth_table=simple_lbd_container_project.truth_table,
+        url=simple_lbd_container_project.google_sheet_url,
+    )
+
+
 def deploy_app(
     check: bool = True,
 ):

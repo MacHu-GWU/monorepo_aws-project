@@ -162,6 +162,45 @@ def build_lambda_container(
     )
 
 
+@logger.start_and_end(
+    msg="Push Lambda Container Image to ECR",
+    start_emoji=f"{Emoji.build} {Emoji.awslambda} {Emoji.package}",
+    error_emoji=f"{Emoji.failed} {Emoji.awslambda} {Emoji.package}",
+    end_emoji=f"{Emoji.succeeded} {Emoji.awslambda} {Emoji.package}",
+    pipe=Emoji.awslambda,
+)
+def push_lambda_container(
+    semantic_branch_name: str,
+    runtime_name: str,
+    env_name: str,
+    bsm_devops: "BotoSesManager",
+    pyproject_ops: "pyops.PyProjectOps",
+    repo_name: str,
+    path_dockerfile: Path,
+    check=True,
+    step: str = StepEnum.build_lambda_container.value,
+    truth_table: T.Optional[tt4human.TruthTable] = truth_table,
+    url: T.Optional[str] = None,
+):  # pragma: no cover
+    if check:
+        flag = should_we_do_it(
+            step=step,
+            semantic_branch_name=semantic_branch_name,
+            runtime_name=runtime_name,
+            env_name=env_name,
+            truth_table=truth_table,
+            google_sheet_url=url,
+        )
+        if flag is False:
+            return
+    aws_ecr_helpers.push_image(
+        bsm_devops=bsm_devops,
+        pyproject_ops=pyproject_ops,
+        repo_name=repo_name,
+        path_dockerfile=path_dockerfile,
+    )
+
+
 # @logger.start_and_end(
 #     msg="Build Lambda Layer Artifacts",
 #     start_emoji=f"{Emoji.build} {Emoji.awslambda}",
