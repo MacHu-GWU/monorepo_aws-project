@@ -219,7 +219,6 @@ def build_lambda_container(
         bsm_devops=boto_ses_factory.bsm_devops,
         pyproject_ops=pyproject_ops,
         repo_name=pyproject_ops.package_name,
-        parameter_name=config.parameter_name,
         path_dockerfile=path_dockerfile,
         use_arm=False,
         check=check,

@@ -135,7 +135,6 @@ def build_lambda_container(
     bsm_devops: "BotoSesManager",
     pyproject_ops: "pyops.PyProjectOps",
     repo_name: str,
-    parameter_name: str,
     path_dockerfile: Path,
     use_arm: bool = False,
     check=True,
@@ -158,8 +157,6 @@ def build_lambda_container(
         bsm_devops=bsm_devops,
         pyproject_ops=pyproject_ops,
         repo_name=repo_name,
-        env_name=env_name,
-        parameter_name=parameter_name,
         path_dockerfile=path_dockerfile,
         use_arm=use_arm,
     )

@@ -15,6 +15,7 @@ Reference:
 
 import os
 import subprocess
+
 from simple_lbd_container.pyproject import pyproject_ops
 from simple_lbd_container.config.api import config
 from simple_lbd_container.boto_ses import boto_ses_factory
@@ -24,13 +25,16 @@ os.environ["DOCKER_DEFAULT_PLATFORM"] = "linux/amd64"
 
 
 def initialize_lambda_container():
-    credential = boto_ses_factory.bsm_app.boto_ses.get_credentials()
+    bsm_app = boto_ses_factory.bsm_app
+    credential = bsm_app.boto_ses.get_credentials()
     env_vars = {
-        "AWS_REGION": boto_ses_factory.bsm_app.aws_region,
-        "AWS_DEFAULT_REGION": boto_ses_factory.bsm_app.aws_region,
+        "AWS_REGION": bsm_app.aws_region,
+        "AWS_DEFAULT_REGION": bsm_app.aws_region,
         "AWS_ACCESS_KEY_ID": credential.access_key,
         "AWS_SECRET_ACCESS_KEY": credential.secret_key,
         "AWS_SESSION_TOKEN": credential.token,
+        "USER_ENV_NAME": config.env.env_name,
+        "PARAMETER_NAME": config.env.parameter_name,
     }
     env_vars.update(config.env.env_vars)
     args = [
