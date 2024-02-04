@@ -1,0 +1,153 @@
+name: simple_lbd_container
+
+on:
+  workflow_dispatch:
+  push:
+    # note: we have to use double *, because we may have / in the branch name
+    # for example, all following branches will be matched:
+    # - 'simple_lbd_container/feature'
+    # - 'simple_lbd_container/feature-123'
+    # - 'simple_lbd_container/feature/description'
+    # - 'simple_lbd_container/feature-123/description'
+    branches:
+      - 'simple_lbd_container/feature**'
+      - 'simple_lbd_container/feat**'
+      - 'simple_lbd_container/fix**'
+      - 'simple_lbd_container/doc**'
+      - 'simple_lbd_container/ecr**'
+      - 'simple_lbd_container/app**'
+      - 'simple_lbd_container/release**'
+      - 'simple_lbd_container/rls**'
+      - 'simple_lbd_container/cleanup**'
+      - 'simple_lbd_container/clean**'
+
+env:
+  AWS_REGION: "us-east-1"
+  DIR_PROJECT: "projects/simple_lbd_container-project"
+  DEVOPS_AWS_ACCOUNT_ID: ${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}
+  SBX_AWS_ACCOUNT_ID: ${{ secrets.SBX_AWS_ACCOUNT_ID }}
+  TST_AWS_ACCOUNT_ID: ${{ secrets.TST_AWS_ACCOUNT_ID }}
+  PRD_AWS_ACCOUNT_ID: ${{ secrets.PRD_AWS_ACCOUNT_ID }}
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  job_0_build:
+    name: 🧪️ 🏗 Unit Test and Build Artifacts
+    runs-on: ubuntu-latest
+    env:
+      USER_ENV_NAME: devops
+    steps:
+      - name: === 💾 PREPARATION ===
+        run: echo "PREPARATION"
+      - name: Git Clone the Repository
+        uses: actions/checkout@v4
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
+          role-session-name: devops_role_session
+          aws-region: ${{ env.AWS_REGION }}
+          disable-retry: true
+      - name: 🛠 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: 💾 Install CDK in Node
+        run: |
+          npm install -g aws-cdk@2.111.0
+          which cdk
+          cdk --version
+      - name: 🐍 Setup Python with pip cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
+      - name: 💾 Install virtualenv, poetry Dependencies
+        # poetry version should match the version in pyproject.toml
+        run: |
+          pip install virtualenv
+          pip install poetry==1.6.1
+      - name: 🐍 Setup Python with poetry cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'poetry'
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/poetry.lock
+      - name: 🐍 💾 Create Virtual Environment and Install all dependencies
+        working-directory: ${{ env.DIR_PROJECT }}
+        # at this moment, the virtualenv is not created it, so we should use the global Python here
+        run: |
+          python bin/s02_10_setup_venv_in_ci.py
+      - name: === ✅ START MAIN LOGICS ===
+        run: echo "START MAIN LOGICS"
+      - name: 🏗️ Build Lambda Source Artifacts
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_03_lambda_build_source.py
+      - name: 🧪 Run Code Coverage Test
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s03_02_run_cov_test.py
+      - name: 📔 Publish Documentation Website
+        if: ${{ startsWith(github.ref, 'refs/heads/simple_lbd_container/doc') }}
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s03_11_build_doc.py
+          .venv/bin/python bin/s03_14_deploy_latest_doc.py
+      - name: === 🛑 END OF THE JOB ===
+        run: echo "END OF THE JOB"
+
+  job_1_deploy_to_sbx:
+    name: 🚀 Deploy App to 📦 sbx
+    if: ${{ 
+         startsWith(github.ref, 'refs/heads/simple_lbd_container/release') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/rls') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/app') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/cleanup') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/clean') 
+      || startsWith(github.ref, 'refs/heads/simple_release/release') 
+      || startsWith(github.ref, 'refs/heads/simple_release/rls') 
+      }}
+    uses: ./.github/workflows/simple_lbd_container_deploy.yml
+    with:
+      user_env_name: sbx
+    secrets: inherit
+    needs: job_0_build
+
+  job_2_deploy_to_tst:
+    name: 🚀 Deploy App to 🧪 tst
+    # we only run this from release branch
+    if: ${{ 
+         startsWith(github.ref, 'refs/heads/simple_lbd_container/release') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/rls') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/cleanup') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/clean') 
+      || startsWith(github.ref, 'refs/heads/simple_release/release') 
+      || startsWith(github.ref, 'refs/heads/simple_release/rls') 
+      }}
+    uses: ./.github/workflows/simple_lbd_container_deploy.yml
+    with:
+      user_env_name: tst
+    secrets: inherit
+    needs: job_1_deploy_to_sbx
+
+  job_3_deploy_to_prd:
+    name: 🚀 Deploy App to 🏭 prd
+    # we only run this from release branch
+    if: ${{ 
+         startsWith(github.ref, 'refs/heads/simple_lbd_container/release') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/rls') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/cleanup') 
+      || startsWith(github.ref, 'refs/heads/simple_lbd_container/clean') 
+      || startsWith(github.ref, 'refs/heads/simple_release/release') 
+      || startsWith(github.ref, 'refs/heads/simple_release/rls') 
+      }}
+    uses: ./.github/workflows/simple_lbd_container_deploy.yml
+    with:
+      user_env_name: prd
+    secrets: inherit
+    needs: job_2_deploy_to_tst
