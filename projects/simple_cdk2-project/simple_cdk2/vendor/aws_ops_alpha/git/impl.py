@@ -119,12 +119,12 @@ class GitRepo:
         if user_git_commit_message != "__unknown" and bool(user_git_commit_message) is True:
             return user_git_commit_message
 
-        if runtime.is_local:
+        if runtime.is_local_runtime_group:
             return get_commit_message_by_commit_id(self.dir_repo, self.git_commit_id)
         # note that there's no native way to get commit message from most of
         # CI/CD service vendor, you have to get it yourself and inject that
         # into "USER_GIT_COMMIT_MESSAGE" environment variable.
-        elif runtime.is_ci:
+        elif runtime.is_ci_runtime_group:
             return os.environ.get(USER_GIT_COMMIT_MESSAGE)
         else:
             raise NotImplementedError
