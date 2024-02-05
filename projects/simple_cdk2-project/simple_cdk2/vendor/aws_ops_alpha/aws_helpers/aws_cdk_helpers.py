@@ -4,16 +4,20 @@
 This module implements the automation to deploy CloudFormation stack via CDK.
 """
 
+# --- standard library
 import typing as T
 import subprocess
 from pathlib import Path
 
+# --- third party library (include vendor)
 from boto_session_manager import PATH_DEFAULT_SNAPSHOT
 from ..vendor.better_pathlib import temp_cwd
 
+# --- modules from this project
 from ..constants import EnvVarNameEnum
 from ..env_var import temp_env_var
 
+# --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover
     from boto_session_manager import BotoSesManager
 

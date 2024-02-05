@@ -31,6 +31,25 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 
 @logger.start_and_end(
+    msg="Build Lambda Source Artifacts",
+    start_emoji=f"{Emoji.build} {Emoji.awslambda}",
+    error_emoji=f"{Emoji.failed} {Emoji.build} {Emoji.awslambda}",
+    end_emoji=f"{Emoji.succeeded} {Emoji.build} {Emoji.awslambda}",
+    pipe=Emoji.awslambda,
+)
+def build_lambda_source(
+    pyproject_ops: "pyops.PyProjectOps",
+    verbose: bool = False,
+):  # pragma: no cover
+    source_sha256, path_source_zip = aws_lambda_helpers.build_lambda_source(
+        pyproject_ops=pyproject_ops,
+        verbose=verbose,
+    )
+    logger.info(f"review source artifacts at local: {path_source_zip}")
+    logger.info(f"review source artifacts sha256: {source_sha256}")
+
+
+@logger.start_and_end(
     msg="Create ECR Repository",
     start_emoji=f"{Emoji.build} {Emoji.container}",
     error_emoji=f"{Emoji.failed} {Emoji.container}",
@@ -44,7 +63,7 @@ def create_ecr_repository(
     image_tag_mutability: str = "MUTABLE",
     expire_untagged_after_days: int = 30,
     tags: T.Optional[T.Dict[str, str]] = None,
-):  # pragma: no cover
+):
     """
     Create ECR repository and put life cycle policy.
 

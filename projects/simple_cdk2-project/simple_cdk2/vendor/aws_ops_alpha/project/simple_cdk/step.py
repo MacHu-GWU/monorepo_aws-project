@@ -2,6 +2,10 @@
 
 """
 This module implements the automation to deploy CloudFormation stack via CDK.
+
+Developer note:
+
+    every function in the ``step.py`` module should have visualized logging.
 """
 
 # --- standard library

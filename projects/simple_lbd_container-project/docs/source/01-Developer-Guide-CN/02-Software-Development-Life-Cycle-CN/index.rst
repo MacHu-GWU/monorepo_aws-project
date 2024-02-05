@@ -41,7 +41,7 @@ Software Development Life Cycle (SDLC) [CN]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 首先, 确保你位于 ``./projects/simple_lbd_container-project`` 目录下. 然后运行下面的命令来创建新项目. 它会问你一些关于你的新项目名字, 你打算用哪个 AWS Account 来部署之类的问题, 让你填写一些文本, 然后就会自动生成新项目了. 如果你想了解这个功能是如何实现的, 请查看 ``cookiecutter/simple_lbd_container.py`` 的源码和注释:
 
-    python ../../cookiecutter/simple_lbd_container.py
+    python ../../cookiecutter/new_project_like_simple_lbd_container.py
 
 然后将刚刚生成的 ``./cookiecutter/tmp/template-project/${your_project_name}`` 目录, 也就是你的新项目的代码目录, 复制到 ``./projects/${your_project_name}`` 下. 按照我们的项目文件结构设计, 每一个可以单独部署的新项目都需要位于 ``./projects/`` 目录下. 其中 ``${your_project_name}`` 就是你生成新项目时填写的项目名, 这里为了解说方便, 我们就假设你的项目名称还是 ``simple_lbd_container-project`` 好了. 从现在起, 我们每当说到 ``simple_lbd_container-project``, 就指的是 ``./projects/simple_lbd_container-project/`` 这个目录. 虽然它和模板项目名字一摸一样, 但是模板项目本身也是一个完全可以一行代码不改就能运行, 测试, 部署的项目, 所以性质上是一样的. 这里要说明一下 ``simple_lbd_container-project`` 是你的项目的文件夹名, 而 ``simple_lbd_container`` 则是 Deployment Unit Name, 也就是 ``${du_name}``. 项目的 Python 包也会叫这个名字, 并且所有的 AWS Resource Name 都会包含这个 ``${du_name}`` 前缀. 所以每当我们说到 ``simple_lbd_container``, ``${du_name}``, 我们指的是同一个东西.
 
