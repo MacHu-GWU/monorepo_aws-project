@@ -25,14 +25,7 @@ Manage Versioning and Alias in CI/CD
 
 .. literalinclude:: ../../../../simple_lambda/iac/define/lbd.py
    :language: python
-   :emphasize-lines: 81-114
-   :linenos:
-
-3. ``bin/automation/deploy.py``: 这个 CI 的自动化脚本中有一个重要的 ``publish_lambda_version()`` Python 函数, 它能从 ``LATEST`` 发布一个新的 version (snapshot). 这个函数只会在每次成功的部署到生产环境中时才会运行.
-
-.. literalinclude:: ../../../../bin/automation/deploy.py
-   :language: python
-   :emphasize-lines: 40-62
+   :emphasize-lines: 103-140
    :linenos:
 
 基于以上设置, 我们总是在 ``sbx`` 和 ``tst`` 环境中使用 ``LATEST`` (当然你可以通过修改配置文件指向其他的 version) 来进行开发和测试. 而每次成功的部署到 production 之后, 我们就创建一个不可变的 version, 默认指向 production 中的 ``LATEST``. 而如果我们要进行蓝绿部署, 灰度部署, 版本回滚时, 我们只要修改配置文件中的相关部分, 将 Alias 指向我们想要的版本即可.

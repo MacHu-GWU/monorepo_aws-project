@@ -11,7 +11,8 @@ sub packages and modules
     :maxdepth: 1
 
     api <api>
-    constants <constants>
-    rule <rule>
+    gen_code <gen_code>
+    rule_set <rule_set>
+    simple_python_truth_table <simple_python_truth_table>
     step <step>
     

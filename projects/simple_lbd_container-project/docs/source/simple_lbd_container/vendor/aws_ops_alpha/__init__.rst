@@ -18,16 +18,15 @@ sub packages and modules
     git <git/__init__>
     multi_env <multi_env/__init__>
     project <project/__init__>
-    rule <rule/__init__>
     runtime <runtime/__init__>
     tests <tests/__init__>
     vendor <vendor/__init__>
     _version <_version>
     api <api>
-    boto_ses <boto_ses>
     cli <cli>
     constants <constants>
     env_var <env_var>
     logger <logger>
     paths <paths>
+    rule_set <rule_set>
     

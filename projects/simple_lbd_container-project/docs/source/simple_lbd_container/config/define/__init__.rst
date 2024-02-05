@@ -12,6 +12,7 @@ sub packages and modules
 
     api <api>
     app <app>
+    ecr <ecr>
     lbd_deploy <lbd_deploy>
     lbd_func <lbd_func>
     main <main>

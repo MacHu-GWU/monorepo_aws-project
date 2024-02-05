@@ -1,5 +1,5 @@
 simple_lbd_container
-=============
+====================
 
 .. automodule:: simple_lbd_container
     :members:

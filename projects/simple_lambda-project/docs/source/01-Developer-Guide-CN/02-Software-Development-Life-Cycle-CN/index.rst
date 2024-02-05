@@ -9,18 +9,15 @@ Software Development Life Cycle (SDLC) [CN]
 
 **BootStrap**
 
-1. CD to the project root directory::
+1. CD to the cookiecutter directory::
 
-    cd ./projects/simple_lambda-project
+    cd ./cookiecutter
 
 2. BootStrap::
 
-    python ../../cookiecutter/simple_lambda.py
+    python new_project_like_simple_lambda.py
 
 3. Copy the generated project skeleton from ``./cookiecutter/tmp/template-project/${your_project_name}`` directory to the ``./projects/${your_project_name}`` directory.
-4. Provision the CI/CD AWS Resources::
-
-    python ./bootstrap/bootstrap.py
 
 **SDLC**
 
@@ -29,7 +26,7 @@ Software Development Life Cycle (SDLC) [CN]
 3. 在 ``simple_lambda/app`` branch 开发核心业务逻辑, CDK stack 部署代码, 以及集成测试代码. 然后 push 到 Git 触发 CI 自动化运行单元测试, CDK stack 部署, 以及集成测试. 全部成功后就可以 PR + Merge 了
 4. 创建 ``simple_lambda/release`` branch 进行部署. 在这一步请不要修改任何业务逻辑, 仅仅是对配置文件进行小修小补即可. 触发 CodePipeline 一路按照 sbx, tst, prd 的顺序部署. 如果因为业务逻辑导致了部署失败, 请回滚到上一步, 更新业务逻辑和测试后再回到这一步.
 
-至此我们的开发周期就结束了. 重复这个周期可以不断的迭代.
+至此我们的开发周期就结束了. 重复这个周期可以不断的迭代. 如果你需要清除所有的 workload environment 中的 App, 你可以创建 ``simple_lambda/cleanup`` branch trigger CI job 删除所有环境中已部署的 App.
 
 
 1. Bootstrap - Create a New Project Code Skeleton

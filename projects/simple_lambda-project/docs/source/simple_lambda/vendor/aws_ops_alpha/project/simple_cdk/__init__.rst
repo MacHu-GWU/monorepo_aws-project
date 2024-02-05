@@ -11,5 +11,8 @@ sub packages and modules
     :maxdepth: 1
 
     api <api>
+    gen_code <gen_code>
+    rule_set <rule_set>
+    simple_cdk_truth_table <simple_cdk_truth_table>
     step <step>
     
