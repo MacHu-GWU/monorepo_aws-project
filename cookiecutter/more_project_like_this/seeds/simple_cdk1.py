@@ -49,6 +49,7 @@ exclude = [
     "tmp",
     "bootstrap/cdk.out",
     "cdk/cdk.out",
+    "simple_lambda/vendor/aws_ops_alpha",
     # file
     ".coverage",
     "*.jinja",

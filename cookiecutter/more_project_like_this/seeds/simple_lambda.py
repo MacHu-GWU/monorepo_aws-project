@@ -52,6 +52,7 @@ exclude = [
     "lambda_app/.chalice/deployed",
     "lambda_app/.chalice/deployments",
     "lambda_app/vendor",
+    "simple_lambda/vendor/aws_ops_alpha",
     # file
     ".coverage",
     "*.jinja",

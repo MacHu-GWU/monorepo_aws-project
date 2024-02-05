@@ -148,9 +148,6 @@ def create_ecr_repository(
     res = bsm_devops.ecr_client.get_repository_policy(
         repositoryName=repo_name,
     )
-    from rich import print
-
-    print(res)
 
 
 @logger.start_and_end(

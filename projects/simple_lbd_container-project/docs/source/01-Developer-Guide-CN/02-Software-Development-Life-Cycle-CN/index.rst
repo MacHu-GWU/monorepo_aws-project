@@ -9,52 +9,37 @@ Software Development Life Cycle (SDLC) [CN]
 
 **BootStrap**
 
-1. CD to the project root directory::
+1. CD to the cookiecutter directory::
 
-    cd ./projects/simple_lbd_container-project
+    cd ./cookiecutter
 
 2. BootStrap::
 
-    python ../../cookiecutter/simple_lbd_container.py
+    python new_project_like_simple_lbd_container.py
 
 3. Copy the generated project skeleton from ``./cookiecutter/tmp/template-project/${your_project_name}`` directory to the ``./projects/${your_project_name}`` directory.
-4. Provision the CI/CD AWS Resources::
-
-    python ./bootstrap/bootstrap.py
 
 **SDLC**
 
 1. 在 ``simple_lbd_container/feature`` branch 开发. 进行 config management, 核心业务逻辑相关的代码开发以及完成单元测试. 然后就可以 PR + Merge 了.
-2. 在 ``simple_lbd_container/layer`` branch 开发, 更新依赖. 在这一步请不要修改任何业务逻辑, 仅仅是更新依赖后再运行一次单元测试, 确保测试和依赖版本都兼容. 然后 push 到 Git 触发 CI job run 来构建 Lambda Layer. 确保 Layer 被成功创建后就可以 PR + Merge 了.
-3. 在 ``simple_lbd_container/lambda`` branch 开发核心业务逻辑, CDK stack 部署代码, 以及集成测试代码. 然后 push 到 Git 触发 CI 自动化运行单元测试, CDK stack 部署, 以及集成测试. 全部成功后就可以 PR + Merge 了
+2. 在 ``simple_lbd_container/ecr`` branch 开发, 更新依赖, 打包源代码. 在这一步主要是将依赖和源代码共同打包成 Container Image 并从本地 (注意不是从 CI) Push 到 ECR.
+3. 在 ``simple_lbd_container/app`` branch 开发核心业务逻辑, CDK stack 部署代码, 以及集成测试代码. 然后 push 到 Git 触发 CI 自动化运行单元测试, CDK stack 部署, 以及集成测试. 全部成功后就可以 PR + Merge 了
 4. 创建 ``simple_lbd_container/release`` branch 进行部署. 在这一步请不要修改任何业务逻辑, 仅仅是对配置文件进行小修小补即可. 触发 CodePipeline 一路按照 sbx, tst, prd 的顺序部署. 如果因为业务逻辑导致了部署失败, 请回滚到上一步, 更新业务逻辑和测试后再回到这一步.
 
-至此我们的开发周期就结束了. 重复这个周期可以不断的迭代.
+至此我们的开发周期就结束了. 重复这个周期可以不断的迭代. 如果你需要清除所有的 workload environment 中的 App, 你可以创建 ``simple_lbd_container/cleanup`` branch trigger CI job 删除所有环境中已部署的 App.
 
 
-1. Bootstrap
+1. Bootstrap - Create a New Project Code Skeleton
 ------------------------------------------------------------------------------
-本节介绍了如何用这个 ``simple_lbd_container-project`` 作为模板, 快速生成一个新项目除了业务逻辑以外的全部代码作为框架. 以及在开始进行开发之前, 生成 CI/CD 所需的 AWS Resources 的步骤.
+本节介绍了如何用这个 ``simple_lbd_container-project`` 作为种子模板, 为新项目快速生成除了业务逻辑以外的全部代码. 使得你可以专注于业务逻辑的开发, 而无需手动将 DevOps 脚本 wire 到 CI/CD 系统中.
 
+首先, 确保你位于 ``cookiecutter`` 目录下. 然后运行下面的命令来创建新项目. 它会问你一些关于你的新项目名字, 你打算用哪个 AWS Account 来部署之类的问题, 让你填写一些文本, 然后就会自动生成新项目了. 如果你想了解这个功能是如何实现的, 请查看 ``cookiecutter/README.rst``:
 
-1.1 Bootstrap - Create a New Project Code Skeleton
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-首先, 确保你位于 ``./projects/simple_lbd_container-project`` 目录下. 然后运行下面的命令来创建新项目. 它会问你一些关于你的新项目名字, 你打算用哪个 AWS Account 来部署之类的问题, 让你填写一些文本, 然后就会自动生成新项目了. 如果你想了解这个功能是如何实现的, 请查看 ``cookiecutter/simple_lbd_container.py`` 的源码和注释:
+    python new_project_like_simple_lbd_container.py
 
-    python ../../cookiecutter/new_project_like_simple_lbd_container.py
-
-然后将刚刚生成的 ``./cookiecutter/tmp/template-project/${your_project_name}`` 目录, 也就是你的新项目的代码目录, 复制到 ``./projects/${your_project_name}`` 下. 按照我们的项目文件结构设计, 每一个可以单独部署的新项目都需要位于 ``./projects/`` 目录下. 其中 ``${your_project_name}`` 就是你生成新项目时填写的项目名, 这里为了解说方便, 我们就假设你的项目名称还是 ``simple_lbd_container-project`` 好了. 从现在起, 我们每当说到 ``simple_lbd_container-project``, 就指的是 ``./projects/simple_lbd_container-project/`` 这个目录. 虽然它和模板项目名字一摸一样, 但是模板项目本身也是一个完全可以一行代码不改就能运行, 测试, 部署的项目, 所以性质上是一样的. 这里要说明一下 ``simple_lbd_container-project`` 是你的项目的文件夹名, 而 ``simple_lbd_container`` 则是 Deployment Unit Name, 也就是 ``${du_name}``. 项目的 Python 包也会叫这个名字, 并且所有的 AWS Resource Name 都会包含这个 ``${du_name}`` 前缀. 所以每当我们说到 ``simple_lbd_container``, ``${du_name}``, 我们指的是同一个东西.
+然后将刚刚生成的 ``cookiecutter/tmp/template-project/${your_project_name}`` 目录, 也就是你的新项目的代码目录, 复制到 ``./projects/${your_project_name}`` 下. 按照我们的项目文件结构设计, 每一个可以单独部署的新项目都需要位于 ``./projects/`` 目录下. 其中 ``${your_project_name}`` 就是你生成新项目时填写的项目名, 这里为了解说方便, 我们就假设你的项目名称还是 ``simple_lbd_container-project`` 好了. 从现在起, 我们每当说到 ``simple_lbd_container-project``, 就指的是 ``./projects/simple_lbd_container-project/`` 这个目录. 虽然它和模板项目名字一摸一样, 但是模板项目本身也是一个完全可以一行代码不改就能运行, 测试, 部署的项目, 所以性质上是一样的. 这里要说明一下 ``simple_lbd_container-project`` 是你的项目的文件夹名, 而 ``simple_lbd_container`` 则是 **Deployment Unit Name**, 也就是 ``${du_name}``. 项目的 Python 包也会叫这个名字, 并且所有的 AWS Resource Name 都会包含这个 ``${du_name}`` 前缀. 所以每当我们说到 ``simple_lbd_container``, ``${du_name}``, 我们指的是同一个东西.
 
 由于你刚刚生成了新项目, 从现在开始我们的所有操作就要在 ``./projects/simple_lbd_container-project/`` 这个目录下进行了.
-
-
-1.2 Bootstrap - Provision CI/CD AWS Resources
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-然后, 我们来生成项目所需的 CI/CD 的 AWS Resources, 这个步骤就叫做 ``bootstrap``. 你可以运行下面的命令来创建新项目. 这个命令是一个脚本, 里面封装了 CDK Stack 的代码, 安装依赖的自动化脚本, 以及部署 CDK Stack 的自动化脚本. 如果你想了解所需的 CI/CD 的 AWS Resources 包括哪些, 它们是如何工作的, 以及这个 bootstrap 功能是如何实现的, 请阅读 ``./bootstrap/README.rst`` 文档::
-
-    python ./bootstrap/bootstrap.py
-
-至此, 你可以进行开发了. 如果你是第一次用这个项目模板进行新项目开发, 我强烈建议不要修改里面的任何业务逻辑, 并参照后面的文档演练一遍. 等对整个流程有一定了解之后, 再填入自定义业务逻辑.
 
 
 2. SDLC - A Full Release Cycle
@@ -77,7 +62,7 @@ Software Development Life Cycle (SDLC) [CN]
 
     make venv-create
 
-4. 在你安装任何项目依赖之前, 你需要 resolve 所有的依赖的具体版本来确保你的依赖是 deterministic 的. deterministic 的含义是, 如果你的代码没有变, 那么你的依赖无论在哪台机器上安装, 何时安装, 最终的结果是一摸一样的, 一个比特都不会错. 这样才能保证你的部署能长时间保持一致. 不然你今天的部署和明天的部署生成的依赖不一样, 那么你随时都需要解决因为依赖导致的奇怪问题, 而这些工作是毫无价值的. 该项目使用了 `poetry <https://python-poetry.org/>`_ 来实现 deterministic dependencies, 你可以运行下面的命令来 resolve 依赖::
+4. 在你安装任何项目依赖之前, 你需要 resolve 所有的依赖的具体版本来确保你的依赖是 deterministic 的 (如果你刚从 Seed 生成项目模版, 并不打算添加任何新的依赖, 那你可以跳过 resolve 这一步, 因为你的项目的依赖跟 seed project 一模一样, 无需进行更改). deterministic 的含义是, 如果你的代码没有变, 那么你的依赖无论在哪台机器上安装, 何时安装, 最终的结果是一摸一样的, 一个比特都不会错. 这样才能保证你的部署能长时间保持一致. 不然你今天的部署和明天的部署生成的依赖不一样, 那么你随时都需要解决因为依赖导致的奇怪问题, 而这些工作是毫无价值的. 该项目使用了 `poetry <https://python-poetry.org/>`_ 来实现 deterministic dependencies, 你可以运行下面的命令来 resolve 依赖::
 
     make poetry-lock
 
@@ -108,21 +93,26 @@ Software Development Life Cycle (SDLC) [CN]
 
 2.2. SDLC - Publish Expensive Artifacts (layer, container image, etc)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-在这一步我们将要构建比较耗时的 Artifacts. 如果你用的是 AWS 托管的 container, 那么你只需要构建 Layer 即可. 而如果你的 Layer 超过了 250MB 的限制, 那么你就需要构建 custom container image. 我们这里用 Layer 为例来说明, 构建 container image 的步骤和 Layer 类似.
+在这一步我们将要构建比较耗时的 Artifacts. 如果你用的是 AWS 托管的 container, 那么你只需要构建 Layer 即可. 而如果你的 Layer 超过了 250MB 的限制, 那么你就需要构建 custom container image. 我们这里用 custom container image 为例来说明.
 
-由于依赖并不会被频繁地更新, 所以我们仅仅会在这一步构建依赖, 而不是在整个 SDLC 周期内不断地重复构建依赖.
+.. note::
 
-1. 创建一个 layer branch ``simple_lbd_container/layer/${description}`` (``${du_name}/layer/${description}``).
-2. 不要修改任何业务逻辑代码, 专注于在 ``pyproject.toml`` 中定义的依赖, 然后用 ``make poetry-lock`` 命令来 resolve 所有依赖的具体版本, 从而实现 deterministic dependency. 最后运行一次 ``make cov`` 命令确保单元测试和依赖兼容.
-3. 你可以将你的 branch push 到 Git 了, 然后开始一个 pull request 并邀请其他开发者进行 code review. layer branch 会自动 trigger 一个 Codebuild job run 来运行单元测试并构建 Layer 然后自动发布一个新的 Layer 版本. 在此项目中我们还会将新的 dependencies 和 latest 的 layer 比较, 如果两者相同则跳过构建步骤以节省时间.
-4. 最终当 CI 发布了一个新的 Layer version 后, 你可以将 ``simple_lbd_container/layer/${description}`` branch merge 到 ``main`` 了.
+    在这一步之前, 请确保你的代码已经通过了单元测试.
+
+1. 创建一个 ecr branch ``simple_lbd_container/ecr/${description}`` (``${du_name}/ecr/${description}``).
+2. 如果你是第一次为当前项目构建 container image, 请运行 ``make create-ecr-repository`` 命令在 DevOps 环境中创建一个 ECR repository 并配置好 Life Cycle Policy, Cross Account Repository Policy 权限.
+3. 尽量避免修改业务逻辑代码, 专注于在 ``pyproject.toml`` 中定义的依赖, 然后用 ``make poetry-lock`` 命令来 resolve 所有依赖的具体版本, 从而实现 deterministic dependency. 最后运行一次 ``make cov`` 命令确保单元测试和依赖兼容.
+4. 然后再本地用 ``make build-lambda-image`` 命令在本地构建 container image (请确保你已经安装了 docker).
+5. 构建完成后, 你可以用工具 ``simple_lbd_container/debug/run_container_local_test_step1_initialize_container.py``, ``simple_lbd_container/debug/run_container_local_test_step2_run_test.py``, ``simple_lbd_container/debug/run_container_local_test_step3_stop_container.py`` 来使用 container image 进行本地测试.
+6. 测试通过以后就可以用 ``make push-lambda-image`` 命令将 image push 到 ECR 了. 注意我们的默认设置是允许 overwrite tag. 你在 push image 之前请注意不要把以前用于 production 的 image 给 override 掉了.
+7. 然后你就可以将 ``simple_lbd_container/ecr/${description}`` branch merge 到 ``main`` 了.
 
 
 2.3 Application logic Unit test, App Deployment and Integration test
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 在这一步我们专注与业务逻辑的进一步打磨, 以及 Lambda App 的部署, 以及集成测试, 我们的目标是将 App 部署到 ``sandbox`` 环境并确保集成测试能够通过.
 
-1. Create a lambda branch ``simple_lbd_container/lambda/${description}`` (``${du_name}/lambda/${description}``).
+1. Create a lambda branch ``simple_lbd_container/app/${description}`` (``${du_name}/app/${description}``).
 2. Implement the CDK code in the ``simple_lbd_container/iac/`` python module (The code skeleton generated from sample project should be working as it is).
 3. Deploy the CDK stack via ``cdk deploy`` command. The following command is a wrapper that will handle a lot of details::
 
@@ -134,17 +124,17 @@ Software Development Life Cycle (SDLC) [CN]
 
 5. Once the integration test passed on local laptop, you can publish your branch to Git, start a merge request, and invite other developer for code review. The lambda branch will automatically trigger a Codebuild to run the unit test, deploy the app to ``sandbox`` environment and run integration test.
 
-6. Once you see the app is deployed to ``sandbox`` and the integration test is passed, you can merge the ``simple_lbd_container/lambda/${description}`` to ``main``.
+6. Once you see the app is deployed to ``sandbox`` and the integration test is passed, you can merge the ``simple_lbd_container/app/${description}`` to ``main``.
 
 
 2.4 SDLC - Release from sandbox to test and then to production
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 至此, 你的镜像和 Infrastructure as Code 都已经部署到了 ``sandbox`` 环境并经过了充分测试了. 现在你可以将其通过 CD 管道发布到 ``production`` 了.
 
-1. 创建一个 ``simple_lbd_container/release`` 的 branch, 它的命名规则是 ``${du_name}/release``, 注意这里没有可选的 ``${description}`` 了. 在这个 branch 上请不要进行业务逻辑代码的改动. 这个 branch 是专门用来部署的.
-2. 这个 branch 会 trigger 我们在 bootstrap 阶段创建的 CodePipeline, 它会一步步的将所有的东西从 ``sbx`` 部署到 ``tst`` 然后要你 manual approve, 你 approve 通过之后就会继续部署到 ``prd`` 了.
+1. 创建一个 ``simple_lbd_container/release`` 的 branch, 它的命名规则是 ``${du_name}/release``, 注意这里没有可选的 ``${description}`` 了. 在这个 branch 上请不要进行业务逻辑代码的改动. 这个 branch 是专门用来部署到 upper Environment 的 (所有高于 sandbox 的都是 upper Environment).
+2. 这个 branch 会 trigger GitHub Action Workflow, 它会一步步的将所有的东西从 ``sbx`` 部署到 ``tst`` 然后要你 manual approve, 你 approve 通过之后就会继续部署到 ``prd`` 了.
 
-这个 CI/CD 系统的设计我们这里不展开说, 我们只需要知道如何使用即可.
+这个 CI/CD 系统的设计我们这里不展开说, 我们只需要知道如何使用即可. 如有需要了解 CI/CD 系统的详情, 请参考 ``.github/workflows/README.rst``.
 
 
 2.5 (Optional) Clean Up App Deployment and Infrastructure
