@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module implements the automation to build and push container image for ECR.
+"""
+
 # --- standard library
 import typing as T
 

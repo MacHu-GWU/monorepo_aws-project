@@ -5,11 +5,13 @@ Lambda function deployment related configurations.
 """
 
 import typing as T
+import json
 import dataclasses
 
 from s3pathlib import S3Path
 
 if T.TYPE_CHECKING:  # pragma: no cover
+    from boto_session_manager import BotoSesManager
     from .main import Env
 
 
@@ -18,6 +20,7 @@ class LambdaDeployMixin:
     """
     Lambda function deployment related configurations.
     """
+
     @property
     def chalice_app_name(self: "Env") -> str:
         """
@@ -47,3 +50,37 @@ class LambdaDeployMixin:
         example: ``${s3dir_artifacts}/lambda/``
         """
         return self.s3dir_artifacts.joinpath("lambda").to_dir()
+
+    @property
+    def s3dir_deployed(self: "Env") -> S3Path:
+        """
+        `AWS Chalice <https://aws.github.io/chalice/>`_ use ``deployed.json``
+        to store the deployed resources. It is better to store all of
+        historical ``deployed.json`` files somewhere as a record.
+
+        example: ``${s3dir_artifacts}/lambda/deployed/``
+        """
+        return self.s3dir_lambda.joinpath("deployed").to_dir()
+
+    @property
+    def s3path_deployed_json(self: "Env") -> S3Path:
+        """
+        AWS Chalice deployed resources JSON file.
+
+        example: ``${s3dir_artifacts}/lambda/deployed/${env_name}.json``
+        """
+        return self.s3dir_deployed.joinpath(f"{self.env_name}.json")
+
+    def get_api_gateway_endpoint(
+        self: "Env",
+        bsm: "BotoSesManager",
+    ) -> str:  # pragma: no cover
+        """
+        Get current environment rest API endpoint.
+        """
+        data = json.loads(self.s3path_deployed_json.read_text(bsm=bsm))
+        mapper = {dct["name"]: dct for dct in data.get("resources", [])}
+        endpoint = mapper["rest_api"]["rest_api_url"]
+        if endpoint.endswith("/"):
+            endpoint = endpoint[:-1]
+        return endpoint

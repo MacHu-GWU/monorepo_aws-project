@@ -81,16 +81,14 @@ class LambdaFunction:
     def get_layer_arns(
         self,
         bsm: BotoSesManager,
-    ) -> T.List[str]:
+    ) -> T.List[str]:  # pragma: no cover
         def get_layer_arn(layer: str) -> str:
             if layer.isdigit():
                 return f"arn:aws:lambda:{bsm.aws_region}:{bsm.aws_account_id}:layer:{self.env.lambda_layer_name}:{layer}"
             else:
                 return layer
-        return [
-            get_layer_arn(layer)
-            for layer in self.layers
-        ]
+
+        return [get_layer_arn(layer) for layer in self.layers]
 
     def publish_version(
         self,
@@ -145,8 +143,7 @@ class LambdaFunctionMixin:
             ]
         """
         return [
-            lambda_function.name
-            for lambda_function in self.lambda_functions.values()
+            lambda_function.name for lambda_function in self.lambda_functions.values()
         ]
 
     @property

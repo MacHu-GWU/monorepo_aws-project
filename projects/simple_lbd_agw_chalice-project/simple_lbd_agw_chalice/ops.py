@@ -29,6 +29,7 @@ simple_python_project = aws_ops_alpha.simple_python_project
 simple_config_project = aws_ops_alpha.simple_config_project
 simple_cdk_project = aws_ops_alpha.simple_cdk_project
 simple_lambda_project = aws_ops_alpha.simple_lambda_project
+simple_lbd_agw_chalice_project = aws_ops_alpha.simple_lbd_agw_chalice_project
 
 
 def pip_install():
@@ -210,6 +211,42 @@ def publish_lambda_layer(
         is_arm=False,
         check=check,
         step=simple_lambda_project.StepEnum.publish_lambda_layer.value,
+        truth_table=simple_lambda_project.truth_table,
+        url=simple_lambda_project.google_sheet_url,
+    )
+
+
+def download_deployed_json(
+    check: bool = True,
+):
+    return simple_lbd_agw_chalice_project.download_deployed_json(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
+        bsm_devops=boto_ses_factory.bsm_devops,
+        pyproject_ops=pyproject_ops,
+        s3dir_deployed=config.env.s3dir_deployed,
+        check=check,
+        step=simple_lbd_agw_chalice_project.StepEnum.deploy_chalice_app.value,
+        truth_table=simple_lambda_project.truth_table,
+        url=simple_lambda_project.google_sheet_url,
+    )
+
+
+def upload_deployed_json(
+    check: bool = True,
+):
+    return simple_lbd_agw_chalice_project.upload_deployed_json(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
+        bsm_devops=boto_ses_factory.bsm_devops,
+        pyproject_ops=pyproject_ops,
+        s3dir_deployed=config.env.s3dir_deployed,
+        source_sha256=None,
+        tags=config.env.workload_aws_tags,
+        check=check,
+        step=simple_lbd_agw_chalice_project.StepEnum.deploy_chalice_app.value,
         truth_table=simple_lambda_project.truth_table,
         url=simple_lambda_project.google_sheet_url,
     )

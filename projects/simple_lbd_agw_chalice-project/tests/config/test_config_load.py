@@ -35,6 +35,8 @@ def test():
     _ = config.env.chalice_app_name
     _ = config.env.lambda_layer_name
     _ = config.env.s3dir_lambda
+    _ = config.env.s3dir_deployed
+    _ = config.env.s3path_deployed_json
 
     # lbd_func.py
     _ = config.env.lambda_functions
