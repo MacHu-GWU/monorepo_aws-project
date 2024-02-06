@@ -36,27 +36,30 @@ from simple_lbd_agw_chalice.iac.exports import StackExports
 
 env_name = config.env.env_name
 env = config.env
-# stack_export = StackExports(env_name=env_name)
-# stack_export.load(bsm.cloudformation_client)
 
 stages = dict()
-source_sha256 = hashes.of_paths([
-    path_lambda_app_py,
-    dir_lambda_app_vendor_python_lib,
-])
+source_sha256 = hashes.of_paths(
+    [
+        path_lambda_app_py,
+        dir_lambda_app_vendor_python_lib,
+    ]
+)
 
 # note: avoid hard cording any value here, use the project config instead.
 chalice_config_json_data = {
     SHARED: {
         "stages.*.manage_iam_role": False,
-        # f"stages.{env_name}.iam_role_arn": stack_export.get_iam_role_for_lambda_arn(),
     },
     "version": "2.0",
     "app_name": config.env.chalice_app_name,
     "stages": {},
 }
 
-for env_name in EnvNameEnum:
+for env_name in [
+    EnvNameEnum.sbx,
+    # EnvNameEnum.tst,
+    # EnvNameEnum.prd,
+]:
     env_name: str = env_name.value
     env: Env = config.get_env(env_name)
     bsm = boto_ses_factory.get_env_bsm(env_name)
@@ -71,14 +74,17 @@ for env_name in EnvNameEnum:
     tags["tech:git_commit_version"] = git_repo.git_commit_id
     tags["tech:config_version"] = config.version
 
+    stack_export = StackExports(env_name=env_name)
+    stack_export.load(bsm.cloudformation_client)
     chalice_config_json_data["stages"][env_name] = {
         "api_gateway_stage": env_name,
-        "layers": list(env.lambda_functions.values())[0].get_layer_arns(bsm),
+        "iam_role_arn": stack_export.get_iam_role_for_lambda_arn(),
+        "layers": list(env.lambda_functions.values())[0].get_layer_arns(boto_ses_factory.bsm_devops),
         "lambda_functions": {
             lbd_func.short_name: {
                 "lambda_timeout": lbd_func.timeout,
                 "lambda_memory_size": lbd_func.memory,
-                "layers": lbd_func.layers,
+                "layers": list(env.lambda_functions.values())[0].get_layer_arns(boto_ses_factory.bsm_devops),
             }
             for lbd_func in env.lambda_functions.values()
         },

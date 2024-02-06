@@ -264,7 +264,7 @@ def deploy_app(
     return simple_lambda_project.deploy_app(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
-        env_name=detect_current_env(),
+        env_name=env_name,
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
@@ -291,7 +291,7 @@ def delete_app(
     return simple_lambda_project.delete_app(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
-        env_name=detect_current_env(),
+        env_name=env_name,
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
@@ -302,6 +302,48 @@ def delete_app(
         step=simple_lambda_project.StepEnum.delete_cdk_stack.value,
         truth_table=simple_lambda_project.truth_table,
         url=simple_lambda_project.google_sheet_url,
+    )
+
+
+def run_chalice_deploy(
+    check: bool = True,
+):
+    env_name = detect_current_env()
+    return simple_lbd_agw_chalice_project.run_chalice_deploy(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=env_name,
+        chalice_app_name=config.env.chalice_app_name,
+        bsm_devops=boto_ses_factory.bsm_devops,
+        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
+        pyproject_ops=pyproject_ops,
+        s3dir_deployed=config.env.s3dir_deployed,
+        tags=config.env.workload_aws_tags,
+        check=check,
+        step=simple_lbd_agw_chalice_project.StepEnum.deploy_chalice_app.value,
+        truth_table=simple_lbd_agw_chalice_project.truth_table,
+        url=simple_lbd_agw_chalice_project.google_sheet_url,
+    )
+
+
+def run_chalice_delete(
+    check: bool = True,
+):
+    env_name = detect_current_env()
+    return simple_lbd_agw_chalice_project.run_chalice_delete(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=env_name,
+        chalice_app_name=config.env.chalice_app_name,
+        bsm_devops=boto_ses_factory.bsm_devops,
+        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
+        pyproject_ops=pyproject_ops,
+        s3dir_deployed=config.env.s3dir_deployed,
+        tags=config.env.workload_aws_tags,
+        check=check,
+        step=simple_lbd_agw_chalice_project.StepEnum.deploy_chalice_app.value,
+        truth_table=simple_lbd_agw_chalice_project.truth_table,
+        url=simple_lbd_agw_chalice_project.google_sheet_url,
     )
 
 

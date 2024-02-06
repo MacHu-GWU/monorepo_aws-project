@@ -13,6 +13,8 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 @dataclasses.dataclass
 class AppMixin:
+    auth_token: T.Optional[str] = dataclasses.field(default=None)
+
     username: T.Optional[str] = dataclasses.field(default=None)
     password: T.Optional[str] = dataclasses.field(default=None)
 

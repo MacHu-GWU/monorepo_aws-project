@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from chalice import Chalice, AuthResponse
-from simple_apigateway.config.init import config
-from simple_apigateway.lbd import hello, add_one
+from simple_lbd_agw_chalice.config.api import config
+from simple_lbd_agw_chalice.lbd import hello
+
+# from simple_lbd_agw_chalice.lbd import add_one
 
 # define a Chalice app
 app = Chalice(app_name=config.env.chalice_app_name)
@@ -16,9 +18,9 @@ def handler_hello(event, context):
 
 # even though we already have a rest API handler, we want to have a pure lambda
 # function version of it for testing without using API gateway
-@app.lambda_function(name=config.env.lbd_add_one.short_name)
-def handler_add_one(event, context):
-    return add_one.handler(event, None)
+# @app.lambda_function(name=config.env.lbd_add_one.short_name)
+# def handler_add_one(event, context):
+#     return add_one.handler(event, None)
 
 
 @app.authorizer()
@@ -67,19 +69,19 @@ def hello_user():
     return hello.lambda_handler(event, None)
 
 
-@app.route(
-    "/incr",
-    methods=[
-        "POST",
-    ],
-    content_types=[
-        "application/json",
-    ],
-    name="incr",
-    authorizer=demo_auth,
-)
-def incr():
-    # expect {"key": "some_key"}
-    event = app.current_request.json_body
-    response = add_one.handler(event, None)
-    return response
+# @app.route(
+#     "/incr",
+#     methods=[
+#         "POST",
+#     ],
+#     content_types=[
+#         "application/json",
+#     ],
+#     name="incr",
+#     authorizer=demo_auth,
+# )
+# def incr():
+#     # expect {"key": "some_key"}
+#     event = app.current_request.json_body
+#     response = add_one.handler(event, None)
+#     return response

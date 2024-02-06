@@ -10,6 +10,7 @@ def test():
     _ = config.env
 
     # app.py
+    _ = config.env.auth_token
     _ = config.env.username
     _ = config.env.password
     _ = config.env.s3uri_data

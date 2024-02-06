@@ -4,15 +4,34 @@
 This module implements the automation for AWS Chalice framework.
 """
 
+# --- standard library
 import typing as T
+import subprocess
+from pathlib import Path
 from datetime import datetime
 
-from ..vendor.hashes import hashes
+# --- third party library (include vendor)
+import aws_lambda_layer.api as aws_lambda_layer
+from boto_session_manager import BotoSesManager, PATH_DEFAULT_SNAPSHOT
+from ..vendor.hashes import HashAlgoEnum, hashes
 
+# --- modules from this project
+from ..constants import EnvVarNameEnum
+from ..env_var import temp_env_var
+
+# --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
-    from boto_session_manager import BotoSesManager
     from s3pathlib import S3Path
+
+
+def build_lambda_source_chalice_vendor(
+    pyproject_ops: "pyops.PyProjectOps",
+):
+    aws_lambda_layer.build_source_python_lib(
+        dir_python_lib_source=pyproject_ops.dir_python_lib,
+        dir_python_lib_target=pyproject_ops.dir_lambda_app_vendor_python_lib,
+    )
 
 
 def get_source_sha256(
@@ -43,8 +62,33 @@ def get_source_sha256(
             pyproject_ops.path_lambda_app_py,
             pyproject_ops.dir_lambda_app_vendor_python_lib,
         ],
-        algo=hashes.AlgoEnum.sha256,
+        algo=HashAlgoEnum.sha256,
     )
+
+
+def is_current_lambda_code_the_same_as_deployed_one(
+    env_name: str,
+    bsm_devops: "BotoSesManager",
+    s3dir_deployed: "S3Path",
+    source_sha256: str,
+) -> bool:  # pragma: no cover
+    """
+    Compare the local chalice app source code hash with the deployed one.
+
+    :param env_name: the environment name
+    :param bsm_devops: boto session manager object
+    :param s3dir_deployed: the S3 directory where the deployed/${env_name}.json is stored
+    :param source_sha256: a sha256 hash value represent the local lambda source code
+
+    :return: a boolean flag to indicate that if the local lambda source code
+        is the same as the deployed one.
+    """
+    s3path_deployed_json = s3dir_deployed / f"{env_name}.json"
+    if s3path_deployed_json.exists(bsm=bsm_devops):
+        existing_source_sha256 = s3path_deployed_json.metadata["source_sha256"]
+        return source_sha256 == existing_source_sha256
+    else:
+        return False
 
 
 # todo: add concurrency lock mechanism
@@ -94,7 +138,7 @@ def upload_deployed_json(
     s3dir_deployed: "S3Path",
     source_sha256: T.Optional[str] = None,
     tags: T.Optional[T.Dict[str, str]] = None,
-) -> T.Tuple["S3Path", bool]:
+) -> T.Tuple["S3Path", bool]:  # pragma: no cover
     """
     After ``chalice deploy`` succeeded, upload the ``.chalice/deployed/${env_name}.json``
     file from local to s3. It will generate two files:
@@ -143,3 +187,48 @@ def upload_deployed_json(
         return s3path_deployed_json, True
     else:
         return s3path_deployed_json, False
+
+
+def run_chalice_command(
+    env_name: str,
+    command: str,
+    bsm_devops: "BotoSesManager",
+    bsm_workload: "BotoSesManager",
+    pyproject_ops: "pyops.PyProjectOps",
+    path_bsm_devops_snapshot: Path = PATH_DEFAULT_SNAPSHOT,
+) -> subprocess.CompletedProcess:  # pragma: no cover
+    """
+    Run ``chalice deploy`` or ``chalice delete`` command to deploy / delete
+    the lambda function and API Gateway.
+    """
+    path_venv_bin_chalice = pyproject_ops.dir_venv_bin / "chalice"
+    args = [
+        f"{path_venv_bin_chalice}",
+        "--project-dir",
+        f"{pyproject_ops.dir_lambda_app}",
+        command,
+        "--stage",
+        env_name,
+    ]
+    with bsm_devops.temp_snapshot(path=path_bsm_devops_snapshot):
+        with bsm_workload.awscli():
+            with temp_env_var({EnvVarNameEnum.USER_ENV_NAME.value: env_name}):
+                res = subprocess.run(args, capture_output=True)
+    return res
+
+
+def run_update_chalice_config_script(
+    pyproject_ops: "pyops.PyProjectOps",
+):  # pragma: no cover
+    """
+    Run the following command to generate ``.chalice/config.json`` file.
+
+    .. code-block:: bash
+
+        ./.venv/bin/python lambda_app/update_chalice_config.py
+    """
+    args = [
+        f"{pyproject_ops.path_venv_bin_python}",
+        f"{pyproject_ops.path_lambda_update_chalice_config_script}",
+    ]
+    subprocess.run(args, check=True)
