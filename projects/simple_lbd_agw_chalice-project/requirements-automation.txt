@@ -1,6 +1,6 @@
-attrs==23.2.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30 \
-    --hash=sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1
+attrs==21.4.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4 \
+    --hash=sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd
 build==0.10.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:af266720050a66c893a6096a2f410989eeac74ff9a68ba194b3f6473e8e26171 \
     --hash=sha256:d5b71264afdb5951d6704482aac78de887c80691c52b88a9ad195983ca2c9269

@@ -1,8 +1,8 @@
 atomicwrites==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" and sys_platform == "win32" \
     --hash=sha256:81b2c9071a49367a7f770170e5eec8cb66567cfbbc8c73d20ce5ca4a8d71cf11
-attrs==23.2.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30 \
-    --hash=sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1
+attrs==21.4.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4 \
+    --hash=sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd
 aws-cdk-asset-awscli-v1==2.2.202 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:3ef87d6530736b3a7b0f777fe3b4297994dd40c3ce9306d95f80f48fb18036e8 \
     --hash=sha256:96205ea2e5e132ec52fabfff37ea25b9b859498f167d05b32564c949822cd331
@@ -21,9 +21,9 @@ boto3==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
 botocore==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:ccf3d67fd046265ae73bc9862d1618c6e774a61a96beac832edb63d9a21fe1ba \
     --hash=sha256:e35526421fe8ee180b6aed3102929594aa51e4d60e3f29366a603707c37c0d52
-cattrs==23.2.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:0341994d94971052e9ee70662542699a3162ea1e0c62f7ce1b4a57f563685108 \
-    --hash=sha256:a934090d95abaa9e911dac357e3a8699e0b4b14f8529bcc7d2b1ad9d51672b9f
+cattrs==23.1.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:b2bb14311ac17bed0d58785e5a60f022e5431aca3932e3fc5cc8ed8639de50a4 \
+    --hash=sha256:db1c821b8c537382b2c7c66678c3790091ca0275ac486c76f3c8f3920e83c657
 certifi==2024.2.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:0569859f95fc761b18b45ef421b1290a0f65f147e92a1e5eb3e635f9a5e4e66f \
     --hash=sha256:dc383c07b76109f368f6106eee2b593b04a011ea4d55f652c6ca24a754d1cdd1

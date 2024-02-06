@@ -38,6 +38,8 @@ smart-open = "6.2.0"
 s3pathlib = "2.1.2"
 # AWS parameter store, secret manager integration
 pysecret = "2.2.4"
+# Dynamodb ORM
+pynamodb = "5.3.4"
 # multi environment config management
 config_patterns = "1.0.6"
 # create url for AWS console
@@ -72,6 +74,8 @@ fire = "0.5.0"
 # AWS CDK for infrastructure as code, we also need this for tests
 aws-cdk-lib = "2.111.0"
 constructs = "10.2.70"
+# micro serverless framework
+chalice = "1.27.3"
 
 # ------------------------------------------------------------------------------
 # addtitional dependencies for building documentations

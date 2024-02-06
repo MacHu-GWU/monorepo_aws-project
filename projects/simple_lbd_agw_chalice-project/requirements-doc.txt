@@ -4,9 +4,9 @@ alabaster==0.7.13 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0
 attrs-mate==1.1.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:15ec9b2e1849ce0b81bab2088ab0802a4c7b4ed76ea06943d175638f6257be24 \
     --hash=sha256:dcf8aa25039125ef2e277cb18dc421c0b088af194d524d16bcc2f3df31f3cd20
-attrs==23.2.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30 \
-    --hash=sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1
+attrs==21.4.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4 \
+    --hash=sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd
 babel==2.14.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:6919867db036398ba21eb5c7a0f6b28ab8cbc3ae7a73a44ebe34ae74a4e7d363 \
     --hash=sha256:efb1a25b7118e67ce3a259bed20545c29cb68be8ad2c784c83689981b7a57287
