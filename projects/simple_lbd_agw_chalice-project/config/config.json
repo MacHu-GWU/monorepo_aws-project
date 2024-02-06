@@ -17,12 +17,11 @@
         // ---------------------------------------------------------------------
         "*.lambda_functions": {
             "hello": {},
-            "s3sync": {}
+            "add_one": {}
         },
         "*.lambda_functions.*.layers": [
-            "1"
+            "2"
         ],
-        "*.lambda_functions.s3sync.timeout": 60,
         "*.lambda_functions.*.timeout": 3,
         "*.lambda_functions.*.memory": 128,
         "*.lambda_functions.*.iam_role": null,
@@ -33,7 +32,7 @@
         "*.lambda_functions.*.live_version2": null,
         "*.lambda_functions.*.live_version2_percentage": null,
         "*.lambda_functions.hello.handler": "hello_handler",
-        "*.lambda_functions.s3sync.handler": "s3sync_handler"
+        "*.lambda_functions.add_one.handler": "add_one_handler"
     },
     "devops": {
         "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_lbd_agw_chalice/"
@@ -43,7 +42,7 @@
         "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_lbd_agw_chalice/",
         "lambda_functions": {
             "hello": {},
-            "s3sync": {}
+            "add_one": {}
         }
     },
     "tst": {
@@ -51,17 +50,15 @@
         "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/simple_lbd_agw_chalice/",
         "lambda_functions": {
             "hello": {},
-            "s3sync": {}
+            "add_one": {}
         }
     },
     "prd": {
         "username": "prd.user",
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_lbd_agw_chalice/",
         "lambda_functions": {
-            "hello": {
-            },
-            "s3sync": {
-            }
+            "hello": {},
+            "add_one": {}
         }
     }
 }

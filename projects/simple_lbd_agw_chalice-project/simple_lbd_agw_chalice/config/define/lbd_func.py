@@ -158,5 +158,5 @@ class LambdaFunctionMixin:
         return self.lambda_functions["hello"]
 
     @property
-    def lbd_s3sync(self) -> LambdaFunction:
-        return self.lambda_functions["s3sync"]
+    def lbd_add_one(self) -> LambdaFunction:
+        return self.lambda_functions["add_one"]

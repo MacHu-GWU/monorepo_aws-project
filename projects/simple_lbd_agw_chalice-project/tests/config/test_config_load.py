@@ -65,7 +65,10 @@ def test():
         _ = lambda_function.target_live_version1
 
     _ = config.env.lbd_hello
-    _ = config.env.lbd_s3sync
+    _ = config.env.lbd_add_one
+
+    # name.py
+    _ = config.env.dynamodb_table_name
 
     # name.py
     _ = config.env.cloudformation_stack_name

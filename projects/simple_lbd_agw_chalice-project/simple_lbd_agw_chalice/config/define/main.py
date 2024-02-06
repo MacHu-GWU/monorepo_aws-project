@@ -11,6 +11,7 @@ from ..._api import EnvNameEnum, detect_current_env
 from .app import AppMixin
 from .lbd_deploy import LambdaDeployMixin
 from .lbd_func import LambdaFunction, LambdaFunctionMixin
+from .name import NameMixin
 
 
 # inherit order matters, typically, you want to use your own Mixin class
@@ -22,6 +23,7 @@ class Env(
     LambdaDeployMixin,
     LambdaFunctionMixin,
     aws_ops_alpha.BaseEnv,
+    NameMixin,
 ):
     @classmethod
     def from_dict(cls, data: dict):
