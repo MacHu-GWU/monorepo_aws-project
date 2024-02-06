@@ -207,6 +207,7 @@ def publish_lambda_layer(
         layer_name=config.env.lambda_layer_name,
         s3dir_lambda=config.env.s3dir_lambda,
         tags=config.env.devops_aws_tags,
+        is_arm=False,
         check=check,
         step=simple_lambda_project.StepEnum.publish_lambda_layer.value,
         truth_table=simple_lambda_project.truth_table,

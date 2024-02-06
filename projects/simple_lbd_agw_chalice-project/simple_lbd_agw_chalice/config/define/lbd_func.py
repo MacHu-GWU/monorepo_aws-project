@@ -78,6 +78,20 @@ class LambdaFunction:
         """
         return LATEST if self.live_version1 is None else self.live_version1
 
+    def get_layer_arns(
+        self,
+        bsm: BotoSesManager,
+    ) -> T.List[str]:
+        def get_layer_arn(layer: str) -> str:
+            if layer.isdigit():
+                return f"arn:aws:lambda:{bsm.aws_region}:{bsm.aws_account_id}:layer:{self.env.lambda_layer_name}:{layer}"
+            else:
+                return layer
+        return [
+            get_layer_arn(layer)
+            for layer in self.layers
+        ]
+
     def publish_version(
         self,
         bsm: BotoSesManager,

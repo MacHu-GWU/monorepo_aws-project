@@ -9,6 +9,7 @@ Developer note:
 # --- standard library
 import typing as T
 import time
+import subprocess
 from pathlib import Path
 
 # --- third party library (include vendor)
@@ -20,6 +21,7 @@ from ...vendor.aws_lambda_version_and_alias import publish_version
 # --- modules from this project
 from ...logger import logger
 from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
+from ...runtime.api import RunTimeEnum
 from ...rule_set import should_we_do_it
 
 # --- modules from this submodule
@@ -68,6 +70,7 @@ def publish_lambda_layer(
     layer_name: str,
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
+    is_arm: bool = False,
     check=True,
     step: str = StepEnum.publish_lambda_layer.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
@@ -85,13 +88,23 @@ def publish_lambda_layer(
         if flag is False:
             return
 
-    layer_deployment = aws_lambda_helpers.deploy_layer(
-        bsm_devops=bsm_devops,
-        pyproject_ops=pyproject_ops,
-        layer_name=layer_name,
-        s3dir_lambda=s3dir_lambda,
-        tags=tags,
-    )
+    if runtime_name == RunTimeEnum.local.name:
+        layer_deployment = aws_lambda_helpers.deploy_layer_using_docker(
+            bsm_devops=bsm_devops,
+            pyproject_ops=pyproject_ops,
+            layer_name=layer_name,
+            s3dir_lambda=s3dir_lambda,
+            tags=tags,
+            is_arm=is_arm,
+        )
+    else:
+        layer_deployment = aws_lambda_helpers.deploy_layer(
+            bsm_devops=bsm_devops,
+            pyproject_ops=pyproject_ops,
+            layer_name=layer_name,
+            s3dir_lambda=s3dir_lambda,
+            tags=tags,
+        )
 
     aws_lambda_helpers.explain_layer_deployment(
         bsm_devops=bsm_devops,

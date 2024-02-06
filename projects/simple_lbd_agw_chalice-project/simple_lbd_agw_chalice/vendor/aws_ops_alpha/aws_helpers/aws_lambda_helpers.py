@@ -5,11 +5,13 @@ This module implements the automation to manage AWS lambda artifacts, versions, 
 """
 
 import typing as T
+import subprocess
 from pathlib import Path
 
 import aws_lambda_layer.api as aws_lambda_layer
 import aws_console_url.api as aws_console_url
 from ..vendor.emoji import Emoji
+from ..vendor.hashes import hashes
 
 from ..logger import logger
 
@@ -68,6 +70,99 @@ def deploy_layer(
         bin_pip=pyproject_ops.path_venv_bin_pip,
         quiet=True,
         tags=tags,
+    )
+
+
+def deploy_layer_using_docker(
+    bsm_devops: "BotoSesManager",
+    pyproject_ops: "pyops.PyProjectOps",
+    layer_name: str,
+    s3dir_lambda: "S3Path",
+    tags: T.Dict[str, str],
+    is_arm: bool,
+):
+    latest_layer_version = aws_lambda_layer.get_latest_layer_version(
+        bsm=bsm_devops, layer_name=layer_name
+    )
+
+    if aws_lambda_layer.is_current_layer_the_same_as_latest_one(
+        bsm=bsm_devops,
+        latest_layer_version=latest_layer_version,
+        path_requirements=pyproject_ops.path_requirements,
+        s3dir_lambda=s3dir_lambda,
+    ):
+        return None
+
+    python_version = pyproject_ops.python_version
+    container_name = "lbd_layer_build"
+    if is_arm:
+        image_uri = f"public.ecr.aws/sam/build-python{python_version}:latest-arm64"
+        platform = "linux/arm64"
+    else:
+        image_uri = f"public.ecr.aws/sam/build-python{python_version}:latest-x86_64"
+        platform = "linux/amd64"
+
+    dir_here = Path(__file__).absolute().parent
+    path_build_layer_in_container_py_source = dir_here / "_build_layer_in_container.py"
+    path_build_layer_in_container_py_temp = pyproject_ops.dir_project_root.joinpath(
+        path_build_layer_in_container_py_source.name
+    )
+    path_build_layer_in_container_py_temp.write_text(
+        path_build_layer_in_container_py_source.read_text()
+    )
+    args = [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        container_name,
+        "--platform",
+        platform,
+        "--mount",
+        f"type=bind,source={pyproject_ops.dir_project_root},target=/var/task",
+        image_uri,
+        "python",
+        path_build_layer_in_container_py_source.name,
+    ]
+    subprocess.run(args)
+    path_build_layer_in_container_py_temp.remove_if_exists()
+
+    layer_sha256 = hashes.of_bytes(pyproject_ops.path_requirements.read_bytes())
+
+    (
+        s3path_tmp_layer_zip,
+        s3path_tmp_layer_requirements_txt,
+    ) = aws_lambda_layer.upload_layer_artifacts(
+        bsm=bsm_devops,
+        path_requirements=pyproject_ops.path_requirements,
+        layer_sha256=layer_sha256,
+        dir_build=pyproject_ops.dir_build_lambda,
+        s3dir_lambda=s3dir_lambda,
+        tags=tags,
+    )
+
+    (
+        layer_version,
+        layer_version_arn,
+        s3path_layer_zip,
+        s3path_layer_requirements_txt,
+    ) = aws_lambda_layer.publish_layer(
+        bsm=bsm_devops,
+        layer_name=layer_name,
+        python_versions=[
+            f"python{pyproject_ops.python_version}",
+        ],
+        dir_build=pyproject_ops.dir_build_lambda,
+        s3dir_lambda=s3dir_lambda,
+    )
+
+    return aws_lambda_layer.LayerDeployment(
+        layer_sha256=layer_sha256,
+        layer_name=layer_name,
+        layer_version=layer_version,
+        layer_version_arn=layer_version_arn,
+        s3path_layer_zip=s3path_layer_zip,
+        s3path_layer_requirements_txt=s3path_layer_requirements_txt,
     )
 
 

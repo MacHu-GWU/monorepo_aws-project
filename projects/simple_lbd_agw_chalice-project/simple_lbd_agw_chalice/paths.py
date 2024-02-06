@@ -50,3 +50,7 @@ dir_cdk = dir_project_root / "cdk"
 # ------------------------------------------------------------------------------
 dir_lambda_deploy = dir_project_root.joinpath("build", "lambda", "deploy")
 path_source_zip = dir_project_root.joinpath("build", "lambda", "source.zip")
+dir_lambda_app = dir_project_root.joinpath("lambda_app")
+path_lambda_app_py = dir_lambda_app.joinpath("app.py")
+dir_lambda_app_vendor_python_lib = dir_lambda_app.joinpath("vendor", PACKAGE_NAME)
+path_chalice_config = dir_lambda_app / ".chalice" / "config.json"

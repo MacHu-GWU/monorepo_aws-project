@@ -1,0 +1,1 @@
+# The lambda dependencies are already handled by Lambda layer, this file is intentionally left empty.
