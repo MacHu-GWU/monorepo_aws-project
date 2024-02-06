@@ -31,7 +31,7 @@ import aws_lambda_layer.api as aws_lambda_layer
 dir_root = dir_here
 layer_sha256 = aws_lambda_layer.build_layer_artifacts(
     path_requirements=dir_root / "requirements.txt",
-    dir_build=dir_root / "build",
+    dir_build=dir_root / "build" / "lambda",
     bin_pip="/var/lang/bin/pip",
     quiet=False,
 )

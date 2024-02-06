@@ -89,6 +89,7 @@ def publish_lambda_layer(
             return
 
     if runtime_name == RunTimeEnum.local.name:
+        logger.info(f"runtime is local, build layer in docker")
         layer_deployment = aws_lambda_helpers.deploy_layer_using_docker(
             bsm_devops=bsm_devops,
             pyproject_ops=pyproject_ops,
@@ -98,6 +99,7 @@ def publish_lambda_layer(
             is_arm=is_arm,
         )
     else:
+        logger.info(f"build lambda layer")
         layer_deployment = aws_lambda_helpers.deploy_layer(
             bsm_devops=bsm_devops,
             pyproject_ops=pyproject_ops,
