@@ -9,8 +9,8 @@ from ..._api import EnvNameEnum, detect_current_env
 # You may have a long list of config field definition
 # put them in different module and use Mixin class
 from .app import AppMixin
-from .lbd_deploy import LambdaDeployMixin
-from .lbd_func import LambdaFunction, LambdaFunctionMixin
+from .glue_deploy import GlueDeployMixin
+from .glue_job import GlueJob, GlueJobMixin
 
 
 # inherit order matters, typically, you want to use your own Mixin class
@@ -19,22 +19,22 @@ from .lbd_func import LambdaFunction, LambdaFunctionMixin
 @dataclasses.dataclass
 class Env(
     AppMixin,
-    LambdaDeployMixin,
-    LambdaFunctionMixin,
+    GlueDeployMixin,
+    GlueJobMixin,
     aws_ops_alpha.BaseEnv,
 ):
     @classmethod
     def from_dict(cls, data: dict):
-        data["lambda_functions"] = {
-            name: LambdaFunction(
+        data["glue_jobs"] = {
+            name: GlueJob(
                 short_name=name,
                 **dct,
             )
-            for name, dct in data.get("lambda_functions", {}).items()
+            for name, dct in data.get("glue_jobs", {}).items()
         }
         env = cls(**data)
-        for lbd_func in env.lambda_functions.values():
-            lbd_func.env = env
+        for glue_job in env.glue_jobs.values():
+            glue_job.env = env
         return env
 
 

@@ -138,7 +138,7 @@ class LambdaFunctionMixin:
     @property
     def lambda_function_list(self) -> T.List[LambdaFunction]:
         """
-        Lambda function object list.
+        :class:`LambdaFunction` object list.
         """
         return list(self.lambda_functions.values())
 

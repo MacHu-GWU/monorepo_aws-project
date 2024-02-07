@@ -5,10 +5,13 @@ from pathlib_mate import Path
 from .runtime import runtime
 
 dir_here = Path.dir_here(__file__)
+dir_python_lib = dir_here
 PACKAGE_NAME = dir_here.basename
 
 dir_project_root = Path.dir_here(__file__).parent
-dir_home = Path.home() # ${HOME}
+dir_build = dir_project_root.joinpath("build")
+
+dir_home = Path.home()  # ${HOME}
 dir_home_project_root = dir_home / ".projects" / PACKAGE_NAME
 if runtime.is_local:
     dir_home_project_root.mkdir_if_not_exists()
@@ -44,9 +47,8 @@ dir_int_test = dir_project_root / "tests_int"
 # ------------------------------------------------------------------------------
 dir_cdk = dir_project_root / "cdk"
 
-
 # ------------------------------------------------------------------------------
-# Lambda Related
+# Glue Related
 # ------------------------------------------------------------------------------
-dir_lambda_deploy = dir_project_root.joinpath("build", "lambda", "deploy")
-path_source_zip = dir_project_root.joinpath("build", "lambda", "source.zip")
+dir_glue_jobs = dir_python_lib / "glue_jobs"
+dir_build_glue = dir_build / "glue"

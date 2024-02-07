@@ -13,9 +13,6 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 @dataclasses.dataclass
 class AppMixin:
-    username: T.Optional[str] = dataclasses.field(default=None)
-    password: T.Optional[str] = dataclasses.field(default=None)
-
     @property
     def s3dir_source(self: "Env") -> S3Path:
         return self.s3dir_env_data.joinpath("source").to_dir()
