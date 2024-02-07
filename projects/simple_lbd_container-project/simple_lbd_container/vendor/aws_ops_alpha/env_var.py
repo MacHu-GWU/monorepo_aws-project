@@ -40,6 +40,12 @@ def get_environment_aws_account_id_in_ci(
     Assuming that this code is running in a CI runtime, get the AWS environment
     specific account id. We assume that your store them in environment variables
     like ``DEVOPS_AWS_ACCOUNT_ID``, ``SBX_AWS_ACCOUNT_ID``, etc ...
+
+    For example, you stored your DevOps aws account id in ``DEVOPS_AWS_ACCOUNT_ID``,
+    then you can use ``get_environment_aws_account_id_in_ci("DEVOPS")`` to get the value.
+    If you stored your aws account id in ``DEVOPS_AWS_ACCOUNT_ID_MY_ORG``, then
+    you can use ``get_environment_aws_account_id_in_ci("DEVOPS", suffix="MY_ORG")``
+    to get the value.
     """
     return os.environ[_get_key(env_name, "AWS_ACCOUNT_ID", suffix=suffix)]
 
@@ -53,5 +59,7 @@ def get_environment_iam_role_arn_in_dev_server(
     AWS Cloud9, EC2 instance, get the AWS environment specific IAM role ARN
     to assume. We assume that your store them in environment variables like
     ``DEVOPS_IAM_ROLE_ARN``, ``SBX_IAM_ROLE_ARN``.
+
+    Usage example is similar to :func:`get_environment_aws_account_id_in_ci`.
     """
     return os.environ[_get_key(env_name, "IAM_ROLE_ARN", suffix=suffix)]

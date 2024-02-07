@@ -27,7 +27,7 @@ from ...vendor.aws_s3_static_website_hosting import (
 # --- modules from this submodule
 
 # --- type hint
-if T.TYPE_CHECKING:
+if T.TYPE_CHECKING:  # pragma: no cover
     from boto_session_manager import BotoSesManager
 
 
@@ -48,7 +48,7 @@ def remove_cdk_bootstrap_stack(bsm: "BotoSesManager"):
 def setup_cdk_bootstrap(
     bsm_devops: "BotoSesManager",
     workload_bsm_list: T.List["BotoSesManager"],
-):
+):  # pragma: no cover
     """
     Run `cdk bootstrap` in the devops and all workload AWS accounts.
     """
@@ -59,7 +59,7 @@ def setup_cdk_bootstrap(
 def teardown_cdk_bootstrap(
     bsm_devops: "BotoSesManager",
     workload_bsm_list: T.List["BotoSesManager"],
-):
+):  # pragma: no cover
     """
     Delete the resources created `cdk bootstrap` in the devops and
     all workload AWS accounts.
@@ -95,7 +95,7 @@ def create_grantee_and_owners(
     devops_role_name: str,
     devops_policy_name: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
-) -> T.Tuple[cross_aws_account_iam_role.Grantee, T.List[cross_aws_account_iam_role.Owner]]:
+) -> T.Tuple[cross_aws_account_iam_role.Grantee, T.List[cross_aws_account_iam_role.Owner]]: # pragma: no cover
 # fmt: on
     iam_arn = cross_aws_account_iam_role.IamRoleArn(
         account=bsm_devops.aws_account_id,
@@ -128,7 +128,7 @@ def setup_cross_account_iam_permission(
     devops_role_name: str,
     devops_policy_name: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
-):
+): # pragma: no cover
     """
     Create IAM role in workload accounts and grant the devops account IAM role
     permission to assume the workload account IAM role.
@@ -164,7 +164,7 @@ def teardown_cross_account_iam_permission(
     devops_role_name: str,
     devops_policy_name: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
-):
+): # pragma: no cover
     """
     Delete the resources created by `setup_cross_account_iam_permission`.
     """
@@ -190,7 +190,7 @@ def setup_devops_account_s3_bucket(
     artifacts_s3_prefix: str = "",
     docs_s3_prefix: str = "",
     white_list_your_ip: bool = False,
-):
+): # pragma: no cover
     """
     Typically we need two S3 buckets in the devops account.
 
@@ -303,7 +303,7 @@ def teardown_devops_account_s3_bucket(
     artifacts_s3_bucket: str,
     docs_s3_bucket: str,
     workload_account_iam_permission_setup_list: T.List[WorkloadAccountIamPermissionSetup],
-):
+): # pragma: no cover
     """
     Typically we should NOT delete the artifacts and document S3 buckets in devops account.
     """

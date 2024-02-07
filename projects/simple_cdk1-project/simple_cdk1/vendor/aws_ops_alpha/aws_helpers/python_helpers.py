@@ -18,7 +18,7 @@ def bump_version(
     major: bool = False,
     minor: bool = False,
     patch: bool = False,
-):
+):  # pragma: no cover
     if sum([patch, minor, major]) != 1:
         raise ValueError(
             "Only one and exact one of 'is_patch', 'is_minor', 'is_major' can be True"

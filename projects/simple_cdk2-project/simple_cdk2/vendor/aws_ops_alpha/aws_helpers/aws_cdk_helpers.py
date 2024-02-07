@@ -1,25 +1,20 @@
 # -*- coding: utf-8 -*-
 
 """
-This module implements the automation to deploy CloudFormation stack via CDK.
+This module implements the automation to deploy CloudFormation stacks via CDK.
 """
 
 # --- standard library
-import typing as T
 import subprocess
 from pathlib import Path
 
 # --- third party library (include vendor)
-from boto_session_manager import PATH_DEFAULT_SNAPSHOT
+from boto_session_manager import PATH_DEFAULT_SNAPSHOT, BotoSesManager
 from ..vendor.better_pathlib import temp_cwd
 
 # --- modules from this project
 from ..constants import EnvVarNameEnum
 from ..env_var import temp_env_var
-
-# --- type hint
-if T.TYPE_CHECKING:  # pragma: no cover
-    from boto_session_manager import BotoSesManager
 
 
 def cdk_deploy(
@@ -31,7 +26,15 @@ def cdk_deploy(
     skip_prompt: bool = False,
 ):  # pragma: no cover
     """
-    Run ``cdk deploy ...`` command.
+    Run ``cdk deploy ...`` terminal command.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param bsm_workload: the workload AWS Account boto session manager.
+    :param dir_cdk: the CDK directory, there should be an app.py and cdk.json file in it.
+    :param env_name: environment name you want to deploy CloudFormation to.
+    :param path_bsm_devops_snapshot: the path to a local json file, which
+        contains the snapshot of the devops ``BotoSesManager`` object.
+    :param skip_prompt: if True, skip cdk prompt.
     """
     with bsm_devops.temp_snapshot(path=path_bsm_devops_snapshot):
         with bsm_workload.awscli():
@@ -52,7 +55,15 @@ def cdk_destroy(
     skip_prompt: bool = False,
 ):  # pragma: no cover
     """
-    Run ``cdk destroy ...`` command.
+    Run ``cdk destroy ...`` terminal command.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param bsm_workload: the workload AWS Account ``BotoSesManager`` object.
+    :param dir_cdk: the CDK directory, there should be an app.py and cdk.json file in it.
+    :param env_name: environment name you want to deploy CloudFormation to.
+    :param path_bsm_devops_snapshot: the path to a local json file, which
+        contains the snapshot of the devops ``BotoSesManager`` object.
+    :param skip_prompt: if True, skip cdk prompt.
     """
     with bsm_devops.temp_snapshot(path=path_bsm_devops_snapshot):
         with bsm_workload.awscli():

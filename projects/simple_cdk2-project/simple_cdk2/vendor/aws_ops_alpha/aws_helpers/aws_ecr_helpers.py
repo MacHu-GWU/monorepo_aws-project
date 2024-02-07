@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module implements the automation to build and push container image for ECR.
+"""
+
 # --- standard library
 import typing as T
 
 # --- third party library (include vendor)
 from pathlib import Path
 from ..vendor.aws_ecr import (
-    get_ecr_repo_uri,
-    get_ecr_auth_token,
-    docker_login,
     ecr_login as _ecr_login,
     EcrContext,
 )
-
-# --- modules from this project
-from ..constants import EnvVarNameEnum
-from ..env_var import temp_env_var
 
 # --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover
@@ -23,9 +20,11 @@ if T.TYPE_CHECKING:  # pragma: no cover
     from boto_session_manager import BotoSesManager
 
 
-def ecr_login(bsm_devops: "BotoSesManager"):
+def ecr_login(bsm_devops: "BotoSesManager"): # pragma: no cover
     """
     Login to ECR.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
     """
     return _ecr_login(bsm_devops)
 
@@ -36,15 +35,15 @@ def build_image(
     repo_name: str,
     path_dockerfile: Path,
     use_arm: bool = False,
-):
+): # pragma: no cover
     """
     Build container image using ``docker build`` command.
 
-    :param bsm_devops:
-    :param pyproject_ops:
-    :param repo_name: ECR repository name
-    :param path_dockerfile:
-    :param use_arm:
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param repo_name: ECR repository name.
+    :param path_dockerfile: Path to the ``Dockerfile``.
+    :param use_arm: is True, then build for ARM architecture, otherwise build for x86_64.
     """
     ecr_context = EcrContext.new(
         bsm=bsm_devops,
@@ -68,7 +67,15 @@ def push_image(
     pyproject_ops: "pyops.PyProjectOps",
     repo_name: str,
     path_dockerfile: Path,
-):
+): # pragma: no cover
+    """
+    Push built container image from local to ECR using ``docker build`` command.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param repo_name: ECR repository name.
+    :param path_dockerfile: Path to the ``Dockerfile``.
+    """
     ecr_login(bsm_devops)
     ecr_context = EcrContext.new(
         bsm=bsm_devops,

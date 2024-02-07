@@ -47,6 +47,13 @@ def should_we_do_it(
 
     if evaluation result is False, it will print the reason why it is False.
 
+    :param step: step name for conditional step test
+    :param semantic_branch_name: semantic branch name for conditional step test
+    :param runtime_name: runtime name for conditional step test
+    :param env_name: env name for conditional step test
+    :param truth_table: truth table for conditional step test
+    :param google_sheet_url: print the Google sheet url when conditional step test failed
+
     :return bool: True if we should run the step, False if we should not run the step.
     """
     case = {

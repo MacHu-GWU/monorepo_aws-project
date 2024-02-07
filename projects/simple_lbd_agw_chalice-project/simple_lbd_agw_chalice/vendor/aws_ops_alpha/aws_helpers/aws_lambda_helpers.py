@@ -32,6 +32,8 @@ def build_lambda_source(
     Build lambda source artifacts locally and return source code sha256 and zip file path.
     It will NOT upload the artifacts to S3.
 
+    :param pyproject_ops: ``PyProjectOps`` object.
+
     :return: tuple of two items: (source code sha256, zip file path)
     """
     path_lambda_function = pyproject_ops.dir_lambda_app.joinpath("lambda_function.py")
@@ -54,9 +56,15 @@ def deploy_layer(
     tags: T.Dict[str, str],
 ) -> T.Optional[aws_lambda_layer.LayerDeployment]:  # pragma: no cover
     """
-    Publish lambda layer.
+    Build layer locally, and upload layer artifacts to S3, then publish lambda layer.
 
     This function doesn't have any logging, it can make the final function shorter.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param layer_name: Lambda layer name.
+    :param s3dir_lambda: the S3 folder to store all lambda layer version artifacts.
+    :param tags: optional AWS resource tags.
     """
     return aws_lambda_layer.deploy_layer(
         bsm=bsm_devops,
@@ -80,7 +88,17 @@ def deploy_layer_using_docker(
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
     is_arm: bool,
-):
+): # pragma: no cover
+    """
+    Build layer locally using docker, and upload layer artifacts to S3, then publish lambda layer.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param layer_name: Lambda layer name.
+    :param s3dir_lambda: the S3 folder to store all lambda layer version artifacts.
+    :param tags: optional AWS resource tags.
+    :param is_arm: is True, then build for ARM architecture, otherwise build for x86_64.
+    """
     latest_layer_version = aws_lambda_layer.get_latest_layer_version(
         bsm=bsm_devops, layer_name=layer_name
     )
@@ -171,6 +189,13 @@ def grant_layer_permission(
     workload_bsm_list: T.List["BotoSesManager"],
     layer_deployment: aws_lambda_layer.LayerDeployment,
 ) -> T.List[str]:  # pragma: no cover
+    """
+    Grant cross account Lambda layer permission.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param workload_bsm_list: list of all workload AWS Accounts ``BotoSesManager`` objects.
+    :param layer_deployment: the lambda layer deployment object.
+    """
     principal_list = list()
     for bsm_workload in workload_bsm_list:
         if (bsm_devops.aws_account_id == bsm_workload.aws_account_id) and (
@@ -191,6 +216,12 @@ def explain_layer_deployment(
     bsm_devops: "BotoSesManager",
     layer_deployment: T.Optional[aws_lambda_layer.LayerDeployment],
 ):  # pragma: no cover
+    """
+    Print helpful information about the layer deployment.
+
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param layer_deployment: the lambda layer deployment object.
+    """
     if layer_deployment is None:
         logger.info(
             f"{Emoji.red_circle} don't publish layer, "

@@ -49,7 +49,7 @@ def cdk_deploy(
     url: T.Optional[str] = None,
 ):  # pragma: no cover
     """
-    Run ``cdk deploy ...`` command.
+    Run ``cdk deploy ...`` terminal command.
     """
     logger.info(f"deploy cloudformation to {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
@@ -96,7 +96,7 @@ def cdk_destroy(
     url: T.Optional[str] = None,
 ):  # pragma: no cover
     """
-    Run ``cdk destroy ...`` command.
+    Run ``cdk destroy ...`` terminal command.
     """
     logger.info(f"delete cloudformation from {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)

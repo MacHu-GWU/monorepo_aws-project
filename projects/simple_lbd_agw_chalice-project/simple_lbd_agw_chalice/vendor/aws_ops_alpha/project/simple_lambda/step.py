@@ -76,6 +76,25 @@ def publish_lambda_layer(
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
 ):  # pragma: no cover
+    """
+    Build layer locally, and upload layer artifacts to S3, then publish lambda layer,
+    and grant cross account permission.
+
+    :param semantic_branch_name: semantic branch name for conditional step test.
+    :param runtime_name: runtime name for conditional step test.
+    :param env_name: env name, will be used for conditional step test.
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param workload_bsm_list: list of all workload AWS Accounts ``BotoSesManager`` objects.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param layer_name: Lambda layer name.
+    :param s3dir_lambda: the S3 folder to store all lambda layer version artifacts.
+    :param tags: optional AWS resource tags.
+    :param is_arm: is True, then build for ARM architecture, otherwise build for x86_64.
+    :param check: whether to check if we should run this step.
+    :param step: step name for conditional step test.
+    :param truth_table: truth table for conditional step test.
+    :param url: print the Google sheet url when conditional step test failed.
+    """
     if check:
         flag = should_we_do_it(
             step=step,
@@ -143,6 +162,24 @@ def publish_lambda_version(
 ):  # pragma: no cover
     """
     Publish a new lambda version from latest.
+
+    .. note::
+
+        before 2023-06, AWS CDK doesn't support to manage lambda version and alias
+        automatically, so we need to publish new lambda version manually.
+        now AWS CDK can automatically roll up version and retain historical versions,
+        so we don't need this function anymore. I intentionally keep this function
+        in case we need this when not using AWS CDK.
+
+    :param semantic_branch_name: semantic branch name for conditional step test.
+    :param runtime_name: runtime name for conditional step test.
+    :param env_name: env name, will be used for conditional step test.
+    :param bsm_workload: the workload AWS Account ``BotoSesManager`` object.
+    :param lbd_func_name_list: list of lambda function names.
+    :param check: whether to check if we should run this step.
+    :param step: step name for conditional step test.
+    :param truth_table: truth table for conditional step test.
+    :param url: print the Google sheet url when conditional step test failed.
     """
     if check:
         flag = should_we_do_it(
@@ -177,16 +214,31 @@ def deploy_app(
     pyproject_ops: "pyops.PyProjectOps",
     bsm_devops: "BotoSesManager",
     bsm_workload: "BotoSesManager",
-    lbd_func_name_list: T.List[str],
     dir_cdk: Path,
     stack_name: str,
     skip_prompt: bool = False,
     check: bool = True,
     step: str = StepEnum.deploy_cdk_stack.value,
-    publish_new_lambda_version_step: str = StepEnum.publish_new_lambda_version.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
 ):  # pragma: no cover
+    """
+    Deploy Lambda app using AWS CDK.
+
+    :param semantic_branch_name: semantic branch name for conditional step test.
+    :param runtime_name: runtime name for conditional step test.
+    :param env_name: env name, will be used for conditional step test.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param bsm_workload: the workload AWS Account ``BotoSesManager`` object.
+    :param dir_cdk: the CDK directory, there should be an app.py and cdk.json file in it.
+    :param stack_name: CloudFormation stack name.
+    :param skip_prompt: if True, then skip prompt for ``cdk deploy`` command.
+    :param check: whether to check if we should run this step.
+    :param step: step name for conditional step test.
+    :param truth_table: truth table for conditional step test.
+    :param url: print the Google sheet url when conditional step test failed.
+    """
     logger.info(f"deploy app to {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
     console_url = aws_console.cloudformation.filter_stack(name=stack_name)
@@ -213,18 +265,6 @@ def deploy_app(
             env_name=env_name,
             skip_prompt=skip_prompt,
         )
-        # we use CDK to manage version creation and alias, no longer need this
-        # publish_lambda_version(
-        #     semantic_branch_name=semantic_branch_name,
-        #     runtime_name=runtime_name,
-        #     env_name=env_name,
-        #     bsm_workload=bsm_workload,
-        #     lbd_func_name_list=lbd_func_name_list,
-        #     check=check,
-        #     step=publish_new_lambda_version_step,
-        #     truth_table=truth_table,
-        #     url=url,
-        # )
 
 
 @logger.start_and_end(
@@ -249,6 +289,23 @@ def delete_app(
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
 ):  # pragma: no cover
+    """
+    Delete Lambda app using AWS CDK.
+
+    :param semantic_branch_name: semantic branch name for conditional step test.
+    :param runtime_name: runtime name for conditional step test.
+    :param env_name: env name, will be used for conditional step test.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param bsm_workload: the workload AWS Account ``BotoSesManager`` object.
+    :param dir_cdk: the CDK directory, there should be an app.py and cdk.json file in it.
+    :param stack_name: CloudFormation stack name.
+    :param skip_prompt: if True, then skip prompt for ``cdk delete`` command.
+    :param check: whether to check if we should run this step.
+    :param step: step name for conditional step test.
+    :param truth_table: truth table for conditional step test.
+    :param url: print the Google sheet url when conditional step test failed.
+    """
     logger.info(f"delete app from {env_name!r} env ...")
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
     console_url = aws_console.cloudformation.filter_stack(name=stack_name)
@@ -292,6 +349,19 @@ def run_int_test(
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
 ):  # pragma: no cover
+    """
+    Run integration test.
+
+    :param semantic_branch_name: semantic branch name for conditional step test.
+    :param runtime_name: runtime name for conditional step test.
+    :param env_name: env name, will be used for conditional step test.
+    :param pyproject_ops: ``PyProjectOps`` object.
+    :param wait: wait a few seconds for the CDK deployment taking effect.
+    :param check: whether to check if we should run this step.
+    :param step: step name for conditional step test.
+    :param truth_table: truth table for conditional step test.
+    :param url: print the Google sheet url when conditional step test failed.
+    """
     logger.info(f"Run integration test in {env_name!r} env...")
     if check:
         flag = should_we_do_it(
