@@ -400,7 +400,7 @@ def run_chalice_delete(
     s3path_deployed_json: "S3Path",
     tags: T.Optional[T.Dict[str, str]] = None,
     check=True,
-    step: str = StepEnum.deploy_chalice_app.value,
+    step: str = StepEnum.delete_chalice_app.value,
     truth_table: T.Optional[tt4human.TruthTable] = None,
     url: T.Optional[str] = None,
 ) -> bool:  # pragma: no cover

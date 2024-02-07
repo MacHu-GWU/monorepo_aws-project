@@ -24,6 +24,7 @@ class StepEnum(BetterStrEnum):
     create_artifact_snapshot = "CREATE_ARTIFACT_SNAPSHOT"
     create_git_tag = "CREATE_GIT_TAG"
     delete_cdk_stack = "DELETE_CDK_STACK"
+    delete_chalice_app = "DELETE_CHALICE_APP"
     delete_artifact_snapshot = "DELETE_ARTIFACT_SNAPSHOT"
     delete_config = "DELETE_CONFIG"
 

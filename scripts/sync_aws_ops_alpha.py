@@ -54,7 +54,6 @@ def check_aws_ops_alpha_md5():
 
 
 def sync_aws_ops_alpha():
-    # source_project = "simple_cdk1"
     source_project = "simple_lbd_agw_chalice"
     source_dir = dir_project_root / "projects" / f"{source_project}-project" / source_project / "vendor" / "aws_ops_alpha"
     for dir_project in dir_projects.select_dir(recursive=False):

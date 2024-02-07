@@ -36,6 +36,7 @@ conditions = {
         "CREATE_ARTIFACT_SNAPSHOT",
         "CREATE_GIT_TAG",
         "DELETE_CDK_STACK",
+        "DELETE_CHALICE_APP",
         "DELETE_ARTIFACT_SNAPSHOT",
         "DELETE_CONFIG",
     ],
