@@ -55,44 +55,37 @@ chalice_config_json_data = {
     "stages": {},
 }
 
-for env_name in [
-    EnvNameEnum.sbx,
-    EnvNameEnum.tst,
-    EnvNameEnum.prd,
-]:
-    env_name: str = env_name.value
-    env: Env = config.get_env(env_name)
-    bsm = boto_ses_factory.get_env_bsm(env_name)
+bsm = boto_ses_factory.get_env_bsm(env_name)
 
-    env_vars = env.env_vars
-    env_vars["SOURCE_SHA256"] = source_sha256
-    env_vars["GIT_COMMIT_ID"] = git_repo.git_commit_id
-    env_vars["CONFIG_VERSION"] = config.version
+env_vars = env.env_vars
+env_vars["SOURCE_SHA256"] = source_sha256
+env_vars["GIT_COMMIT_ID"] = git_repo.git_commit_id
+env_vars["CONFIG_VERSION"] = config.version
 
-    tags = env.workload_aws_tags
-    tags["tech:source_sha256"] = source_sha256
-    tags["tech:git_commit_version"] = git_repo.git_commit_id
-    tags["tech:config_version"] = config.version
+tags = env.workload_aws_tags
+tags["tech:source_sha256"] = source_sha256
+tags["tech:git_commit_version"] = git_repo.git_commit_id
+tags["tech:config_version"] = config.version
 
-    stack_export = StackExports(env_name=env_name)
-    stack_export.load(bsm.cloudformation_client)
-    chalice_config_json_data["stages"][env_name] = {
-        "api_gateway_stage": env_name,
-        "iam_role_arn": stack_export.get_iam_role_for_lambda_arn(),
-        # note: even though we have the layers defined for each lambda function
-        # you still need to declare it on stage level. otherwise, chalice will not use any layer
-        "layers": list(env.lambda_functions.values())[0].get_layer_arns(boto_ses_factory.bsm_devops),
-        "lambda_functions": {
-            lbd_func.short_name: {
-                "lambda_timeout": lbd_func.timeout,
-                "lambda_memory_size": lbd_func.memory,
-                "layers": list(env.lambda_functions.values())[0].get_layer_arns(boto_ses_factory.bsm_devops),
-            }
-            for lbd_func in env.lambda_functions.values()
-        },
-        "environment_variables": env_vars,
-        "tags": tags,
-    }
+stack_export = StackExports(env_name=env_name)
+stack_export.load(bsm.cloudformation_client)
+chalice_config_json_data["stages"][env_name] = {
+    "api_gateway_stage": env_name,
+    "iam_role_arn": stack_export.get_iam_role_for_lambda_arn(),
+    # note: even though we have the layers defined for each lambda function
+    # you still need to declare it on stage level. otherwise, chalice will not use any layer
+    "layers": list(env.lambda_functions.values())[0].get_layer_arns(boto_ses_factory.bsm_devops),
+    "lambda_functions": {
+        lbd_func.short_name: {
+            "lambda_timeout": lbd_func.timeout,
+            "lambda_memory_size": lbd_func.memory,
+            "layers": list(env.lambda_functions.values())[0].get_layer_arns(boto_ses_factory.bsm_devops),
+        }
+        for lbd_func in env.lambda_functions.values()
+    },
+    "environment_variables": env_vars,
+    "tags": tags,
+}
 
 chalice_config_json_data_merged = apply_shared_value(chalice_config_json_data)
 
