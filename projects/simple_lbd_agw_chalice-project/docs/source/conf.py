@@ -241,5 +241,6 @@ docfly.ApiReferenceDoc(
         "%s.pkg" % package_name,
         "%s.docs" % package_name,
         "%s.tests" % package_name,
+        "%s.vendor" % package_name,
     ]
 ).fly()

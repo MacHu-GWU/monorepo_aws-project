@@ -13,7 +13,6 @@ sub packages and modules
     config <config/__init__>
     iac <iac/__init__>
     lbd <lbd/__init__>
-    vendor <vendor/__init__>
     _api <_api>
     api_gateway <api_gateway>
     boto_ses <boto_ses>
