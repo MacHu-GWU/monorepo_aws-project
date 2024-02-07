@@ -36,6 +36,7 @@ Prerequisites
 
 Run
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Then run the following script using the command ``python /path/to/file_name.py`` in sequence. Any Python>=3.8 is OK, it doesn't have to be the virtualenv Python, it will find the virtualenv Python automatically.
 
 1. `s1_setup_venv.py <./s1_setup_venv.py>`_:
