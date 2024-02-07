@@ -47,7 +47,7 @@ aws_console_url = "1.4.1"
 # build AWS lambda layer and deployment package
 aws_lambda_layer = "0.5.1"
 # AWS devops best practices
-#aws_ops_alpha = "0.0.5"
+#aws_ops_alpha = "0.1.1"
 # ------------------------------------------------------------------------------
 # Helper libraries
 # ------------------------------------------------------------------------------
