@@ -57,8 +57,8 @@ chalice_config_json_data = {
 
 for env_name in [
     EnvNameEnum.sbx,
-    # EnvNameEnum.tst,
-    # EnvNameEnum.prd,
+    EnvNameEnum.tst,
+    EnvNameEnum.prd,
 ]:
     env_name: str = env_name.value
     env: Env = config.get_env(env_name)
