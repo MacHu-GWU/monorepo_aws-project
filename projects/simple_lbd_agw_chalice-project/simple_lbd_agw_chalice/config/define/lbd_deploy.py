@@ -77,6 +77,8 @@ class LambdaDeployMixin:
     ) -> str:  # pragma: no cover
         """
         Get current environment rest API endpoint.
+
+        :return: example ``https://a1b2c3d4.execute-api.us-east-1.amazonaws.com/api``
         """
         data = json.loads(self.s3path_deployed_json.read_text(bsm=bsm_devops))
         mapper = {dct["name"]: dct for dct in data.get("resources", [])}

@@ -111,15 +111,19 @@ Software Development Life Cycle (SDLC) [CN]
 2. Implement the CDK code in the ``simple_lbd_agw_chalice/iac/`` python module (The code skeleton generated from sample project should be working as it is).
 3. Deploy the CDK stack via ``cdk deploy`` command. The following command is a wrapper that will handle a lot of details::
 
-    make deploy-app
+    make deploy-stack
 
-4. Implement the integration test code in the ``tests_int/`` folder. And use real AWS Lambda and for testing.
+4. Deploy the Lambda and API Gateway via ``chalice deploy`` command. The following command is a wrapper that will handle a lot of details::
+
+    make chalice-deploy
+
+5. Implement the integration test code in the ``tests_int/`` folder. And use real AWS Lambda and for testing.
 
     make int
 
-5. Once the integration test passed on local laptop, you can publish your branch to Git, start a merge request, and invite other developer for code review. The lambda branch will automatically trigger a Codebuild to run the unit test, deploy the app to ``sandbox`` environment and run integration test.
+6. Once the integration test passed on local laptop, you can publish your branch to Git, start a merge request, and invite other developer for code review. The lambda branch will automatically trigger a Codebuild to run the unit test, deploy the app to ``sandbox`` environment and run integration test.
 
-6. Once you see the app is deployed to ``sandbox`` and the integration test is passed, you can merge the ``simple_lbd_agw_chalice/app/${description}`` to ``main``.
+7. Once you see the app is deployed to ``sandbox`` and the integration test is passed, you can merge the ``simple_lbd_agw_chalice/app/${description}`` to ``main``.
 
 
 2.4 SDLC - Release from sandbox to test and then to production

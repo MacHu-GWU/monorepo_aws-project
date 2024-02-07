@@ -84,10 +84,6 @@ jobs:
           python bin/s02_10_setup_venv_in_ci.py
       - name: === ✅ START MAIN LOGICS ===
         run: echo "START MAIN LOGICS"
-      - name: 🏗️ Build Lambda Source Artifacts
-        working-directory: ${{ env.DIR_PROJECT }}
-        run: |
-          .venv/bin/python bin/s04_03_lambda_build_source.py
       - name: 🧪 Run Code Coverage Test
         working-directory: ${{ env.DIR_PROJECT }}
         run: |

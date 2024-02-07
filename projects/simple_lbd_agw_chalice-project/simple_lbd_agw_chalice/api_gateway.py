@@ -29,6 +29,8 @@ def get_api_endpoint(env_name: str, s3_client) -> str:
     """
     Get the API endpoint from the chalice deployed ${env_name}.json file in
     artifacts S3 bucket.
+
+    :return: example ``https://a1b2c3d4.execute-api.us-east-1.amazonaws.com/api``
     """
     res = s3_client.get_object(Bucket=artifacts_bucket, Key=_get_s3_key(env_name))
     data = json.loads(res["Body"].read().decode("utf-8"))
