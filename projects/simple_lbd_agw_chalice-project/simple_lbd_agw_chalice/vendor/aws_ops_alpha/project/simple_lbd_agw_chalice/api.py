@@ -14,6 +14,7 @@ from .simple_lbd_agw_chalice_truth_table import truth_table
 from .rule_set import semantic_branch_rule
 from .rule_set import google_sheet_url
 from .step import build_lambda_source_chalice_vendor
+from .step import get_lock
 from .step import download_deployed_json
 from .step import upload_deployed_json
 from .step import run_chalice_deploy

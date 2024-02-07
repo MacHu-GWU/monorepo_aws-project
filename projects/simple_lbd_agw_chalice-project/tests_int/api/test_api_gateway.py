@@ -40,8 +40,6 @@ def _test_incr():
     # --------------------------------------------------------------------------
     # Before
     # --------------------------------------------------------------------------
-    Connection()
-
     key = "integration_test_invoke_api"
     try:
         item = Counter.get(key)
@@ -71,9 +69,11 @@ def _test_incr():
 
 
 def test():
-    _test_hello()
-    _test_user()
-    _test_incr()
+    boto_ses_factory.bsm.print_who_am_i()
+    with boto_ses_factory.bsm.awscli():
+        _test_hello()
+        _test_user()
+        _test_incr()
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
-lbd
-===
+docs
+====
 
-.. automodule:: simple_lbd_agw_chalice.lbd
+.. automodule:: simple_lbd_agw_chalice.vendor.aws_ops_alpha.docs
     :members:
 
 sub packages and modules
@@ -10,6 +10,4 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
-    add_one <add_one>
-    hello <hello>
     

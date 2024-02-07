@@ -10,7 +10,7 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
+    dynamodb <dynamodb>
     iam <iam>
-    lbd <lbd>
     main <main>
     

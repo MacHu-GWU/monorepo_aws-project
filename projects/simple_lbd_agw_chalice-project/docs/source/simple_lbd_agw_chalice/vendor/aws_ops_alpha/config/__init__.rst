@@ -1,7 +1,7 @@
-define
+config
 ======
 
-.. automodule:: simple_lbd_agw_chalice.config.define
+.. automodule:: simple_lbd_agw_chalice.vendor.aws_ops_alpha.config
     :members:
 
 sub packages and modules
@@ -12,8 +12,7 @@ sub packages and modules
 
     api <api>
     app <app>
-    lbd_deploy <lbd_deploy>
-    lbd_func <lbd_func>
+    deploy <deploy>
     main <main>
     name <name>
     
