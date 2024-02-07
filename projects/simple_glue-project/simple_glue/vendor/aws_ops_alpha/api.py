@@ -64,6 +64,7 @@ try:
     from .project.api import simple_lambda_project
     from .project.api import simple_lbd_container_project
     from .project.api import simple_lbd_agw_chalice_project
+    from .project.api import simple_glue_project
 except ImportError:  # pragma: no cover
     pass
 
