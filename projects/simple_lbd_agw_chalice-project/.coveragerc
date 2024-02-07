@@ -10,6 +10,7 @@ omit =
     simple_lbd_agw_chalice/iac/exports.py
     simple_lbd_agw_chalice/_version.py
     simple_lbd_agw_chalice/ops.py
+    simple_lbd_agw_chalice/api_gateway.py
 
 [report]
 # Regexes for lines to exclude from consideration

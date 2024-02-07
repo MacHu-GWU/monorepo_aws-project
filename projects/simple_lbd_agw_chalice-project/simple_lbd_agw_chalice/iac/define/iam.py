@@ -57,6 +57,16 @@ class IamMixin:
             ],
         )
 
+        self.stat_dynamodb = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "dynamodb:*",
+            ],
+            resources=[
+                f"arn:aws:dynamodb:{cdk.Aws.REGION}:{cdk.Aws.ACCOUNT_ID}:table/{self.env.dynamodb_table_name}"
+            ],
+        )
+
         # declare iam role
         self.iam_role_for_lambda = iam.Role(
             self,
@@ -74,6 +84,7 @@ class IamMixin:
                         self.stat_parameter_store,
                         self.stat_s3_bucket_read,
                         self.stat_s3_bucket_write,
+                        self.stat_dynamodb,
                     ]
                 )
             },

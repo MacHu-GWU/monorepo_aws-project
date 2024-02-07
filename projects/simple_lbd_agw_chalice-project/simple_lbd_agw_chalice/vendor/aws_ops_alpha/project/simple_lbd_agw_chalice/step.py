@@ -126,7 +126,7 @@ def upload_deployed_json(
         f"upload the deployed {env_name}.json file to "
         f"{s3path_deployed_json.console_url}"
     )
-    s3path_deployed_json, flag = aws_chalice_helpers.upload_deployed_json(
+    flag = aws_chalice_helpers.upload_deployed_json(
         env_name=env_name,
         bsm_devops=bsm_devops,
         pyproject_ops=pyproject_ops,
@@ -198,7 +198,7 @@ def run_chalice_deploy(
     step: str = StepEnum.deploy_chalice_app.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
-):
+) -> bool:
     """
     Deploy lambda app using chalice.
 
@@ -224,6 +224,8 @@ def run_chalice_deploy(
     :param step:
     :param truth_table:
     :param url:
+
+    :return: a boolean flag to indicate whether it runs ``chalice deploy`` command.
     """
     if check:
         flag = should_we_do_it(
@@ -322,7 +324,7 @@ def run_chalice_delete(
     step: str = StepEnum.deploy_chalice_app.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
-):
+) -> bool:
     """
     Delete lambda app using chalice.
 
@@ -347,6 +349,8 @@ def run_chalice_delete(
     :param step:
     :param truth_table:
     :param url:
+
+    :return: a boolean flag to indicate whether it runs ``chalice deploy`` command.
     """
     if check:
         flag = should_we_do_it(
