@@ -30,8 +30,7 @@ from simple_lbd_agw_chalice.paths import (
     path_chalice_config,
 )
 
-from simple_lbd_agw_chalice.config.api import config, Env
-from simple_lbd_agw_chalice.env import EnvNameEnum
+from simple_lbd_agw_chalice.config.api import config
 from simple_lbd_agw_chalice.iac.exports import StackExports
 
 env_name = config.env.env_name
