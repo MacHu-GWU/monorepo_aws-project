@@ -339,7 +339,7 @@ def run_chalice_delete(
         s3path_deployed_json=config.env.s3dir_deployed / f"{env_name}.json",
         tags=config.env.workload_aws_tags,
         check=check,
-        step=simple_lbd_agw_chalice_project.StepEnum.deploy_chalice_app.value,
+        step=simple_lbd_agw_chalice_project.StepEnum.delete_chalice_app.value,
         truth_table=simple_lbd_agw_chalice_project.truth_table,
         url=simple_lbd_agw_chalice_project.google_sheet_url,
     )
