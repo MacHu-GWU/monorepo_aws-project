@@ -9,12 +9,14 @@ Developer note:
 # --- standard library
 import typing as T
 import json
+import uuid
 
 # --- third party library (include vendor)
 from boto_session_manager import BotoSesManager
 import aws_console_url.api as aws_console_url
 import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
+from ...vendor.aws_s3_lock import Lock, Vault, AlreadyLockedError
 
 # --- modules from this project
 from ...logger import logger
@@ -90,7 +92,7 @@ def download_deployed_json(
 
 
 @logger.start_and_end(
-    msg="Upload deployed/$env_name.json to S3",
+    msg="Upload deployed/{env_name}.json to S3",
     start_emoji=Emoji.awslambda,
     error_emoji=f"{Emoji.failed} {Emoji.awslambda}",
     end_emoji=f"{Emoji.succeeded} {Emoji.awslambda}",
@@ -135,7 +137,11 @@ def upload_deployed_json(
         tags=tags,
     )
     if flag is False:
-        logger.error("no existing deployed json file found, skip upload", indent=1)
+        logger.error(
+            "the deployed json file not changed "
+            "or no existing deployed json file found, skip upload",
+            indent=1,
+        )
     return flag
 
 
@@ -175,6 +181,34 @@ def run_chalice_command(
     aws_console = aws_console_url.AWSConsole.from_bsm(bsm=bsm_workload)
     url = aws_console.awslambda.filter_functions(func_prefix)
     logger.info(f"preview deployed lambda functions: {url}")
+
+
+@logger.start_and_end(
+    msg="Try to get lock for owner {owner}",
+    start_emoji=f"{Emoji.lock}",
+    error_emoji=f"{Emoji.lock}",
+    end_emoji=f"{Emoji.succeeded} {Emoji.lock}",
+    pipe=Emoji.lock,
+)
+def get_lock(
+    vault: Vault,
+    owner: str,
+    bsm_devops: "BotoSesManager",
+) -> T.Optional[Lock]:
+    """
+    :return: True if got the lock, False if not
+    """
+    logger.info(f"try to get the concurrency lock ...")
+    lock = aws_chalice_helpers.get_concurrency_lock(
+        vault=vault, owner=owner, bsm_devops=bsm_devops
+    )
+    if lock is None:
+        with logger.indent():
+            logger.info("it's already locked, skip chalice deploy.")
+    else:
+        with logger.indent():
+            logger.info("got it.")
+    return lock
 
 
 @logger.start_and_end(
@@ -261,8 +295,15 @@ def run_chalice_deploy(
             )
             return False
 
+    s3dir_lock = s3path_deployed_json.parent.joinpath("lock")
+    owner = uuid.uuid4().hex
+    s3path_lock = s3dir_lock.joinpath(f"{owner}.lock")
+    vault = Vault(bucket=s3path_lock.bucket, key=s3path_lock.key, expire=600, wait=0.1)
+
     with logger.nested():
         # 3. download the ``lambda_app/.chalice/deployed/${env_name}.json`` file.
+        if get_lock(vault=vault, owner=owner, bsm_devops=bsm_devops) is None:
+            return False
         download_deployed_json(
             semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
@@ -276,6 +317,8 @@ def run_chalice_deploy(
             url=url,
         )
         # 4. run ``chalice deploy`` command to deploy the lambda function.
+        if get_lock(vault=vault, owner=owner, bsm_devops=bsm_devops) is None:
+            return False
         run_chalice_command(
             env_name=env_name,
             command="deploy",
@@ -285,6 +328,9 @@ def run_chalice_deploy(
             pyproject_ops=pyproject_ops,
         )
         # 5. upload the ``lambda_app/.chalice/deployed/${env_name}.json`` file.
+        lock = get_lock(vault=vault, owner=owner, bsm_devops=bsm_devops)
+        if lock is None:
+            return False
         upload_deployed_json(
             semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
@@ -299,7 +345,9 @@ def run_chalice_deploy(
             truth_table=truth_table,
             url=url,
         )
-
+        logger.info(f"release the lock")
+        vault.release(s3_client=bsm_devops.s3_client, lock=lock)
+        s3dir_lock.delete(bsm=bsm_devops)
     return True
 
 
@@ -368,8 +416,15 @@ def run_chalice_delete(
     logger.info(f"{Emoji.python} create dummy '.chalice/config.json' ...")
     pyproject_ops.path_chalice_config.write_text(json.dumps({"version": "2.0"}))
 
+    s3dir_lock = s3path_deployed_json.parent.joinpath("lock")
+    owner = uuid.uuid4().hex
+    s3path_lock = s3dir_lock.joinpath(f"{owner}.lock")
+    vault = Vault(bucket=s3path_lock.bucket, key=s3path_lock.key, expire=600, wait=0.1)
+
     with logger.nested():
         # 2. download the ``lambda_app/.chalice/deployed/${env_name}.json`` file.
+        if get_lock(vault=vault, owner=owner, bsm_devops=bsm_devops) is None:
+            return False
         download_deployed_json(
             semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
@@ -383,6 +438,8 @@ def run_chalice_delete(
             url=url,
         )
         # 3. run ``chalice delete`` command to delete the lambda function.
+        if get_lock(vault=vault, owner=owner, bsm_devops=bsm_devops) is None:
+            return False
         run_chalice_command(
             env_name=env_name,
             command="delete",
@@ -392,6 +449,9 @@ def run_chalice_delete(
             pyproject_ops=pyproject_ops,
         )
         # 4. upload the ``lambda_app/.chalice/deployed/${env_name}.json`` file.
+        lock = get_lock(vault=vault, owner=owner, bsm_devops=bsm_devops)
+        if lock is None:
+            return False
         upload_deployed_json(
             semantic_branch_name=semantic_branch_name,
             runtime_name=runtime_name,
@@ -406,5 +466,8 @@ def run_chalice_delete(
             truth_table=truth_table,
             url=url,
         )
+        logger.info(f"release the lock")
+        vault.release(s3_client=bsm_devops.s3_client, lock=lock)
+        s3dir_lock.delete(bsm=bsm_devops)
 
     return True

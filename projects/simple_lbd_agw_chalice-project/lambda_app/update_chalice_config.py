@@ -79,6 +79,8 @@ for env_name in [
     chalice_config_json_data["stages"][env_name] = {
         "api_gateway_stage": env_name,
         "iam_role_arn": stack_export.get_iam_role_for_lambda_arn(),
+        # note: even though we have the layers defined for each lambda function
+        # you still need to declare it on stage level. otherwise, chalice will not use any layer
         "layers": list(env.lambda_functions.values())[0].get_layer_arns(boto_ses_factory.bsm_devops),
         "lambda_functions": {
             lbd_func.short_name: {

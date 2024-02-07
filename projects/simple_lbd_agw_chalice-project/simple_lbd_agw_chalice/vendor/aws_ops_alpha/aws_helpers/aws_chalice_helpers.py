@@ -14,6 +14,7 @@ from datetime import datetime
 import aws_lambda_layer.api as aws_lambda_layer
 from boto_session_manager import BotoSesManager, PATH_DEFAULT_SNAPSHOT
 from ..vendor.hashes import HashAlgoEnum, hashes
+from ..vendor.aws_s3_lock import Lock, Vault, AlreadyLockedError
 
 # --- modules from this project
 from ..constants import EnvVarNameEnum
@@ -97,7 +98,23 @@ def is_current_lambda_code_the_same_as_deployed_one(
         return False
 
 
-# todo: add concurrency lock mechanism
+def get_concurrency_lock(
+    vault: Vault,
+    owner: str,
+    bsm_devops: "BotoSesManager",
+) -> T.Optional[Lock]:
+    """
+    Get the concurrency lock.
+
+    :return: True if got the lock, False if not
+    """
+    try:
+        lock = vault.acquire(s3_client=bsm_devops.s3_client, owner=owner)
+        return lock
+    except AlreadyLockedError:
+        return None
+
+
 def download_deployed_json(
     env_name: str,
     bsm_devops: "BotoSesManager",
@@ -143,7 +160,7 @@ def upload_deployed_json(
     s3path_deployed_json: "S3Path",
     source_sha256: T.Optional[str] = None,
     tags: T.Optional[T.Dict[str, str]] = None,
-) -> bool: # pragma: no cover
+) -> bool:  # pragma: no cover
     """
     After ``chalice deploy`` succeeded, upload the ``.chalice/deployed/${env_name}.json``
     file from local to s3. It will generate two files:

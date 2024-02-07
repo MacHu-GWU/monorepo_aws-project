@@ -1,17 +1,19 @@
 About This Project [CN]
 ==============================================================================
-这个项目是一个用来演示我于多年生产实践中总结出的一套用于生产环境中的 AWS Lambda 项目的最佳实践. 里面的业务逻辑虽然非常简单, 但涵盖了生产实践中会遇到的各种挑战. 每当我做新的类似的项目时都会参考这个项目.
+``simple_lbd_agw_chalice`` 即 Simple Lambda API Gateway with Chalice, 这个项目是一个用来演示我于多年生产实践中总结出的一套用于生产环境中的用 AWS Lambda + AWS API Gateway 部署 API 服务器项目的最佳实践. 里面的业务逻辑虽然非常简单, 但涵盖了生产实践中会遇到的各种挑战. 每当我做新的类似的项目时都会参考这个项目.
 
 同时, 这个项目也是一个 "模板项目", 可以让我只用填写几个名字, 就能生成除了实际业务逻辑以外的所有代码, 使得我能专注于业务逻辑, 而能更快的让项目产生商业价值.
 
 由于这种模板化的设计, 在企业项目管理时, 实现了 "一次设计, 处处收益". 无需所有的团队成员了解项目的所有细节, 新成员只需要能专注于业务逻辑进行开发, 就能快速的交付并产生商业价值.
 
 
-What is AWS Batch Project
+What is AWS Lambda API Gateway Chalice Project
 ------------------------------------------------------------------------------
-`AWS Batch <https://aws.amazon.com/batch/>`_ 是 AWS 的一个用于运行 Batch Job 的全托管服务. 你无需管理运算环境的基础设施, 只需要专注于将业务代码打包成容器, 即可运行批处理业务. 同时它也支持对其按照优先级进行调度, 按照需求弹性伸缩, 以及按照业务流程进行编排.
+`AWS API Gateway <https://aws.amazon.com/api-gateway/>`_ 是 AWS 的一个的全托管的 API 网关服务. 它提供了多种跟后端实现整合的方式. 并且提供了一个生产环境 API 服务器所需要的几乎全部功能, 例如: 负载均衡, 限流, 认证, 授权, 监控, 日志等等. 而将 AWS Lambda 作为后端实现, 配合 API Gateway 搭建 API 服务器是一种非常经济 (按使用量收费), 开发效率高 (无需管理服务器) 的方式.
 
-所谓 AWS Batch Project 就是一个专注于开发并快速交付业务逻辑的项目. 其中包含了一整套为这个目的而设计工具链, 包括:
+`AWS Chalice <https://github.com/aws/chalice>`_ 是 AWS 官方的一个开源项目. 它使得用 Python 来部署 API Gateway + AWS Lambda 变得异常简单. 可以用类似于 Flask 的语法来定义每个 API 所对应的 Python 函数, 然后你无需定义任何 Infrastructure as Code 就能一键生成 API Gateway. 其中最为复杂的 Integration 部分全部由 Chalice 框架搞定了.
+
+这个项目使用了 Chalice 作为主要的部署工具, 以及使用了 AWS CDK 作为部署 Infrastructure (例如 IAM Role) 的工具. 其中包含了一整套为这个目的而设计工具链, 包括:
 
 1. 本地开发环境.
 2. 本地单元测试工具.
@@ -24,17 +26,15 @@ What is AWS Batch Project
 9. 多环境 CD 自动化部署管道.
 10. 生产环境中的 蓝绿部署, 灰度部署, 以及在出现错误时版本回滚工具.
 
-以上的所有工具链都是模块化的工具, 即可以单独拿出来在其他任何项目中使用, 而这个项目中我们已经将这些工具都整合到了一起可以无缝配合使用了.
+以上的所有工具链都是模块化的工具, 既可以单独拿出来在其他任何项目中使用, 而这个项目中我们已经将这些工具都整合到了一起可以无缝配合使用了.
 
 
 Business Logic in This Project
 ------------------------------------------------------------------------------
-这个项目主要是为了演示目的. 它包含了两个 Lambda Function:
+这个项目主要是为了演示目的. 它包含了两个 Lambda Function, 对应着两个 API Endpoint
 
-1. 一个简单的 hello world. 你输入 ``{"name": "alice"}``, 它就会返回 ``{"message": "hello alice"}``.
-2. 一个由 S3 event 触发的 lambda function, 他能将文件从一个文件夹自动拷贝到另一个文件夹.
-
-这两种模式分别实现了 "手动运行" 和 "事件驱动运行" 的两种设计模式.
+1. 一个简单的 hello world. 你输入 ``{"name": "alice"}``, 它就会返回 ``{"message": "hello alice"}``. 对应这 GET ``${endpoint}/user`` 和 POST ``${endpoint}/user`` 两个 API. 该例子演示了无状态的 API 应该怎样实现.
+2. 一个简单的高并发计数器, 后端用 DynamoDB 保存计数器的值. 你 POST 一个 ``{"key": "your_key"}`` 到 ``${endpoint}/incr``, 这个 DynamoDB 中对应的 key 的数值就会加一. 该例子演示了有状态, 高并发的 API 应该怎样实现原子性操作.
 
 
 What's Next
