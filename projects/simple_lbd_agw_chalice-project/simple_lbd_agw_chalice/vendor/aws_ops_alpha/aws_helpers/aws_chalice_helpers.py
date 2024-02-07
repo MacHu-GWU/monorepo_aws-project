@@ -28,6 +28,14 @@ if T.TYPE_CHECKING:  # pragma: no cover
 def build_lambda_source_chalice_vendor(
     pyproject_ops: "pyops.PyProjectOps",
 ):
+    """
+    Copy the Lambda source code Python library from
+    ``${dir_project_root}/${package_name}`` to
+    ``${dir_project_root}/lambda_app/vendor/${package_name}``.
+
+    It also removes the ``__pycache__`` directory and the ``.pyc``, ``.pyo``
+    files during the copy.
+    """
     aws_lambda_layer.build_source_python_lib(
         dir_python_lib_source=pyproject_ops.dir_python_lib,
         dir_python_lib_target=pyproject_ops.dir_lambda_app_vendor_python_lib,
@@ -67,23 +75,21 @@ def get_source_sha256(
 
 
 def is_current_lambda_code_the_same_as_deployed_one(
-    env_name: str,
     bsm_devops: "BotoSesManager",
-    s3dir_deployed: "S3Path",
+    s3path_deployed_json: "S3Path",
     source_sha256: str,
 ) -> bool:  # pragma: no cover
     """
     Compare the local chalice app source code hash with the deployed one.
 
     :param env_name: the environment name
-    :param bsm_devops: boto session manager object
-    :param s3dir_deployed: the S3 directory where the deployed/${env_name}.json is stored
+    :param bsm_devops: ``BotoSesManager`` session manager object for Dev
+    :param s3path_deployed_json: the S3 path to the deployed ``${env_name}.json`` file.
     :param source_sha256: a sha256 hash value represent the local lambda source code
 
     :return: a boolean flag to indicate that if the local lambda source code
         is the same as the deployed one.
     """
-    s3path_deployed_json = s3dir_deployed / f"{env_name}.json"
     if s3path_deployed_json.exists(bsm=bsm_devops):
         existing_source_sha256 = s3path_deployed_json.metadata["source_sha256"]
         return source_sha256 == existing_source_sha256
@@ -96,7 +102,7 @@ def download_deployed_json(
     env_name: str,
     bsm_devops: "BotoSesManager",
     pyproject_ops: "pyops.PyProjectOps",
-    s3dir_deployed: "S3Path",
+    s3path_deployed_json: "S3Path",
 ) -> bool:
     """
     AWS Chalice utilizes a ``deployed/${env_name}.json`` JSON file to store
@@ -114,12 +120,11 @@ def download_deployed_json(
     :param env_name:
     :param bsm_devops:
     :param pyproject_ops:
-    :param s3dir_deployed: the s3 dir to store the deployed json file.
+    :param s3path_deployed_json: the S3 path to the deployed ``${env_name}.json`` file.
 
     :return: a boolean flag to indicate that if the deployed JSON exists on S3
     """
     path_deployed_json = pyproject_ops.dir_lambda_app_deployed / f"{env_name}.json"
-    s3path_deployed_json = s3dir_deployed / f"{env_name}.json"
 
     # pull the existing deployed json file from s3
     if s3path_deployed_json.exists(bsm=bsm_devops):
@@ -135,10 +140,10 @@ def upload_deployed_json(
     env_name: str,
     bsm_devops: "BotoSesManager",
     pyproject_ops: "pyops.PyProjectOps",
-    s3dir_deployed: "S3Path",
+    s3path_deployed_json: "S3Path",
     source_sha256: T.Optional[str] = None,
     tags: T.Optional[T.Dict[str, str]] = None,
-) -> T.Tuple["S3Path", bool]:  # pragma: no cover
+) -> bool: # pragma: no cover
     """
     After ``chalice deploy`` succeeded, upload the ``.chalice/deployed/${env_name}.json``
     file from local to s3. It will generate two files:
@@ -151,7 +156,7 @@ def upload_deployed_json(
     :param env_name:
     :param bsm_devops:
     :param pyproject_ops:
-    :param s3dir_deployed: the s3 dir to store the deployed json file.
+    :param s3path_deployed_json: the S3 path to the deployed ``${env_name}.json`` file.
     :param source_sha256: a sha256 hash value represent the lambda source code digest.
         if not provided, it will be calculated from the source code.
     :param tags: optional AWS resource tags.
@@ -160,18 +165,17 @@ def upload_deployed_json(
         and a boolean flag to indicate that if the uploaded happen
     """
     path_deployed_json = pyproject_ops.dir_lambda_app_deployed / f"{env_name}.json"
-    s3path_deployed_json = s3dir_deployed / f"{env_name}.json"
     # every time we upload the new deployed json file, it overwrites the existing one
     # we want to create a backup before uploading
     time_str = datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S.%f")
     s3path_deployed_json_backup = s3path_deployed_json.change(
-        new_basename=f"{env_name}-{time_str}.json"
+        new_fname=f"{s3path_deployed_json.fname}-{time_str}"
     )
     if path_deployed_json.exists():
         content = path_deployed_json.read_text()
         if s3path_deployed_json.exists(bsm=bsm_devops):
             if content == s3path_deployed_json.read_text(bsm=bsm_devops):
-                return s3path_deployed_json, False
+                return False
         if source_sha256 is None:
             source_sha256 = get_source_sha256(pyproject_ops)
         kwargs = dict(
@@ -184,9 +188,9 @@ def upload_deployed_json(
             kwargs["tags"] = tags
         s3path_deployed_json_backup.write_text(**kwargs)
         s3path_deployed_json.write_text(**kwargs)
-        return s3path_deployed_json, True
+        return True
     else:
-        return s3path_deployed_json, False
+        return False
 
 
 def run_chalice_command(

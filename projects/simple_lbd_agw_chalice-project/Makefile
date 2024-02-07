@@ -112,12 +112,20 @@ delete-config: ## Delete config data from parameter store backend.
 	./.venv/bin/python ./bin/s04_02_delete_config.py
 
 
-deploy-app: ## Deploy Lambda app via CDK deploy
-	./.venv/bin/python ./bin/s04_05_deploy_app.py
+deploy-stack: ## Deploy CloudFormation Stack via CDK deploy
+	./.venv/bin/python ./bin/s04_05_deploy_stack.py
 
 
-delete-app: ## Delete Lambda app via CDK destroy
-	./.venv/bin/python ./bin/s04_06_delete_app.py
+delete-stack: ## Delete CloudFormation Stack via CDK destroy
+	./.venv/bin/python ./bin/s04_06_delete_stack.py
+
+
+chalice-deploy: ## Deploy Lambda app via 'chalice deploy' command
+	./.venv/bin/python ./bin/s04_07_chalice_deploy.py
+
+
+chalice-delete: ## Delete Lambda app via 'chalice delete' command
+	./.venv/bin/python ./bin/s04_08_chalice_delete.py
 
 
 bump-patch: ## Bump patch version

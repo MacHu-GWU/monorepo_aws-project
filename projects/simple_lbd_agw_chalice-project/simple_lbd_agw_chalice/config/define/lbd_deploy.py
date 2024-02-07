@@ -73,12 +73,12 @@ class LambdaDeployMixin:
 
     def get_api_gateway_endpoint(
         self: "Env",
-        bsm: "BotoSesManager",
+        bsm_devops: "BotoSesManager",
     ) -> str:  # pragma: no cover
         """
         Get current environment rest API endpoint.
         """
-        data = json.loads(self.s3path_deployed_json.read_text(bsm=bsm))
+        data = json.loads(self.s3path_deployed_json.read_text(bsm=bsm_devops))
         mapper = {dct["name"]: dct for dct in data.get("resources", [])}
         endpoint = mapper["rest_api"]["rest_api_url"]
         if endpoint.endswith("/"):

@@ -58,7 +58,7 @@ def download_deployed_json(
     env_name: str,
     bsm_devops: "BotoSesManager",
     pyproject_ops: "pyops.PyProjectOps",
-    s3dir_deployed: "S3Path",
+    s3path_deployed_json: "S3Path",
     check=True,
     step: str = StepEnum.deploy_chalice_app.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
@@ -76,14 +76,13 @@ def download_deployed_json(
         if flag is False:
             return False
 
-    s3path_deployed_json = s3dir_deployed / f"{env_name}.json"
     logger.info(f"try to download existing deployed {env_name}.json file")
     logger.info(f"from {s3path_deployed_json.s3_select_console_url}")
     flag = aws_chalice_helpers.download_deployed_json(
         env_name=env_name,
         bsm_devops=bsm_devops,
         pyproject_ops=pyproject_ops,
-        s3dir_deployed=s3dir_deployed,
+        s3path_deployed_json=s3path_deployed_json,
     )
     if flag is False:
         logger.info("no existing deployed json file found, SKIP download.")
@@ -103,16 +102,14 @@ def upload_deployed_json(
     env_name: str,
     bsm_devops: "BotoSesManager",
     pyproject_ops: "pyops.PyProjectOps",
-    s3dir_deployed: "S3Path",
+    s3path_deployed_json: "S3Path",
     source_sha256: T.Optional[str] = None,
     tags: T.Optional[T.Dict[str, str]] = None,
     check=True,
     step: str = StepEnum.deploy_chalice_app.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
-) -> T.Tuple["S3Path", bool]:
-    s3path_deployed_json = s3dir_deployed / f"{env_name}.json"
-
+) -> bool:
     if check:
         flag = should_we_do_it(
             step=step,
@@ -123,7 +120,7 @@ def upload_deployed_json(
             google_sheet_url=url,
         )
         if flag is False:
-            return s3path_deployed_json, False
+            return False
 
     logger.info(
         f"upload the deployed {env_name}.json file to "
@@ -133,13 +130,13 @@ def upload_deployed_json(
         env_name=env_name,
         bsm_devops=bsm_devops,
         pyproject_ops=pyproject_ops,
-        s3dir_deployed=s3dir_deployed,
+        s3path_deployed_json=s3path_deployed_json,
         source_sha256=source_sha256,
         tags=tags,
     )
     if flag is False:
         logger.error("no existing deployed json file found, skip upload", indent=1)
-    return s3path_deployed_json, flag
+    return flag
 
 
 @logger.start_and_end(
@@ -195,7 +192,7 @@ def run_chalice_deploy(
     bsm_devops: "BotoSesManager",
     bsm_workload: "BotoSesManager",
     pyproject_ops: "pyops.PyProjectOps",
-    s3dir_deployed: "S3Path",
+    s3path_deployed_json: "S3Path",
     tags: T.Optional[T.Dict[str, str]] = None,
     check=True,
     step: str = StepEnum.deploy_chalice_app.value,
@@ -213,16 +210,20 @@ def run_chalice_deploy(
     4. run ``chalice deploy`` command to deploy the lambda function.
     5. upload the ``lambda_app/.chalice/deployed/${env_name}.json`` file.
 
-    :param bsm: ``boto_session_manager.BotoSesManager`` object
+    :param semantic_branch_name:
+    :param runtime_name:
+    :param env_name:
     :param chalice_app_name: the chalice app name, it will be used as part of the
         lambda function naming convention.
-    :param s3dir_deployed: the s3dir to store the deployed json file.
-    :param project_name: the project name, it will be used as the AWS resources tag.
-    :param prod_env_name: the production environment name, it will be used to
-        prompt user to confirm if they want to deploy to production environment.
-    :param env_name: the environment name, specify which stage of chalice app
-        to deploy, it will be used as part of the lambda function naming convention.
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param bsm_workload: the workload AWS Account ``BotoSesManager`` object.
+    :param pyproject_ops:
+    :param s3path_deployed_json: the S3 path to the deployed ``${env_name}.json`` file.
+    :param tags: optional AWS resource tags.
     :param check: whether to check if we should run chalice deploy command.
+    :param step:
+    :param truth_table:
+    :param url:
     """
     if check:
         flag = should_we_do_it(
@@ -248,8 +249,7 @@ def run_chalice_deploy(
     if check:
         is_same = aws_chalice_helpers.is_current_lambda_code_the_same_as_deployed_one(
             bsm_devops=bsm_devops,
-            s3dir_deployed=s3dir_deployed,
-            env_name=env_name,
+            s3path_deployed_json=s3path_deployed_json,
             source_sha256=source_sha256,
         )
         if is_same:
@@ -267,7 +267,7 @@ def run_chalice_deploy(
             env_name=env_name,
             bsm_devops=bsm_devops,
             pyproject_ops=pyproject_ops,
-            s3dir_deployed=s3dir_deployed,
+            s3path_deployed_json=s3path_deployed_json,
             check=check,
             step=step,
             truth_table=truth_table,
@@ -289,7 +289,7 @@ def run_chalice_deploy(
             env_name=env_name,
             bsm_devops=bsm_devops,
             pyproject_ops=pyproject_ops,
-            s3dir_deployed=s3dir_deployed,
+            s3path_deployed_json=s3path_deployed_json,
             source_sha256=source_sha256,
             tags=tags,
             check=check,
@@ -316,7 +316,7 @@ def run_chalice_delete(
     bsm_devops: "BotoSesManager",
     bsm_workload: "BotoSesManager",
     pyproject_ops: "pyops.PyProjectOps",
-    s3dir_deployed: "S3Path",
+    s3path_deployed_json: "S3Path",
     tags: T.Optional[T.Dict[str, str]] = None,
     check=True,
     step: str = StepEnum.deploy_chalice_app.value,
@@ -333,16 +333,20 @@ def run_chalice_delete(
     3. run ``chalice delete`` command to delete the lambda function.
     4. upload the ``lambda_app/.chalice/deployed/${env_name}.json`` file.
 
-    :param bsm: ``boto_session_manager.BotoSesManager`` object
+    :param semantic_branch_name:
+    :param runtime_name:
+    :param env_name:
     :param chalice_app_name: the chalice app name, it will be used as part of the
         lambda function naming convention.
-    :param s3dir_deployed: the s3dir to store the deployed json file.
-    :param project_name: the project name, it will be used as the AWS resources tag.
-    :param prod_env_name: the production environment name, it will be used to
-        prompt user to confirm if they want to deploy to production environment.
-    :param env_name: the environment name, specify which stage of chalice app
-        to deploy, it will be used as part of the lambda function naming convention.
-    :param check: whether to check if we should run chalice deploy command.
+    :param bsm_devops: the devops AWS Account ``BotoSesManager`` object.
+    :param bsm_workload: the workload AWS Account ``BotoSesManager`` object.
+    :param pyproject_ops:
+    :param s3path_deployed_json: the S3 path to the deployed ``${env_name}.json`` file.
+    :param tags: optional AWS resource tags.
+    :param check: whether to check if we should run chalice delete command.
+    :param step:
+    :param truth_table:
+    :param url:
     """
     if check:
         flag = should_we_do_it(
@@ -368,7 +372,7 @@ def run_chalice_delete(
             env_name=env_name,
             bsm_devops=bsm_devops,
             pyproject_ops=pyproject_ops,
-            s3dir_deployed=s3dir_deployed,
+            s3path_deployed_json=s3path_deployed_json,
             check=check,
             step=step,
             truth_table=truth_table,
@@ -390,7 +394,7 @@ def run_chalice_delete(
             env_name=env_name,
             bsm_devops=bsm_devops,
             pyproject_ops=pyproject_ops,
-            s3dir_deployed=s3dir_deployed,
+            s3path_deployed_json=s3path_deployed_json,
             source_sha256="deleted by chalice delete command",
             tags=tags,
             check=check,

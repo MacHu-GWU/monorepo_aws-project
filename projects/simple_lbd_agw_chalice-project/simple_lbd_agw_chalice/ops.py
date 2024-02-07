@@ -252,7 +252,7 @@ def upload_deployed_json(
     )
 
 
-def deploy_app(
+def deploy_stack(
     check: bool = True,
 ):
     env_name = detect_current_env()
@@ -261,25 +261,23 @@ def deploy_app(
     else:
         skip_prompt = True
     skip_prompt = True  # uncomment this if you always want to skip prompt
-    return simple_lambda_project.deploy_app(
+    return simple_cdk_project.cdk_deploy(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
         env_name=env_name,
-        pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
-        lbd_func_name_list=config.env.lambda_function_name_list,
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
         skip_prompt=skip_prompt,
         check=check,
-        step=simple_lambda_project.StepEnum.deploy_cdk_stack.value,
-        truth_table=simple_lambda_project.truth_table,
-        url=simple_lambda_project.google_sheet_url,
+        step=simple_lbd_agw_chalice_project.StepEnum.deploy_cdk_stack.value,
+        truth_table=simple_lbd_agw_chalice_project.truth_table,
+        url=simple_lbd_agw_chalice_project.google_sheet_url,
     )
 
 
-def delete_app(
+def delete_stack(
     check: bool = True,
 ):
     env_name = detect_current_env()
@@ -288,7 +286,7 @@ def delete_app(
     else:
         skip_prompt = True
     skip_prompt = True  # uncomment this if you always want to skip prompt
-    return simple_lambda_project.delete_app(
+    return simple_cdk_project.cdk_destroy(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
         env_name=env_name,
@@ -317,7 +315,7 @@ def run_chalice_deploy(
         bsm_devops=boto_ses_factory.bsm_devops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         pyproject_ops=pyproject_ops,
-        s3dir_deployed=config.env.s3dir_deployed,
+        s3path_deployed_json=config.env.s3dir_deployed / f"{env_name}.json",
         tags=config.env.workload_aws_tags,
         check=check,
         step=simple_lbd_agw_chalice_project.StepEnum.deploy_chalice_app.value,
@@ -338,7 +336,7 @@ def run_chalice_delete(
         bsm_devops=boto_ses_factory.bsm_devops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
         pyproject_ops=pyproject_ops,
-        s3dir_deployed=config.env.s3dir_deployed,
+        s3path_deployed_json=config.env.s3dir_deployed / f"{env_name}.json",
         tags=config.env.workload_aws_tags,
         check=check,
         step=simple_lbd_agw_chalice_project.StepEnum.deploy_chalice_app.value,

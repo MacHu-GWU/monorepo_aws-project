@@ -7,15 +7,14 @@ import time
 
 import pytest
 import requests
+from pynamodb.connection import Connection
 
-# from pynamodb.connection import Connection
-from simple_lbd_agw_chalice.boto_ses import bsm
-
+from simple_lbd_agw_chalice.boto_ses import boto_ses_factory
 from simple_lbd_agw_chalice.config.api import config
-# from simple_lbd_agw_chalice.lbd.add_one import Counter
+from simple_lbd_agw_chalice.lbd.add_one import Counter
 
 
-endpoint = config.env.get_api_gateway_endpoint(bsm=bsm)
+endpoint = config.env.get_api_gateway_endpoint(bsm_devops=boto_ses_factory.bsm_devops)
 
 headers = {
     "Authorization": config.env.auth_token,
@@ -74,7 +73,7 @@ def _test_incr():
 def test():
     _test_hello()
     _test_user()
-    # _test_incr()
+    _test_incr()
 
 
 if __name__ == "__main__":
