@@ -116,7 +116,7 @@ jobs:
           }}
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
-          .venv/bin/python bin/s04_06_delete_stack.py
           .venv/bin/python bin/s04_08_chalice_delete.py
+          .venv/bin/python bin/s04_06_delete_stack.py
       - name: === 🛑 END OF THE JOB ===
         run: echo "END OF THE JOB"
