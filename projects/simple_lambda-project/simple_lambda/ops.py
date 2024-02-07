@@ -230,7 +230,6 @@ def deploy_app(
         pyproject_ops=pyproject_ops,
         bsm_devops=boto_ses_factory.bsm_devops,
         bsm_workload=boto_ses_factory.get_env_bsm(env_name),
-        lbd_func_name_list=config.env.lambda_function_name_list,
         dir_cdk=paths.dir_cdk,
         stack_name=config.env.cloudformation_stack_name,
         skip_prompt=skip_prompt,
