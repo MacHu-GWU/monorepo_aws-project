@@ -5,6 +5,7 @@ See :class:`AbstractBotoSesFactory`.
 """
 
 import typing as T
+import os
 import abc
 import dataclasses
 from pathlib import Path
@@ -400,7 +401,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
             else:
                 return self.get_env_bsm(env_name=self.get_current_env())
         elif self.runtime.is_glue_container:
-            return BotoSesManager()
+            return BotoSesManager(region_name=os.environ["AWS_REGION"])
         else:
             return BotoSesManager()
 
