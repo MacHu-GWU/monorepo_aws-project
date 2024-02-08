@@ -462,11 +462,14 @@ def create_important_url_table():
     import aws_console_url.api as aws_console_url
 
     aws = aws_console_url.AWSConsole.from_bsm(boto_ses_factory.bsm_devops)
+    endpoint = config.env.get_api_gateway_endpoint(boto_ses_factory.bsm_devops)
+    rest_api_id = config.env.endpoint_to_rest_api_id(endpoint)
     return aws_ops_alpha.rich_helpers.create_url_table(
         name_and_url_list=[
             # fmt: off
             ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
             ("cloudformation stacks", aws.cloudformation.filter_stack(config.project_name_slug)),
+            ("api gateway", aws.apigateway.get_v1_rest_api(rest_api_id)),
             ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
             ("lambda layer", aws.awslambda.filter_layers(config.env.lambda_layer_name)),
             # fmt: on

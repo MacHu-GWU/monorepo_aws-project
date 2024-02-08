@@ -86,3 +86,6 @@ class LambdaDeployMixin:
         if endpoint.endswith("/"):
             endpoint = endpoint[:-1]
         return endpoint
+
+    def endpoint_to_rest_api_id(self, endpoint: str) -> str:
+        return endpoint.split("/")[2].split(".")[0]
