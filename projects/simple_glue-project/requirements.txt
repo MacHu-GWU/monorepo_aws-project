@@ -10,6 +10,9 @@ aws-glue-artifact==0.2.1 ; python_version >= "3.9.dev0" and python_version < "3.
 aws-lambda-event==2.0.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:30f2da7d03f4bb70ffab9f33082864bb9e833f0693a350066c83008eea2573a6 \
     --hash=sha256:3a72c88cd975e5d8a25ea0540f477aedf4f60a652f6fafe2831008aa19628a40
+aws-lambda-layer==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:04f93c57827948744b49e485931de13260e5855aeac57c74c3ef40e48bdd922f \
+    --hash=sha256:7a37f89b3a3b1a353bc419e5a9877d563f2885cc4e6bf8ef6eab500e1cdffed0
 boltons==21.0.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:65e70a79a731a7fe6e98592ecfb5ccf2115873d01dbc576079874629e5c90f13 \
     --hash=sha256:b9bb7b58b2b420bbe11a6025fdef6d3e5edc9f76a42fb467afe7ca212ef9948b

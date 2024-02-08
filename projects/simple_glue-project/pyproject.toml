@@ -42,6 +42,8 @@ pysecret = "2.2.4"
 config_patterns = "1.0.6"
 # create url for AWS console
 aws_console_url = "1.4.1"
+# build AWS lambda layer and deployment package
+aws_lambda_layer = "0.5.1"
 # build AWS Glue artifact
 aws_glue_artifact = "0.2.1"
 # AWS devops best practices
