@@ -75,11 +75,6 @@ try:
     from .aws_helpers import rich_helpers
 except ImportError: # pragma: no cover
     pass
-try:
-    from .aws_helpers import rich_helpers
-except ImportError: # pragma: no cover
-    pass
-
 
 try:
     from .project.api import simple_python_project
@@ -106,10 +101,10 @@ try:
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import simple_glue_project
+    from .project.api import simple_glue_project
 except ImportError: # pragma: no cover
     pass
-from .aws_helpers import simple_glue_project
+from .project.api import simple_glue_project
 
 try:
     from .boostrap import api as boostrap
