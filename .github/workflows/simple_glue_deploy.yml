@@ -94,6 +94,7 @@ jobs:
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s03_04_run_int_test.py
+          .venv/bin/python bin/s03_06_run_glue_int_test.py
       - name: ⚙️ Create Config Snapshot
         if: ${{ 
           env.USER_ENV_NAME == 'prd' && 

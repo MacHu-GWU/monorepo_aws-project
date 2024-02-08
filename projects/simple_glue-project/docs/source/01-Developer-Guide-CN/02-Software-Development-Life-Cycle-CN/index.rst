@@ -22,7 +22,6 @@ Software Development Life Cycle (SDLC) [CN]
 **SDLC**
 
 1. 在 ``simple_glue/feature`` branch 开发. 进行 config management, 核心业务逻辑相关的代码开发以及完成单元测试. 然后就可以 PR + Merge 了.
-2. 在 ``simple_glue/layer`` branch 开发, 更新依赖. 在这一步请不要修改任何业务逻辑, 仅仅是更新依赖后再运行一次单元测试, 确保测试和依赖版本都兼容. 然后 push 到 Git 触发 CI job run 来构建 Lambda Layer. 确保 Layer 被成功创建后就可以 PR + Merge 了.
 3. 在 ``simple_glue/app`` branch 开发核心业务逻辑, CDK stack 部署代码, 以及集成测试代码. 然后 push 到 Git 触发 CI 自动化运行单元测试, CDK stack 部署, 以及集成测试. 全部成功后就可以 PR + Merge 了
 4. 创建 ``simple_glue/release`` branch 进行部署. 在这一步请不要修改任何业务逻辑, 仅仅是对配置文件进行小修小补即可. 触发 CodePipeline 一路按照 sbx, tst, prd 的顺序部署. 如果因为业务逻辑导致了部署失败, 请回滚到上一步, 更新业务逻辑和测试后再回到这一步.
 
@@ -74,9 +73,10 @@ Software Development Life Cycle (SDLC) [CN]
 
     source .venv/bin/activate
 
-7. 现在你可以在本地运行代码覆盖率测试 (coverage test, 单元测试的一种). 如果你是第一次学习这个项目模板, 建议你不要修改任何业务逻辑代码. 模板生成的代码本身就是一个完整的可部署的项目, 并且单元测试都是通过的. 代码覆盖率测试能显示哪些代码没有被测试所覆盖, 也就意味着在生产环境中可能会出现不可预料的风险. 我建议一个生产项目至少保持 90% 以上的测试覆盖率. 你可以用下面的命令来运行代码覆盖率测试. 你也可以用 ``make view-cov`` 命令在浏览器中查看哪些代码没有被测试所覆盖::
+7. 现在你可以在本地运行代码覆盖率测试 (coverage test, 单元测试的一种). 如果你是第一次学习这个项目模板, 建议你不要修改任何业务逻辑代码. 模板生成的代码本身就是一个完整的可部署的项目, 并且单元测试都是通过的. 代码覆盖率测试能显示哪些代码没有被测试所覆盖, 也就意味着在生产环境中可能会出现不可预料的风险. 我建议一个生产项目至少保持 90% 以上的测试覆盖率. 你可以用下面的命令来运行代码覆盖率测试. 你也可以用 ``make view-cov`` 命令在浏览器中查看哪些代码没有被测试所覆盖. 这里要注意一点, 我们的单元测试是包含了 cdk 的部分. 而 cdk 的部分依赖于位于 S3 上的 Glue Artifacts. 你在运行单元测试前, 需要运行 ``make publish-glue-artifact`` 命令来构建并发布 Glue Artifact::
 
     make cov
+    make glue-test
 
 8. 该项目有一个 config management 系统. 在本地测试时我们使用的是位于本地电脑上的配置文件. 由于你不能将敏感数据, 例如数据库密码, 这一类的信息 check in 到 Git, 所以在CI/CD 中运行测试时, 这些配置文件不存在. 我们需要将本地的配置文件部署到专用的配置数据管理服务 `AWS SSM Parameter Store <https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html>`_ 中. 你可以运行下面的命令部署配置文件::
 
@@ -91,23 +91,11 @@ Software Development Life Cycle (SDLC) [CN]
 至此, 你的新功能已算是开发完毕.
 
 
-2.2. SDLC - Publish Expensive Artifacts (layer, container image, etc)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-在这一步我们将要构建比较耗时的 Artifacts. 如果你用的是 AWS 托管的 container, 那么你只需要构建 Layer 即可. 而如果你的 Layer 超过了 250MB 的限制, 那么你就需要构建 custom container image. 我们这里用 Layer 为例来说明, 构建 container image 的步骤和 Layer 类似.
-
-由于依赖并不会被频繁地更新, 所以我们仅仅会在这一步构建依赖, 而不是在整个 SDLC 周期内不断地重复构建依赖.
-
-1. 创建一个 layer branch ``simple_glue/layer/${description}`` (``${du_name}/layer/${description}``).
-2. 不要修改任何业务逻辑代码, 专注于在 ``pyproject.toml`` 中定义的依赖, 然后用 ``make poetry-lock`` 命令来 resolve 所有依赖的具体版本, 从而实现 deterministic dependency. 最后运行一次 ``make cov`` 命令确保单元测试和依赖兼容.
-3. 你可以将你的 branch push 到 Git 了, 然后开始一个 pull request 并邀请其他开发者进行 code review. layer branch 会自动 trigger 一个 Codebuild job run 来运行单元测试并构建 Layer 然后自动发布一个新的 Layer 版本. 在此项目中我们还会将新的 dependencies 和 latest 的 layer 比较, 如果两者相同则跳过构建步骤以节省时间.
-4. 最终当 CI 发布了一个新的 Layer version 后, 你可以将 ``simple_glue/layer/${description}`` branch merge 到 ``main`` 了.
-
-
 2.3 Application logic Unit test, App Deployment and Integration test
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 在这一步我们专注与业务逻辑的进一步打磨, 以及 Lambda App 的部署, 以及集成测试, 我们的目标是将 App 部署到 ``sandbox`` 环境并确保集成测试能够通过.
 
-1. Create a lambda branch ``simple_glue/app/${description}`` (``${du_name}/app/${description}``).
+1. Create a app branch ``simple_glue/app/${description}`` (``${du_name}/app/${description}``).
 2. Implement the CDK code in the ``simple_glue/iac/`` python module (The code skeleton generated from sample project should be working as it is).
 3. Deploy the CDK stack via ``cdk deploy`` command. The following command is a wrapper that will handle a lot of details::
 
@@ -116,6 +104,7 @@ Software Development Life Cycle (SDLC) [CN]
 4. Implement the integration test code in the ``tests_int/`` folder. And use real AWS Lambda and for testing.
 
     make int
+    make glue-int
 
 5. Once the integration test passed on local laptop, you can publish your branch to Git, start a merge request, and invite other developer for code review. The lambda branch will automatically trigger a Codebuild to run the unit test, deploy the app to ``sandbox`` environment and run integration test.
 

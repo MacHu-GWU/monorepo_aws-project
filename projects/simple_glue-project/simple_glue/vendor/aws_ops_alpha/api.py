@@ -104,7 +104,6 @@ try:
     from .project.api import simple_glue_project
 except ImportError: # pragma: no cover
     pass
-from .project.api import simple_glue_project
 
 try:
     from .boostrap import api as boostrap

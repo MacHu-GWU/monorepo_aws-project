@@ -74,6 +74,14 @@ view-cov: ## View code coverage test result in web browser
 	./.venv/bin/python ./bin/s03_03_view_cov.py
 
 
+glue-test: install install-test ## ** Run glue unit test
+	./.venv/bin/python ./bin/s03_05_run_glue_unit_test.py
+
+
+glue-int: install install-test ## ** Run glue unit test
+	./.venv/bin/python ./bin/s03_06_run_glue_int_test.py
+
+
 int: install install-test int-only ## ** Run integration test
 
 
