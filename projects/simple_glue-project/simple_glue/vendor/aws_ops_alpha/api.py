@@ -109,6 +109,7 @@ try:
     from .aws_helpers import simple_glue_project
 except ImportError: # pragma: no cover
     pass
+from .aws_helpers import simple_glue_project
 
 try:
     from .boostrap import api as boostrap

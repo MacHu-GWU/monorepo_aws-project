@@ -34,3 +34,4 @@ try:
     from .simple_glue import api as simple_glue_project
 except ImportError:  # pragma: no cover
     pass
+from .simple_glue import api as simple_glue_project
