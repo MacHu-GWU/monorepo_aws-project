@@ -15,7 +15,7 @@ https://docs.google.com/spreadsheets/d/1OI3GXTUBtAbMyaLSnh_1S1X0jfTCBaFPIJLeRoP_
 from pathlib import Path
 import tt4human.api as tt4human
 from aws_ops_alpha.rule_set import ConditionEnum, SHOULD_WE_DO_IT
-# from simple_glue.vendor.aws_ops_alpha.rule_set import ConditionEnum, SHOULD_WE_DO_IT
+
 project_name = "simple_glue"
 
 # 1. Define enum of ``conditions``

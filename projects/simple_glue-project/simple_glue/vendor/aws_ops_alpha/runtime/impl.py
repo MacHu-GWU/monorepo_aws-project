@@ -73,6 +73,7 @@ class RunTimeEnum(str, enum.Enum):
     aws_ec2 = "aws_ec2"
     aws_ecs = "aws_ecs"
     # special runtimes
+    glue_container = "glue_container"
     unknown = "unknown"
 
 
@@ -236,7 +237,7 @@ class Runtime:
     def is_aws_ecs(self) -> bool:
         """
         There's no official way to detect if it is ecs task container,
-        you could set a custom environment variable for all your ec2 instances
+        you could set a custom environment variable for all your ECS task.
 
         Reference:
 
@@ -245,6 +246,15 @@ class Runtime:
         if _check_user_env_var(RunTimeEnum.aws_ecs.value):  # pragma: no cover
             return True
         return "IS_AWS_ECS_TASK" in os.environ
+
+    @cached_property
+    def is_glue_container(self) -> bool:
+        """
+        There's no official way to detect if it is in a glue container.
+        """
+        if _check_user_env_var(RunTimeEnum.aws_ecs.value):  # pragma: no cover
+            return True
+        return os.environ.get("IS_GLUE_CONTAINER", "false") == "true"
 
     @cached_property
     def is_local(self) -> bool:
@@ -268,6 +278,7 @@ class Runtime:
             or self.is_aws_cloud9
             or self.is_aws_ec2
             or self.is_aws_ecs
+            or self.is_glue_container
         )
         return not flag
 
@@ -303,6 +314,8 @@ class Runtime:
             return RunTimeEnum.aws_ec2.value
         if self.is_aws_ecs:
             return RunTimeEnum.aws_ecs.value
+        if self.is_glue_container:
+            return RunTimeEnum.glue_container.value
         if self.is_local:
             return RunTimeEnum.local.value
         return RunTimeEnum.unknown.value
