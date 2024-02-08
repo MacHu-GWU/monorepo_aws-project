@@ -43,29 +43,71 @@ from .config.api import BaseConfig
 from .config.api import BaseEnv
 from .config.api import T_BASE_CONFIG
 from .config.api import T_BASE_ENV
-from .aws_helpers import python_helpers
-from .aws_helpers import aws_cdk_helpers
-from .aws_helpers import aws_lambda_helpers
-from .aws_helpers import aws_ecr_helpers
-from .aws_helpers import aws_chalice_helpers
-from .aws_helpers import aws_glue_helpers
-
-# user may not need the following feature to write their application code
+# user may not need some features to write their application code
 # these features are typically used in CI/CD and devops only
+# so we just try to import them here, if we are missing dependencies,
+# we skip import them
+try:
+    from .aws_helpers import python_helpers
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import aws_cdk_helpers
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import aws_lambda_helpers
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import aws_ecr_helpers
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import aws_chalice_helpers
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import aws_glue_helpers
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import rich_helpers
+except ImportError: # pragma: no cover
+    pass
 try:
     from .aws_helpers import rich_helpers
 except ImportError: # pragma: no cover
     pass
 
+
 try:
-    from .project.api import simple_python_project
-    from .project.api import simple_cdk_project
-    from .project.api import simple_config_project
-    from .project.api import simple_lambda_project
-    from .project.api import simple_lbd_container_project
-    from .project.api import simple_lbd_agw_chalice_project
-    from .project.api import simple_glue_project
-except ImportError:  # pragma: no cover
+    from .aws_helpers import simple_python_project
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import simple_cdk_project
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import simple_config_project
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import simple_lambda_project
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import simple_lbd_container_project
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import simple_lbd_agw_chalice_project
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .aws_helpers import simple_glue_project
+except ImportError: # pragma: no cover
     pass
 
 try:
