@@ -48,31 +48,31 @@ from .config.api import T_BASE_ENV
 # so we just try to import them here, if we are missing dependencies,
 # we skip import them
 try:
-    from .aws_helpers import python_helpers
+    from .aws_helpers.api import python_helpers
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import aws_cdk_helpers
+    from .aws_helpers.api import aws_cdk_helpers
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import aws_lambda_helpers
+    from .aws_helpers.api import aws_lambda_helpers
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import aws_ecr_helpers
+    from .aws_helpers.api import aws_ecr_helpers
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import aws_chalice_helpers
+    from .aws_helpers.api import aws_chalice_helpers
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import aws_glue_helpers
+    from .aws_helpers.api import aws_glue_helpers
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import rich_helpers
+    from .aws_helpers.api import rich_helpers
 except ImportError: # pragma: no cover
     pass
 

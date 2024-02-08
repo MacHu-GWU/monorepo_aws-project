@@ -21,7 +21,7 @@ def build_glue_extra_py_files_artifact(
     pyproject_ops: "pyops.PyProjectOps",
     glue_python_lib_artifact: "GluePythonLibArtifact",
     tags: T.Optional[T.Dict[str, str]] = None,
-) -> "Artifact":
+) -> "Artifact":  # pragma: no cover
     kwargs = dict(
         bsm=bsm_devops,
         metadata={
@@ -36,7 +36,7 @@ def build_glue_extra_py_files_artifact(
 def publish_glue_extra_py_files_artifact_version(
     bsm_devops: "BotoSesManager",
     glue_python_lib_artifact: "GluePythonLibArtifact",
-) -> "Artifact":
+) -> "Artifact":  # pragma: no cover
     return glue_python_lib_artifact.publish_artifact_version(bsm=bsm_devops)
 
 
@@ -45,7 +45,7 @@ def build_glue_script_artifact(
     pyproject_ops: "pyops.PyProjectOps",
     glue_etl_script_artifact_list: T.List["GlueETLScriptArtifact"],
     tags: T.Optional[T.Dict[str, str]] = None,
-) -> T.List["Artifact"]:
+) -> T.List["Artifact"]:  # pragma: no cover
     artifact_list = list()
     metadata = {
         "package_version": pyproject_ops.package_version,
@@ -65,7 +65,7 @@ def build_glue_script_artifact(
 def publish_glue_script_artifact_version(
     bsm_devops: "BotoSesManager",
     glue_etl_script_artifact_list: T.List["GlueETLScriptArtifact"],
-) -> T.List["Artifact"]:
+) -> T.List["Artifact"]:  # pragma: no cover
     artifact_list = list()
     for glue_etl_script_artifact in glue_etl_script_artifact_list:
         artifact = glue_etl_script_artifact.publish_artifact_version(bsm=bsm_devops)
@@ -75,7 +75,7 @@ def publish_glue_script_artifact_version(
 
 def run_glue_unit_test(
     pyproject_ops: "pyops.PyProjectOps",
-):
+):  # pragma: no cover
     args = [
         f"{pyproject_ops.path_venv_bin_python}",
         str(pyproject_ops.dir_project_root.joinpath("tests_glue", "all.py")),
@@ -85,7 +85,7 @@ def run_glue_unit_test(
 
 def run_glue_int_test(
     pyproject_ops: "pyops.PyProjectOps",
-):
+):  # pragma: no cover
     args = [
         f"{pyproject_ops.path_venv_bin_python}",
         str(pyproject_ops.dir_project_root.joinpath("tests_glue_int", "all.py")),

@@ -30,7 +30,6 @@ from .simple_glue_truth_table import StepEnum, truth_table
 if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
-    from s3pathlib import S3Path
 
 
 @logger.start_and_end(
@@ -42,7 +41,7 @@ if T.TYPE_CHECKING:  # pragma: no cover
 )
 def pip_install_awsglue(
     pyproject_ops: "pyops.PyProjectOps",
-):
+):  # pragma: no cover
     args = [
         f"{pyproject_ops.path_venv_bin_pip}",
         "install",
@@ -288,7 +287,7 @@ def run_glue_unit_test(
     step: str = StepEnum.run_integration_test.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
-):
+):  # pragma: no cover
     """
     Run Glue unit test.
 
@@ -331,7 +330,7 @@ def run_glue_int_test(
     step: str = StepEnum.run_integration_test.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
-):
+):  # pragma: no cover
     """
     Run Glue integration test.
 
