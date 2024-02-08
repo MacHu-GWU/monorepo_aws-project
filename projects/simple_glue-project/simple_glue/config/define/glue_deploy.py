@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+AWS Glue deployment related configurations.
+"""
+
 import typing as T
 import dataclasses
 
@@ -14,6 +18,9 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 @dataclasses.dataclass
 class GlueDeployMixin:
+    """
+    AWS Glue deployment related configurations.
+    """
     aws_region: T.Optional[str] = dataclasses.field(default=None)
 
     @property

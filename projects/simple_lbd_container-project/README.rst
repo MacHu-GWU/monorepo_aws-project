@@ -15,5 +15,3 @@ For first time user, please run the following command to build project documenta
 
     # view documentation website in browser
     make view-doc
-
-If you are experiencing any difficulty to build the documentation website, you can read the document at ``./docs/source/01-Developer-Guide``.

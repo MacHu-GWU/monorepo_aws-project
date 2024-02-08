@@ -40,6 +40,16 @@ AWS Glue Tools
 由于 Glue 底层是 Spark. 在本地配置一个 Spark 的运行环境可并不容易. 所以很多开发者会使用 AWS Glue Studio 中的 Jupyter Notebook 来进行开发. 并且由于 Spark Job 的逻辑主要是 Data ETL, 做过 Spark ETL 的人都知道对其进行单元测试有多麻烦. AWS 官方提供了一个 `Glue 的 container <https://aws.amazon.com/blogs/big-data/develop-and-test-aws-glue-version-3-0-jobs-locally-using-a-docker-container/>`_, 但是要运行这个 container 的方法也不容易, 参数众多. 为了解决这一问题, 我开发了 `aws_glue_container_launcher <https://github.com/MacHu-GWU/aws_glue_container_launcher-project>`_ 项目. 这是一个能方便地在使用 Glue container 的小工具. 使得你可以在本地用 Glue Jupyter Notebook 进行交互式开发, 也可以在本地对 ETL Code 进行单元测试, 也可以在本地模拟运行一个 Glue Job. 这使得在 CI 中对 Glue Job 进行单元测试变的可能, 并且友好的本地开发环境能大大提高开发效率.
 
 
+Code Architecture
+------------------------------------------------------------------------------
+- ``scripts``: 一些为了方便开发者使用的脚本.
+- ``tests``: 非 Glue ETL 逻辑相关的单元测试.
+- ``tests_glue``: Glue ETL 逻辑相关的单元测试.
+- ``tests_int``: 非 Glue ETL 逻辑相关的集成测试.
+- ``tests_glue_int``: Glue ETL 逻辑相关的集成测试.
+- ``tests_glue_int_manual``: 需要手动执行的 Glue Job 集成测试.
+
+
 Business Logic in This Project
 ------------------------------------------------------------------------------
 这个项目主要是为了演示目的. 它包含了两种类型的 Glue Project:

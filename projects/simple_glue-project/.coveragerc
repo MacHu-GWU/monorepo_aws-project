@@ -8,6 +8,8 @@ omit =
     simple_glue/config/load.py
     simple_glue/config/backup.py
     simple_glue/iac/exports.py
+    simple_glue/glue_jobs/*
+    simple_glue/glue_libs/*
     simple_glue/_version.py
     simple_glue/ops.py
 

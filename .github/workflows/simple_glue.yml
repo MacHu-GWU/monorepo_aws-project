@@ -87,11 +87,11 @@ jobs:
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s04_03_publish_glue_artifact.py
-#      - name: 🧪 Run Code Coverage Test
-#        working-directory: ${{ env.DIR_PROJECT }}
-#        run: |
-#          .venv/bin/python bin/s03_02_run_cov_test.py
-#          .venv/bin/python bin/s03_05_run_glue_unit_test.py
+      - name: 🧪 Run Code Coverage Test
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s03_02_run_cov_test.py
+          .venv/bin/python bin/s03_05_run_glue_unit_test.py
       - name: 📔 Publish Documentation Website
         if: ${{ startsWith(github.ref, 'refs/heads/simple_glue/doc') }}
         working-directory: ${{ env.DIR_PROJECT }}

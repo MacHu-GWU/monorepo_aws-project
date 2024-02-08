@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Glue Job configurations.
+"""
+
 import typing as T
 import dataclasses
 
