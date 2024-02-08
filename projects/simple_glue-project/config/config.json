@@ -34,7 +34,7 @@
     },
     "devops": {
         "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_glue/",
-        "*.glue_jobs": {
+        "glue_jobs": {
             "unnest": {}
         }
     },
