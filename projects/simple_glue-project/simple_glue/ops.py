@@ -384,7 +384,7 @@ def create_important_path_table():
             ("path_secret_config_json", pyproject_ops.path_secret_config_json),
             ("dir_tests", pyproject_ops.dir_tests),
             ("dir_docs", pyproject_ops.dir_sphinx_doc_source),
-            ("dir_build_lambda", pyproject_ops.dir_build_lambda),
+            ("dir_build_glue", pyproject_ops.dir_build_glue),
         ]
     )
 
@@ -396,7 +396,7 @@ def create_important_s3_location_table():
             ("s3dir_docs", config.env.s3dir_docs),
             ("s3dir_data", config.env.s3dir_data),
             ("s3dir_config", config.env.s3dir_config),
-            ("s3dir_lambda", config.env.s3dir_lambda),
+            ("s3dir_glue_artifacts", config.env.s3dir_glue_artifacts),
         ]
     )
 
@@ -410,9 +410,11 @@ def create_important_url_table():
             # fmt: off
             ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
             ("cloudformation stacks", aws.cloudformation.filter_stack(config.project_name_slug)),
-            ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
-            ("lambda layer", aws.awslambda.filter_layers(config.env.lambda_layer_name)),
             # fmt: on
+        ]
+        + [
+            (f"glue job {glue_job.short_name}", aws.glue.get_job(glue_job.name))
+            for glue_job in config.env.glue_job_list
         ]
     )
 

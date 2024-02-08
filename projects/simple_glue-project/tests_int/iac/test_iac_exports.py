@@ -12,7 +12,7 @@ class TestStackExports:
     def test(self):
         stack_exports = StackExports(env_name=config.env.env_name)
         stack_exports.load(bsm.cloudformation_client)
-        _ = stack_exports.get_iam_role_for_lambda_arn()
+        _ = stack_exports.get_iam_role_for_glue_arn()
 
 
 if __name__ == "__main__":
