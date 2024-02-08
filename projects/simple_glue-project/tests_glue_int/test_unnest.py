@@ -13,7 +13,7 @@ from awsglue.utils import getResolvedOptions
 from pathlib_mate import Path
 from s3pathlib import S3Path
 from simple_glue.boto_ses import bsm
-
+from simple_glue.config.api import config
 from simple_glue.glue_jobs.unnest import GlueETL
 
 
@@ -35,12 +35,8 @@ def glue_context():
 
 
 def setup_module(module):
-    s3dir_input = S3Path(
-        f"s3://{bsm.aws_account_id}-{bsm.aws_region}-data/"
-        f"projects/simple_glue/dev/unittest/unnest/input/"
-    ).to_dir()
-    s3dir_output = s3dir_input.change(new_basename="output").to_dir()
-
+    s3dir_input = config.env.s3dir_env_data.joinpath("unittest/unnest/input").to_dir()
+    s3dir_output = config.env.s3dir_env_data.joinpath("unittest/unnest/output").to_dir()
     dir_unnest = Path.dir_here(__file__).joinpath("data", "unnest")
     s3dir_input.upload_dir(dir_unnest, overwrite=True)
     s3dir_output.delete()
