@@ -322,6 +322,32 @@ def run_int_test(check: bool = True):
     )
 
 
+def run_glue_unit_test(check: bool = True):
+    simple_glue_project.run_glue_unit_test(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
+        pyproject_ops=pyproject_ops,
+        check=check,
+        step=simple_glue_project.StepEnum.run_code_coverage_test.value,
+        truth_table=simple_glue_project.truth_table,
+        url=simple_glue_project.google_sheet_url,
+    )
+
+
+def run_glue_int_test(check: bool = True):
+    simple_glue_project.run_glue_int_test(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=detect_current_env(),
+        pyproject_ops=pyproject_ops,
+        check=check,
+        step=simple_glue_project.StepEnum.run_integration_test.value,
+        truth_table=simple_glue_project.truth_table,
+        url=simple_glue_project.google_sheet_url,
+    )
+
+
 def create_config_snapshot(check: bool = True):
     simple_config_project.create_config_snapshot(
         semantic_branch_name=git_repo.semantic_branch_name,
