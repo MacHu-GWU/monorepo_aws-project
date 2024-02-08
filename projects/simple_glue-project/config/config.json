@@ -9,59 +9,51 @@
         // ---------------------------------------------------------------------
         // Application related
         //
-        // please read the :class:`simple_glue.config.define.lbd_func.LambdaFunction`
+        // please read the :class:`simple_glue.config.define.glue_job.GlueJob`
         // class to understand the config data model
         //
         // note that if a json node been set by two expression multiple times,
         // the first one will be used
         // ---------------------------------------------------------------------
-        "*.lambda_functions": {
-            "hello": {},
-            "s3sync": {}
+        "*.aws_region": "us-east-1",
+        "*.glue_jobs": {
+            "unnest": {}
         },
-        "*.lambda_functions.*.layers": [
-            "13"
-        ],
-        "*.lambda_functions.s3sync.timeout": 60,
-        "*.lambda_functions.*.timeout": 3,
-        "*.lambda_functions.*.memory": 128,
-        "*.lambda_functions.*.iam_role": null,
-        "*.lambda_functions.*.subnet_ids": null,
-        "*.lambda_functions.*.security_group_ids": null,
-        "*.lambda_functions.*.reserved_concurrency": null,
-        "*.lambda_functions.*.live_version1": null,
-        "*.lambda_functions.*.live_version2": null,
-        "*.lambda_functions.*.live_version2_percentage": null,
-        "*.lambda_functions.hello.handler": "hello_handler",
-        "*.lambda_functions.s3sync.handler": "s3sync_handler"
+        // 2.0, 3.0, 4.0
+        // See: https://docs.aws.amazon.com/glue/latest/dg/release-notes.html
+        "*.glue_jobs.*.glue_version": "4.0",
+        // Standard, G.1X, G.2X
+        // See: https://docs.aws.amazon.com/glue/latest/dg/add-job.html
+        "*.glue_jobs.*.worker_type": "G.1X",
+        "*.glue_jobs.*.number_of_workers": 2,
+        "*.glue_jobs.*.max_concurrent_runs": 1,
+        "*.glue_jobs.*.max_retries": 0,
+        "*.glue_jobs.*.timeout": 60,
+        "*.glue_jobs.*.lib_live_version":  null,
+        "*.glue_jobs.*.script_live_version":  null
     },
     "devops": {
-        "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_glue/"
+        "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_glue/",
+        "*.glue_jobs": {
+            "unnest": {}
+        }
     },
     "sbx": {
-        "username": "sbx.user",
         "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_glue/",
-        "lambda_functions": {
-            "hello": {},
-            "s3sync": {}
+        "glue_jobs": {
+            "unnest": {}
         }
     },
     "tst": {
-        "username": "tst.user",
         "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/simple_glue/",
-        "lambda_functions": {
-            "hello": {},
-            "s3sync": {}
+        "glue_jobs": {
+            "unnest": {}
         }
     },
     "prd": {
-        "username": "prd.user",
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_glue/",
-        "lambda_functions": {
-            "hello": {
-            },
-            "s3sync": {
-            }
+        "glue_jobs": {
+            "unnest": {}
         }
     }
 }

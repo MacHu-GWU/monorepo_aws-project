@@ -28,6 +28,7 @@ from .pyproject import pyproject_ops
 simple_python_project = aws_ops_alpha.simple_python_project
 simple_config_project = aws_ops_alpha.simple_config_project
 simple_cdk_project = aws_ops_alpha.simple_cdk_project
+simple_lambda_project = aws_ops_alpha.simple_lambda_project
 simple_glue_project = aws_ops_alpha.simple_glue_project
 
 
@@ -185,30 +186,63 @@ def view_latest_doc():
     )
 
 
-def build_lambda_source(
-    verbose: bool = False,
-):
-    return simple_glue_project.build_lambda_source(
-        pyproject_ops=pyproject_ops,
-        verbose=verbose,
-    )
-
-
-def publish_lambda_layer(
+def publish_glue_artifacts(
     check: bool = True,
 ):
-    return simple_glue_project.publish_lambda_layer(
+    env_name = detect_current_env()
+    glue_etl_script_artifact_list = [
+        glue_job.get_immutable_glue_etl_script_artifact()
+        for glue_job in config.env.glue_job_list
+    ] + [
+        glue_job.get_mutable_glue_etl_script_artifact()
+        for glue_job in config.env.glue_job_list
+    ]
+    glue_python_lib_artifact = config.env.get_glue_extra_py_files_artifact()
+    simple_glue_project.build_glue_script_artifact(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
-        env_name=detect_current_env(),
+        env_name=env_name,
         bsm_devops=boto_ses_factory.bsm_devops,
-        workload_bsm_list=boto_ses_factory.workload_bsm_list,
         pyproject_ops=pyproject_ops,
-        layer_name=config.env.lambda_layer_name,
-        s3dir_lambda=config.env.s3dir_lambda,
+        glue_etl_script_artifact_list=glue_etl_script_artifact_list,
         tags=config.env.devops_aws_tags,
         check=check,
-        step=simple_glue_project.StepEnum.publish_lambda_layer.value,
+        step=simple_glue_project.StepEnum.build_glue_artifact_locally.value,
+        truth_table=simple_glue_project.truth_table,
+        url=simple_glue_project.google_sheet_url,
+    )
+    simple_glue_project.build_glue_extra_py_files_artifact(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=env_name,
+        bsm_devops=boto_ses_factory.bsm_devops,
+        pyproject_ops=pyproject_ops,
+        glue_python_lib_artifact=glue_python_lib_artifact,
+        tags=config.env.devops_aws_tags,
+        check=check,
+        step=simple_glue_project.StepEnum.build_glue_artifact_locally.value,
+        truth_table=simple_glue_project.truth_table,
+        url=simple_glue_project.google_sheet_url,
+    )
+    simple_glue_project.publish_glue_script_artifact_version(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=env_name,
+        bsm_devops=boto_ses_factory.bsm_devops,
+        glue_etl_script_artifact_list=glue_etl_script_artifact_list,
+        check=check,
+        step=simple_glue_project.StepEnum.build_glue_artifact_locally.value,
+        truth_table=simple_glue_project.truth_table,
+        url=simple_glue_project.google_sheet_url,
+    )
+    simple_glue_project.publish_glue_extra_py_files_artifact_version(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=env_name,
+        bsm_devops=boto_ses_factory.bsm_devops,
+        glue_python_lib_artifact=glue_python_lib_artifact,
+        check=check,
+        step=simple_glue_project.StepEnum.build_glue_artifact_locally.value,
         truth_table=simple_glue_project.truth_table,
         url=simple_glue_project.google_sheet_url,
     )
@@ -266,29 +300,12 @@ def delete_app(
     )
 
 
-def publish_lambda_version(
-    check: bool = True,
-):
-    env_name = detect_current_env()
-    return simple_glue_project.publish_lambda_version(
-        semantic_branch_name=git_repo.semantic_branch_name,
-        runtime_name=runtime.current_runtime_group,
-        env_name=detect_current_env(),
-        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
-        lbd_func_name_list=config.env.lambda_function_name_list,
-        check=check,
-        step=simple_glue_project.StepEnum.publish_new_lambda_version.value,
-        truth_table=simple_glue_project.truth_table,
-        url=simple_glue_project.google_sheet_url,
-    )
-
-
 def run_int_test(check: bool = True):
     if runtime.is_local:
         wait = False
     else:
         wait = True
-    simple_glue_project.run_int_test(
+    simple_lambda_project.run_int_test(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
         env_name=detect_current_env(),
