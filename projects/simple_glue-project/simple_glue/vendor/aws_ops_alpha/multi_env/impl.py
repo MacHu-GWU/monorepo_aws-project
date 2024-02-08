@@ -200,12 +200,16 @@ def detect_current_env(
         if os.environ.get(EnvVarNameEnum.USER_ENV_NAME.value):
             return os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
         return env_name_enum_class._get_sbx().value
-    elif runtime.is_ci_runtime_group or runtime.is_app_runtime_group:
+    elif (
+        runtime.is_ci_runtime_group
+        or runtime.is_app_runtime_group
+        or runtime.is_glue_container
+    ):
         if os.environ.get(EnvVarNameEnum.USER_ENV_NAME.value):
             env_name = os.environ[EnvVarNameEnum.USER_ENV_NAME.value]
         else:
             env_name = os.environ[EnvVarNameEnum.ENV_NAME.value]
         env_name_enum_class.ensure_is_valid_value(env_name)
         return env_name
-    else: # pragma: no cover
+    else:  # pragma: no cover
         raise NotImplementedError

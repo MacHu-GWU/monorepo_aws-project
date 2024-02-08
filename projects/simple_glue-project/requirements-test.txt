@@ -15,9 +15,9 @@ aws-cdk-asset-node-proxy-agent-v6==2.0.1 ; python_version >= "3.9.dev0" and pyth
 aws-cdk-lib==2.111.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:60a0adaddad146ca682ded4762cb2665b11a095f2d9c2ad84a33ff8f473da161 \
     --hash=sha256:f73174509eb89528a4bcbd50b40dd228120c8bced8089031e72148031ee605a3
-aws-glue-container-launcher==0.1.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:8e751461bada23d94b0df481e4f841784a95986d67319877fd74fff1bf73f6f9 \
-    --hash=sha256:b315606de2e31c5ea9c712c22866a9cb21b84a3c176763556ffbcc114dfc235f
+aws-glue-container-launcher==0.1.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:8ac51ac325e485fbdc39d358afc87563657a305a77fe75e342dd606eef62fa41 \
+    --hash=sha256:ab3cb87305ecb62a3b4383a1698226ee573962c7d42445334f6a1cac58b6607b
 boto3==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:799fe8399ea132aa5aa868caf78c47ef9ed675d5ef61be97cb7131081bb8a861 \
     --hash=sha256:ebf6d86217c37986f965dbe35a3bbd0318127d23a65737ab6486667496decb54

@@ -7,6 +7,7 @@ from pathlib import Path
 from aws_glue_container_launcher.api import GlueVersionEnum, build_pytest_args
 
 from ..boto_ses import boto_ses_factory
+from ..config.api import config
 from ..paths import dir_project_root, dir_venv, dir_home
 
 
@@ -40,6 +41,7 @@ def run_unit_test(
         dir_site_packages=dir_site_packages,
         boto_session=boto_ses_factory.bsm.boto_ses,
         enable_hudi=True,
+        additional_env_vars=config.env.env_vars,
     )
     # print("\n\r".join(args))
     subprocess.run(args, check=True)

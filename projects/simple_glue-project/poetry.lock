@@ -182,13 +182,13 @@ tests = ["moto", "pytest", "pytest-cov", "rich"]
 
 [[package]]
 name = "aws-glue-container-launcher"
-version = "0.1.1"
+version = "0.1.2"
 description = "Package short description."
 optional = false
 python-versions = "*"
 files = [
-    {file = "aws_glue_container_launcher-0.1.1-py3-none-any.whl", hash = "sha256:8e751461bada23d94b0df481e4f841784a95986d67319877fd74fff1bf73f6f9"},
-    {file = "aws_glue_container_launcher-0.1.1.tar.gz", hash = "sha256:b315606de2e31c5ea9c712c22866a9cb21b84a3c176763556ffbcc114dfc235f"},
+    {file = "aws_glue_container_launcher-0.1.2-py3-none-any.whl", hash = "sha256:8ac51ac325e485fbdc39d358afc87563657a305a77fe75e342dd606eef62fa41"},
+    {file = "aws_glue_container_launcher-0.1.2.tar.gz", hash = "sha256:ab3cb87305ecb62a3b4383a1698226ee573962c7d42445334f6a1cac58b6607b"},
 ]
 
 [package.extras]
@@ -2779,4 +2779,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "da6d4a998072b1780f6cc8ae3e5cd1a6d5db4a661a77f7f803f94970208400df"
+content-hash = "d93d813ecaca29e23fb0e22d638ee6b9557abfd6dd6d816c9505bbbd6aa51423"
