@@ -82,27 +82,27 @@ except ImportError: # pragma: no cover
 
 
 try:
-    from .aws_helpers import simple_python_project
+    from .project.api import simple_python_project
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import simple_cdk_project
+    from .project.api import simple_cdk_project
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import simple_config_project
+    from .project.api import simple_config_project
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import simple_lambda_project
+    from .project.api import simple_lambda_project
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import simple_lbd_container_project
+    from .project.api import simple_lbd_container_project
 except ImportError: # pragma: no cover
     pass
 try:
-    from .aws_helpers import simple_lbd_agw_chalice_project
+    from .project.api import simple_lbd_agw_chalice_project
 except ImportError: # pragma: no cover
     pass
 try:
