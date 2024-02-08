@@ -8,6 +8,7 @@ Developer note:
 
 # --- standard library
 import typing as T
+import subprocess
 from pathlib import Path
 
 # --- third party library (include vendor)
@@ -30,6 +31,25 @@ if T.TYPE_CHECKING:  # pragma: no cover
     import pyproject_ops.api as pyops
     from boto_session_manager import BotoSesManager
     from s3pathlib import S3Path
+
+
+@logger.start_and_end(
+    msg="Install AWS glue library",
+    start_emoji=Emoji.install,
+    error_emoji=f"{Emoji.failed} {Emoji.install}",
+    end_emoji=f"{Emoji.succeeded} {Emoji.install}",
+    pipe=Emoji.install,
+)
+def pip_install_awsglue(
+    pyproject_ops: "pyops.PyProjectOps",
+):
+    args = [
+        f"{pyproject_ops.path_venv_bin_pip}",
+        "install",
+        # make sure your glue version align with the config.env_name.glue_jobs.job_name.glue_version
+        "git+https://github.com/awslabs/aws-glue-libs.git@v4.0",
+    ]
+    subprocess.run(args)
 
 
 @logger.start_and_end(

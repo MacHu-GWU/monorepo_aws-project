@@ -42,8 +42,8 @@ pysecret = "2.2.4"
 config_patterns = "1.0.6"
 # create url for AWS console
 aws_console_url = "1.4.1"
-# build AWS lambda layer and deployment package
-aws_lambda_layer = "0.5.1"
+# build AWS Glue artifact
+aws_glue_artifact = "0.2.1"
 # AWS devops best practices
 #aws_ops_alpha = "0.1.1"
 # ------------------------------------------------------------------------------
@@ -114,6 +114,11 @@ moto = "4.2.10"
 # AWS CDK for infrastructure as code, we also need this for tests
 aws-cdk-lib = "2.111.0"
 constructs = "10.2.70"
+# AWS Glue container helper
+aws_glue_container_launcher = "0.1.1"
+# pyspark related
+pyspark = "3.3.0"
+# note: don't install pandas, your local pandas may conflict with Glue runtime pandas
 
 # ------------------------------------------------------------------------------
 # addtitional dependencies for automation shell scripts

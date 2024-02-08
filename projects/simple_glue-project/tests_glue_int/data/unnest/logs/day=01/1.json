@@ -1,0 +1,3 @@
+{"event_id":  "e-1", "details": {"name": "measurement", "value": 1}}
+{"event_id":  "e-2", "details": {"name": "measurement", "value": 2}}
+{"event_id":  "e-3", "details": {"name": "measurement", "value": 3}}

@@ -40,6 +40,10 @@ install-all: ## Install All Dependencies
 	python ./bin/s02_06_pip_install_all.py
 
 
+install-awsglue: ## Install Dependencies for Automation Script
+	python ./bin/s02_07_pip_install_awsglue.py
+
+
 poetry-export: ## Export requirements-*.txt from poetry.lock file
 	python ./bin/s02_07_poetry_export.py
 
@@ -100,16 +104,16 @@ view-latest-doc: ## View latest documentation website on S3
 	./.venv/bin/python ./bin/s03_15_view_latest_doc.py
 
 
-build-source: ## Build Lambda source artifacts
-	./.venv/bin/python ./bin/s04_03_lambda_build_source.py
-
-
 deploy-config: ## Deploy versioned config data to parameter store backend.
 	./.venv/bin/python ./bin/s04_01_deploy_config.py
 
 
 delete-config: ## Delete config data from parameter store backend.
 	./.venv/bin/python ./bin/s04_02_delete_config.py
+
+
+publish-glue-artifact: ## Publish Glue Artifact
+	./.venv/bin/python ./bin/s04_03_publish_glue_artifact.py
 
 
 deploy-app: ## Deploy Lambda app via CDK deploy

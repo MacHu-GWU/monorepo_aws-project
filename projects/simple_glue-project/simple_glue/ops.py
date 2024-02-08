@@ -52,6 +52,10 @@ def pip_install_automation():
     simple_python_project.pip_install_automation(pyproject_ops=pyproject_ops)
 
 
+def pip_install_awsglue():
+    simple_glue_project.pip_install_awsglue(pyproject_ops=pyproject_ops)
+
+
 def pip_install_all():
     simple_python_project.pip_install_all(pyproject_ops=pyproject_ops)
 

@@ -13,6 +13,7 @@ from .simple_glue_truth_table import EnvNameEnum
 from .simple_glue_truth_table import truth_table
 from .rule_set import semantic_branch_rule
 from .rule_set import google_sheet_url
+from .step import pip_install_awsglue
 from .step import build_glue_extra_py_files_artifact
 from .step import publish_glue_extra_py_files_artifact_version
 from .step import build_glue_script_artifact

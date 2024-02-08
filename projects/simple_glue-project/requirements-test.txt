@@ -15,6 +15,9 @@ aws-cdk-asset-node-proxy-agent-v6==2.0.1 ; python_version >= "3.9.dev0" and pyth
 aws-cdk-lib==2.111.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:60a0adaddad146ca682ded4762cb2665b11a095f2d9c2ad84a33ff8f473da161 \
     --hash=sha256:f73174509eb89528a4bcbd50b40dd228120c8bced8089031e72148031ee605a3
+aws-glue-container-launcher==0.1.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:8e751461bada23d94b0df481e4f841784a95986d67319877fd74fff1bf73f6f9 \
+    --hash=sha256:b315606de2e31c5ea9c712c22866a9cb21b84a3c176763556ffbcc114dfc235f
 boto3==1.33.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:799fe8399ea132aa5aa868caf78c47ef9ed675d5ef61be97cb7131081bb8a861 \
     --hash=sha256:ebf6d86217c37986f965dbe35a3bbd0318127d23a65737ab6486667496decb54
@@ -357,12 +360,17 @@ pluggy==1.4.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
 publication==0.0.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:0248885351febc11d8a1098d5c8e3ab2dabcf3e8c0c96db1e17ecd12b53afbe6 \
     --hash=sha256:68416a0de76dddcdd2930d1c8ef853a743cc96c82416c4e4d3b5d901c6276dc4
+py4j==0.10.9.5 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:276a4a3c5a2154df1860ef3303a927460e02e97b047dc0a47c1c3fb8cce34db6 \
+    --hash=sha256:52d171a6a2b031d8a5d1de6efe451cf4f5baff1a2819aabc3741c8406539ba04
 py==1.11.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719 \
     --hash=sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378
 pycparser==2.21 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" and platform_python_implementation != "PyPy" \
     --hash=sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9 \
     --hash=sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206
+pyspark==3.3.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:7ebe8e9505647b4d124d5a82fca60dfd3891021cf8ad6c5ec88777eeece92cf7
 pytest-cov==2.12.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:261bb9e47e65bd099c89c3edf92972865210c36813f80ede5277dceb77a4a62a \
     --hash=sha256:261ceeb8c227b726249b376b8526b600f38667ee314f910353fa318caa01f4d7
