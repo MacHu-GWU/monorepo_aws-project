@@ -29,6 +29,17 @@ What is AWS Glue Project
 以上的所有工具链都是模块化的工具, 即可以单独拿出来在其他任何项目中使用, 而这个项目中我们已经将这些工具都整合到了一起可以无缝配合使用了.
 
 
+AWS Glue Tools
+------------------------------------------------------------------------------
+**aws_glue_artifact**
+
+许多 AWS 的计算服务都支持 Version 和 Alias 功能. 这两个功能使得 blue / green, canary deployment, rollback 变得异常容易. 但是 AWS Glue 不支持这两个功能. 另外 AWS Glue 的 artifacts 比较 tricky. 如果你的 Glue Job 依赖于一些你自己的代码, 那么你需要将这些代码打包成 zip 文件通过 ``--extra-py-files`` 参数传进去. 虽然 AWS CDK 以及一些其他工具提供了打包的功能, 但是和之前一样, 这些 Artifact 也没有 Version 管理. 为了解决这一问题, 我开发了 `aws_glue_artifact <https://github.com/MacHu-GWU/aws_glue_artifact-project>`_ 项目, 可以方便地构建 Glue Artifact 以及对它们进行版本管理.
+
+**aws_glue_artifact**
+
+由于 Glue 底层是 Spark. 在本地配置一个 Spark 的运行环境可并不容易. 所以很多开发者会使用 AWS Glue Studio 中的 Jupyter Notebook 来进行开发. 并且由于 Spark Job 的逻辑主要是 Data ETL, 做过 Spark ETL 的人都知道对其进行单元测试有多麻烦. AWS 官方提供了一个 `Glue 的 container <https://aws.amazon.com/blogs/big-data/develop-and-test-aws-glue-version-3-0-jobs-locally-using-a-docker-container/>`_, 但是要运行这个 container 的方法也不容易, 参数众多. 为了解决这一问题, 我开发了 `aws_glue_container_launcher <https://github.com/MacHu-GWU/aws_glue_container_launcher-project>`_ 项目. 这是一个能方便地在使用 Glue container 的小工具. 使得你可以在本地用 Glue Jupyter Notebook 进行交互式开发, 也可以在本地对 ETL Code 进行单元测试, 也可以在本地模拟运行一个 Glue Job. 这使得在 CI 中对 Glue Job 进行单元测试变的可能, 并且友好的本地开发环境能大大提高开发效率.
+
+
 Business Logic in This Project
 ------------------------------------------------------------------------------
 这个项目主要是为了演示目的. 它包含了两种类型的 Glue Project:
