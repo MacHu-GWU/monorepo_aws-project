@@ -28,6 +28,8 @@ class StackExports:
         >>> stack_exports.load(cf_client)
         >>> stack_exports.get_iam_role_for_lambda_arn()
         aws:iam::123456789012:role/...
+        >>> stack_exports.get_iam_role_for_sfn_arn()
+        aws:iam::123456789012:role/...
 
     :param env_name: environment name, sbx, tst, prd, etc ...
     :param _outputs: internal cache, don't use it directly.
@@ -66,3 +68,9 @@ class StackExports:
         # return self._outputs["IamRoleForLambdaArn"]
         # use export name
         return self._exports[f"{self.prefix_name_slug}-lambda-role-arn"]
+
+    def get_iam_role_for_sfn_arn(self) -> str:
+        # use output key
+        # return self._outputs["IamRoleForSFNArn"]
+        # use export name
+        return self._exports[f"{self.prefix_name_slug}-sfn-role-arn"]

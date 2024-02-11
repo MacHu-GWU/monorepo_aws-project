@@ -12,12 +12,15 @@ from ...git import git_repo
 
 from .iam import IamMixin
 from .lbd import LambdaMixin
+from .sfn import SfnMixin
+
 
 
 class MainStack(
     cdk.Stack,
     IamMixin,
     LambdaMixin,
+    SfnMixin,
 ):
     """
     A Python class wrapper around the real CloudFormation stack, to provide
@@ -40,6 +43,7 @@ class MainStack(
         self.env = env
         self.mk_rg1_iam()
         self.mk_rg2_lbd()
+        self.mk_rg3_sfn()
 
         for key, value in config.env.workload_aws_tags.items():
             cdk.Tags.of(self).add(key, value)

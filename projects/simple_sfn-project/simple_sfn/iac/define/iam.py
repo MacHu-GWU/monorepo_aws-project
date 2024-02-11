@@ -57,7 +57,34 @@ class IamMixin:
             ],
         )
 
-        # declare iam role
+        self.stat_invoke_lambda = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "lambda:InvokeFunction",
+                "lambda:InvokeAsync",
+            ],
+            resources=["*"],
+        )
+
+        # reference: https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html#cloudwatch-iam-policy
+        self.stat_sfn_cloudwatch_log = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "logs:CreateLogDelivery",
+                "logs:CreateLogStream",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries",
+                "logs:PutLogEvents",
+                "logs:PutResourcePolicy",
+                "logs:DescribeResourcePolicies",
+                "logs:DescribeLogGroups",
+            ],
+            resources=["*"],
+        )
+
+        # lambda function iam role
         self.iam_role_for_lambda = iam.Role(
             self,
             "IamRoleForLambda",
@@ -74,6 +101,7 @@ class IamMixin:
                         self.stat_parameter_store,
                         self.stat_s3_bucket_read,
                         self.stat_s3_bucket_write,
+                        self.stat_invoke_lambda,
                     ]
                 )
             },
@@ -84,4 +112,27 @@ class IamMixin:
             "IamRoleForLambdaArn",
             value=self.iam_role_for_lambda.role_arn,
             export_name=f"{self.env.prefix_name_slug}-lambda-role-arn",
+        )
+
+        # state machine iam role
+        self.iam_role_for_sfn = iam.Role(
+            self,
+            "IamRoleForSFN",
+            assumed_by=iam.ServicePrincipal("states.amazonaws.com"),
+            role_name=f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-sfn",
+            inline_policies={
+                f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-sfn": iam.PolicyDocument(
+                    statements=[
+                        self.stat_invoke_lambda,
+                        self.stat_sfn_cloudwatch_log,
+                    ]
+                )
+            },
+        )
+
+        self.output_iam_role_for_sfn_arn = cdk.CfnOutput(
+            self,
+            "IamRoleForSFNArn",
+            value=self.iam_role_for_sfn.role_arn,
+            export_name=f"{self.env.prefix_name_slug}-sfn-role-arn",
         )
