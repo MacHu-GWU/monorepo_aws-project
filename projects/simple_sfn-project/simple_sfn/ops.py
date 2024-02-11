@@ -267,6 +267,45 @@ def delete_app(
     )
 
 
+def publish_state_machine_version(
+    check: bool = True,
+):
+    env_name = detect_current_env()
+    return simple_sfn_project.publish_state_machine_version(
+        semantic_branch_name=git_repo.semantic_branch_name,
+        runtime_name=runtime.current_runtime_group,
+        env_name=env_name,
+        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
+        state_machine_name_list=config.get_env(env_name).state_machine_name_list,
+        check=check,
+        step=simple_sfn_project.StepEnum.deploy_cdk_stack.value,
+        truth_table=simple_sfn_project.truth_table,
+        url=simple_sfn_project.google_sheet_url,
+    )
+
+
+def deploy_state_machine_alias(
+    check: bool = True,
+):
+    env_name = detect_current_env()
+    for state_machine in config.get_env(env_name).state_machine_list:
+        simple_sfn_project.deploy_state_machine_alias(
+            semantic_branch_name=git_repo.semantic_branch_name,
+            runtime_name=runtime.current_runtime_group,
+            env_name=env_name,
+            bsm_workload=boto_ses_factory.get_env_bsm(env_name),
+            state_machine_name=state_machine.name,
+            alias="LIVE",
+            version1=state_machine.live_version1,
+            version2=state_machine.live_version2,
+            version2_percentage=state_machine.live_version2_percentage,
+            check=check,
+            step=simple_sfn_project.StepEnum.deploy_cdk_stack.value,
+            truth_table=simple_sfn_project.truth_table,
+            url=simple_sfn_project.google_sheet_url,
+        )
+
+
 def run_int_test(check: bool = True):
     if runtime.is_local:
         wait = False
