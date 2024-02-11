@@ -1,0 +1,13 @@
+step	semantic_branch_name	runtime_name	env_name	should_we_do_it
+DEPLOY_CONFIG	main	local	devops	True
+DEPLOY_CONFIG	main	ci	devops	False
+DEPLOY_CONFIG	release	local	devops	True
+DEPLOY_CONFIG	release	ci	devops	False
+CREATE_CONFIG_SNAPSHOT	main	local	devops	True
+CREATE_CONFIG_SNAPSHOT	main	ci	devops	False
+CREATE_CONFIG_SNAPSHOT	release	local	devops	True
+CREATE_CONFIG_SNAPSHOT	release	ci	devops	True
+DELETE_CONFIG	main	local	devops	True
+DELETE_CONFIG	main	ci	devops	False
+DELETE_CONFIG	release	local	devops	True
+DELETE_CONFIG	release	ci	devops	False
