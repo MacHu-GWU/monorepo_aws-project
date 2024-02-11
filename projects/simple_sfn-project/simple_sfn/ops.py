@@ -28,6 +28,7 @@ from .pyproject import pyproject_ops
 simple_python_project = aws_ops_alpha.simple_python_project
 simple_config_project = aws_ops_alpha.simple_config_project
 simple_cdk_project = aws_ops_alpha.simple_cdk_project
+simple_lambda_project = aws_ops_alpha.simple_lambda_project
 simple_sfn_project = aws_ops_alpha.simple_sfn_project
 
 
@@ -188,7 +189,7 @@ def view_latest_doc():
 def build_lambda_source(
     verbose: bool = False,
 ):
-    return simple_sfn_project.build_lambda_source(
+    return simple_lambda_project.build_lambda_source(
         pyproject_ops=pyproject_ops,
         verbose=verbose,
     )
@@ -197,7 +198,7 @@ def build_lambda_source(
 def publish_lambda_layer(
     check: bool = True,
 ):
-    return simple_sfn_project.publish_lambda_layer(
+    return simple_lambda_project.publish_lambda_layer(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
         env_name=detect_current_env(),
@@ -266,29 +267,12 @@ def delete_app(
     )
 
 
-def publish_lambda_version(
-    check: bool = True,
-):
-    env_name = detect_current_env()
-    return simple_sfn_project.publish_lambda_version(
-        semantic_branch_name=git_repo.semantic_branch_name,
-        runtime_name=runtime.current_runtime_group,
-        env_name=detect_current_env(),
-        bsm_workload=boto_ses_factory.get_env_bsm(env_name),
-        lbd_func_name_list=config.env.lambda_function_name_list,
-        check=check,
-        step=simple_sfn_project.StepEnum.publish_new_lambda_version.value,
-        truth_table=simple_sfn_project.truth_table,
-        url=simple_sfn_project.google_sheet_url,
-    )
-
-
 def run_int_test(check: bool = True):
     if runtime.is_local:
         wait = False
     else:
         wait = True
-    simple_sfn_project.run_int_test(
+    simple_lambda_project.run_int_test(
         semantic_branch_name=git_repo.semantic_branch_name,
         runtime_name=runtime.current_runtime_group,
         env_name=detect_current_env(),
@@ -385,14 +369,17 @@ def create_important_url_table():
 
     aws = aws_console_url.AWSConsole.from_bsm(boto_ses_factory.bsm_devops)
     return aws_ops_alpha.rich_helpers.create_url_table(
+        # fmt: off
         name_and_url_list=[
-            # fmt: off
             ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
             ("cloudformation stacks", aws.cloudformation.filter_stack(config.project_name_slug)),
             ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
             ("lambda layer", aws.awslambda.filter_layers(config.env.lambda_layer_name)),
-            # fmt: on
+        ] + [
+          (f"state machine - {state_machine.short_name}", aws.step_function.get_state_machine_view_tab(state_machine.arn))
+          for state_machine in config.env.state_machine_list
         ]
+        # fmt: on
     )
 
 

@@ -82,42 +82,6 @@ class LambdaFunction:
             else self.live_version1
         )
 
-    def publish_version(
-        self,
-        bsm: "BotoSesManager",
-    ) -> T.Tuple[bool, int]:  # pragma: no cover
-        """
-        Publish a new version. This API is idempotent, i.e. if the $LATEST
-        version is already the latest published version, then nothing will happen.
-
-        :return: a tuple of two items, first item is a boolean flag to indicate
-            that if a new version is created. the second item is the version id.
-        """
-        return aws_ops_alpha.aws_lambda_version_and_alias.publish_version(
-            lbd_client=bsm.lambda_client,
-            func_name=self.name,
-        )
-
-    def deploy_alias(
-        self,
-        bsm: "BotoSesManager",
-    ) -> T.Tuple[bool, T.Optional[str]]:  # pragma: no cover
-        """
-        Point the alias to the given version or split traffic between two versions.
-
-        :return: a tuple of two items; first item is a boolean flag to indicate
-            whether a creation or update is performed; second item is the alias
-            revision id, if creation or update is not performed, then return None.
-        """
-        return aws_ops_alpha.aws_lambda_version_and_alias.deploy_alias(
-            lbd_client=bsm.lambda_client,
-            func_name=self.name,
-            alias=LIVE,
-            version1=self.live_version1,
-            version2=self.live_version2,
-            version2_percentage=self.live_version2_percentage,
-        )
-
 
 @dataclasses.dataclass
 class LambdaFunctionMixin:

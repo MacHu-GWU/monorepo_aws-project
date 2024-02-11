@@ -25,6 +25,13 @@ class AppMixin:
         """
         Common environment variable for all computational resources in this environment.
         It is primarily for "self awareness" (detect who I am, which environment I am in).
+
+        env vars include:
+
+        - PARAMETER_NAME
+        - PROJECT_NAME
+        - ENV_NAME
+        - PACKAGE_VERSION
         """
         env_vars = super().env_vars
         env_vars["PACKAGE_VERSION"] = __version__

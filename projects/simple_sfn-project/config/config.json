@@ -6,6 +6,7 @@
         "*.project_name": "simple_sfn",
         "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/monorepo_aws/simple_sfn/",
         "*.s3uri_docs": "s3://bmt-app-devops-us-east-1-doc-host/projects/monorepo_aws/",
+        "*.aws_region": "us-east-1",
         // ---------------------------------------------------------------------
         // Application related
         //
@@ -26,6 +27,7 @@
         "*.lambda_functions.*.layers": [
             "1"
         ],
+        "*.lambda_functions.s2_run_job.timeout": 30,
         "*.lambda_functions.*.timeout": 3,
         "*.lambda_functions.*.memory": 128,
         "*.lambda_functions.*.iam_role": null,

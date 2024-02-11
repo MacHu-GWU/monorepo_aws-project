@@ -66,6 +66,8 @@ class LambdaMixin:
                     "SOURCE_SHA256": source_sha256,
                     "GIT_COMMIT_ID": git_repo.git_commit_id,
                     "CONFIG_VERSION": self.config.version,
+                    "BUCKET": self.env.s3dir_sfn_executions.bucket,
+                    "PREFIX": self.env.s3dir_sfn_executions.key,
                 }
             )
             kwargs = dict(
@@ -144,48 +146,6 @@ class LambdaMixin:
                 KEY_FUNC: lbd_func,
                 KEY_ALIAS: lbd_func_alias,
             }
-
-        # ----------------------------------------------------------------------
-        # Configure S3 Notification
-        #
-        # note:
-        # based on this issue: https://github.com/aws/aws-cdk/issues/23940
-        # it is impossible to use S3Bucket that is not defined in this stack
-        # for ``aws_cdk.aws_lambda_event_sources.S3EventSource``
-        # this is the only choice for now
-        # ----------------------------------------------------------------------
-        bucket = s3.Bucket.from_bucket_attributes(
-            self,
-            "ImportedBucket",
-            bucket_arn=f"arn:aws:s3:::{self.env.s3dir_source.bucket}",
-        )
-
-        # --- use latest version
-        # bucket.add_event_notification(
-        #     s3.EventType.OBJECT_CREATED,
-        #     s3_notifications.LambdaDestination(
-        #         self.lambda_func_mapper[self.env.lbd_s3sync.name][KEY_FUNC],
-        #     ),
-        #     s3.NotificationKeyFilter(
-        #         prefix=f"{self.env.s3dir_source.key}",
-        #     ),
-        # )
-        #
-        # --- use lambda alias
-        bucket.add_event_notification(
-            s3.EventType.OBJECT_CREATED,
-            s3_notifications.LambdaDestination(
-                lambda_.Function.from_function_attributes(
-                    self,
-                    f"LambdaAliasAttribute{self.env.lbd_s3sync.short_name_camel}",
-                    function_arn=self.lambda_func_mapper[self.env.lbd_s3sync.name][KEY_ALIAS].function_arn,
-                    same_environment=True,
-                ),
-            ),
-            s3.NotificationKeyFilter(
-                prefix=f"{self.env.s3dir_source.key}",
-            ),
-        )
 
         # add custom resource tags to Lambda Function
         for dct in self.lambda_func_mapper.values():
