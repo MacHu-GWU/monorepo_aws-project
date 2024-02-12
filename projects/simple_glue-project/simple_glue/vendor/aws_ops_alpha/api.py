@@ -43,6 +43,9 @@ from .config.api import BaseConfig
 from .config.api import BaseEnv
 from .config.api import T_BASE_CONFIG
 from .config.api import T_BASE_ENV
+from .vendor import aws_lambda_version_and_alias
+from .vendor import aws_stepfunction_version_and_alias
+
 # user may not need some features to write their application code
 # these features are typically used in CI/CD and devops only
 # so we just try to import them here, if we are missing dependencies,
@@ -102,6 +105,10 @@ except ImportError: # pragma: no cover
     pass
 try:
     from .project.api import simple_glue_project
+except ImportError: # pragma: no cover
+    pass
+try:
+    from .project.api import simple_sfn_project
 except ImportError: # pragma: no cover
     pass
 

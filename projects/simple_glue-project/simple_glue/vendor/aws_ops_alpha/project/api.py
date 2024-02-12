@@ -34,3 +34,7 @@ try:
     from .simple_glue import api as simple_glue_project
 except ImportError:  # pragma: no cover
     pass
+try:
+    from .simple_sfn import api as simple_sfn_project
+except ImportError:  # pragma: no cover
+    pass

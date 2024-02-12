@@ -18,7 +18,7 @@ from ...vendor.emoji import Emoji
 
 # --- modules from this project
 from ...logger import logger
-from ...aws_helpers import aws_lambda_helpers, aws_ecr_helpers
+from ...aws_helpers.api import aws_ecr_helpers
 from ...rule_set import should_we_do_it
 
 # --- modules from this submodule

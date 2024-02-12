@@ -23,7 +23,8 @@ class AppMixin:
     :param s3uri_data: an AWS project should always have a delegated s3 folder
         to store project data.
     """
-
+    aws_account_id: T.Optional[str] = dataclasses.field(default=None)
+    aws_region: T.Optional[str] = dataclasses.field(default=None)
     s3uri_data: T.Optional[str] = dataclasses.field(default=None)
 
     @property

@@ -20,7 +20,7 @@ from ...vendor.aws_lambda_version_and_alias import publish_version
 
 # --- modules from this project
 from ...logger import logger
-from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
+from ...aws_helpers.api import aws_cdk_helpers, aws_lambda_helpers
 from ...runtime.api import RunTimeEnum
 from ...rule_set import should_we_do_it
 

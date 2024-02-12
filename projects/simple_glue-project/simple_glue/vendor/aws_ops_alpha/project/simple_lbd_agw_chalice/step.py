@@ -16,11 +16,11 @@ from boto_session_manager import BotoSesManager
 import aws_console_url.api as aws_console_url
 import tt4human.api as tt4human
 from ...vendor.emoji import Emoji
-from ...vendor.aws_s3_lock import Lock, Vault, AlreadyLockedError
+from ...vendor.aws_s3_lock import Lock, Vault
 
 # --- modules from this project
 from ...logger import logger
-from ...aws_helpers import aws_chalice_helpers
+from ...aws_helpers.api import aws_chalice_helpers
 from ...rule_set import should_we_do_it
 
 # --- modules from this submodule

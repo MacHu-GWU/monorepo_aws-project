@@ -20,7 +20,7 @@ from ...vendor.aws_lambda_version_and_alias import publish_version
 
 # --- modules from this project
 from ...logger import logger
-from ...aws_helpers import aws_cdk_helpers, aws_lambda_helpers
+from ...aws_helpers.api import aws_cdk_helpers, aws_lambda_helpers
 from ...runtime.api import RunTimeEnum
 from ...rule_set import should_we_do_it
 
@@ -71,7 +71,7 @@ def publish_lambda_layer(
     s3dir_lambda: "S3Path",
     tags: T.Dict[str, str],
     is_arm: bool = False,
-    check=True,
+    check: bool = True,
     step: str = StepEnum.publish_lambda_layer.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,
@@ -155,7 +155,7 @@ def publish_lambda_version(
     env_name: str,
     bsm_workload: "BotoSesManager",
     lbd_func_name_list: T.List[str],
-    check=True,
+    check: bool = True,
     step: str = StepEnum.publish_new_lambda_version.value,
     truth_table: T.Optional[tt4human.TruthTable] = truth_table,
     url: T.Optional[str] = None,

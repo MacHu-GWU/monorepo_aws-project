@@ -5,6 +5,7 @@ See :class:`AbstractBotoSesFactory`.
 """
 
 import typing as T
+import os
 import abc
 import dataclasses
 from pathlib import Path
@@ -296,6 +297,7 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
                 return bsm_devops
             else:
                 return BotoSesManager.from_snapshot_file(path=path_bsm_snapshot)
+        # todo: add logic to inject devops boto session manager to glue container runtime
         else:  # pragma: no cover
             raise RuntimeError
 
@@ -398,6 +400,8 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
                 return self.get_env_bsm(env_name=self.default_app_env_name)
             else:
                 return self.get_env_bsm(env_name=self.get_current_env())
+        elif self.runtime.is_glue_container:
+            return BotoSesManager(region_name=os.environ["AWS_REGION"])
         else:
             return BotoSesManager()
 
