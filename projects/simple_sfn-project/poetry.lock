@@ -161,6 +161,26 @@ docs = ["docfly (==1.0.2)", "furo (==2021.8.31)", "rstobj (==0.0.7)", "sphinx (=
 tests = ["boto3", "pytest", "pytest-cov"]
 
 [[package]]
+name = "aws-glue-artifact"
+version = "0.2.1"
+description = "AWS Glue Artifact versioning and alias Management for blue/green, canary deployment, and roll back for production failure."
+optional = false
+python-versions = "*"
+files = [
+    {file = "aws_glue_artifact-0.2.1-py3-none-any.whl", hash = "sha256:9449c75875af0decf72c31dc892f64125de3d677e3415b95b4c81490ade3e70e"},
+    {file = "aws_glue_artifact-0.2.1.tar.gz", hash = "sha256:a4d9f2c7cc58ae9c4d5dc24c145faef991e553e587b22e46e4395286299fb041"},
+]
+
+[package.dependencies]
+boto3 = "*"
+s3pathlib = ">=2.0.1,<3.0.0"
+versioned = ">=0.5.3,<1.0.0"
+
+[package.extras]
+docs = ["docfly (==1.1.1)", "furo (==2023.03.27)", "rstobj (==1.2.1)", "sphinx (==5.3.0)", "sphinx-copybutton (==0.5.1)", "sphinx-jinja (==2.0.2)"]
+tests = ["moto", "pytest", "pytest-cov", "rich"]
+
+[[package]]
 name = "aws-lambda-event"
 version = "2.0.2"
 description = "Class Interface for AWS Lambda event."
@@ -1047,21 +1067,21 @@ tests = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "jaraco-classes"
-version = "3.3.0"
+version = "3.3.1"
 description = "Utility functions for Python class constructs"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jaraco.classes-3.3.0-py3-none-any.whl", hash = "sha256:10afa92b6743f25c0cf5f37c6bb6e18e2c5bb84a16527ccfc0040ea377e7aaeb"},
-    {file = "jaraco.classes-3.3.0.tar.gz", hash = "sha256:c063dd08e89217cee02c8d5e5ec560f2c8ce6cdc2fcdc2e68f7b2e5547ed3621"},
+    {file = "jaraco.classes-3.3.1-py3-none-any.whl", hash = "sha256:86b534de565381f6b3c1c830d13f931d7be1a75f0081c57dff615578676e2206"},
+    {file = "jaraco.classes-3.3.1.tar.gz", hash = "sha256:cb28a5ebda8bc47d8c8015307d93163464f9f2b91ab4006e09ff0ce07e8bfb30"},
 ]
 
 [package.dependencies]
 more-itertools = "*"
 
 [package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
-testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
 
 [[package]]
 name = "jeepney"
@@ -1592,6 +1612,23 @@ files = [
 [package.extras]
 plugins = ["importlib-metadata"]
 windows-terminal = ["colorama (>=0.4.6)"]
+
+[[package]]
+name = "pynamodb"
+version = "5.5.1"
+description = "A Pythonic Interface to DynamoDB"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pynamodb-5.5.1-py3-none-any.whl", hash = "sha256:6aa659c11d4a8a18ef2d75392a08828d45ab9eefb9638871d455929a52d66fc3"},
+    {file = "pynamodb-5.5.1.tar.gz", hash = "sha256:b9d9a59afd9edbc3db63a267e67db764831f277477ae744ed4febb778ef1a098"},
+]
+
+[package.dependencies]
+botocore = ">=1.12.54"
+
+[package.extras]
+signals = ["blinker (>=1.3,<2.0)"]
 
 [[package]]
 name = "pyproject-hooks"
@@ -2404,13 +2441,13 @@ files = [
 
 [[package]]
 name = "tqdm"
-version = "4.66.1"
+version = "4.66.2"
 description = "Fast, Extensible Progress Meter"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "tqdm-4.66.1-py3-none-any.whl", hash = "sha256:d302b3c5b53d47bce91fea46679d9c3c6508cf6332229aa1e7d8653723793386"},
-    {file = "tqdm-4.66.1.tar.gz", hash = "sha256:d88e651f9db8d8551a62556d3cff9e3034274ca5d66e93197cf2490e2dcb69c7"},
+    {file = "tqdm-4.66.2-py3-none-any.whl", hash = "sha256:1ee4f8a893eb9bef51c6e35730cebf234d5d0b6bd112b0271e10ed7c24a02bd9"},
+    {file = "tqdm-4.66.2.tar.gz", hash = "sha256:6cd52cdf0fef0e0f543299cfc96fec90d7b8a7e88745f411ec33eb44d5ed3531"},
 ]
 
 [package.dependencies]
@@ -2512,6 +2549,26 @@ files = [
 brotli = ["brotli (==1.0.9)", "brotli (>=1.0.9)", "brotlicffi (>=0.8.0)", "brotlipy (>=0.6.0)"]
 secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)", "urllib3-secure-extra"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
+
+[[package]]
+name = "versioned"
+version = "0.6.1"
+description = "The version and alias best practice for immutable artifacts and deployment."
+optional = false
+python-versions = "*"
+files = [
+    {file = "versioned-0.6.1-py3-none-any.whl", hash = "sha256:1f35177edd7435bec3cc7567f05bbdf82fdf3e84feb8ba9c515b484bd124b84c"},
+    {file = "versioned-0.6.1.tar.gz", hash = "sha256:7d1287eb3a053f2fe974bff1562721e3f636b05cca51fb6579b34dda80506133"},
+]
+
+[package.dependencies]
+boto-session-manager = ">=1.5.3,<2.0.0"
+pynamodb = ">=5.0.0,<6.0.0"
+s3pathlib = ">=2.0.1,<3.0.0"
+
+[package.extras]
+docs = ["docfly (==1.1.1)", "furo (==2023.03.27)", "rstobj (==1.2.1)", "sphinx (==5.3.0)", "sphinx-copybutton (==0.5.1)", "sphinx-jinja (==2.0.2)"]
+tests = ["moto", "pytest", "pytest-cov", "rich"]
 
 [[package]]
 name = "virtualenv"
@@ -2677,4 +2734,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "633538316814cd6c66216dd79839c797d5d6159c8ce0526feb80ec7908c141f8"
+content-hash = "7414b0c2874a7da4f92564d2daa7d48f6312e60fc6f2514ff85441bf8389e09c"

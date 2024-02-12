@@ -4,6 +4,9 @@ aws-arns==1.4.3 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" 
 aws-console-url==1.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:5ab29d0fd682759fa6bc3f1198777ecb790103f95d89337fca9a56ec1399116b \
     --hash=sha256:bc9ae2d32f710441e16c093d2d7b0e22efa169fe056ff2b2a453c3430436ab77
+aws-glue-artifact==0.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:9449c75875af0decf72c31dc892f64125de3d677e3415b95b4c81490ade3e70e \
+    --hash=sha256:a4d9f2c7cc58ae9c4d5dc24c145faef991e553e587b22e46e4395286299fb041
 aws-lambda-event==2.0.2 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:30f2da7d03f4bb70ffab9f33082864bb9e833f0693a350066c83008eea2573a6 \
     --hash=sha256:3a72c88cd975e5d8a25ea0540f477aedf4f60a652f6fafe2831008aa19628a40
@@ -75,3 +78,6 @@ typing-extensions==4.9.0 ; python_version >= "3.9.dev0" and python_version < "3.
 urllib3==1.26.18 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:34b97092d7e0a3a8cf7cd10e386f401b3737364026c45e622aa02903dffe0f07 \
     --hash=sha256:f8ecc1bba5667413457c529ab955bf8c67b45db799d159066261719e328580a0
+versioned==0.6.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:1f35177edd7435bec3cc7567f05bbdf82fdf3e84feb8ba9c515b484bd124b84c \
+    --hash=sha256:7d1287eb3a053f2fe974bff1562721e3f636b05cca51fb6579b34dda80506133
