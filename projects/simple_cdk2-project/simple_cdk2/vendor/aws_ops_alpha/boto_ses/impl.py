@@ -138,6 +138,11 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
         AWS CLI named profile name. Normally, it should have the following keys:
         ``devops``, ``sbx``, ``tst``, ``stg``, ``prd``.
     :param aws_region: if specified, use this region name to create the boto session.
+
+    .. note::
+
+        There's no need for special handling in AWS Glue local container runtime.
+        Because we mount the ${HOME}/.aws directory to the container.
     """
 
     runtime: "Runtime" = dataclasses.field()
@@ -297,7 +302,6 @@ class AlphaBotoSesFactory(AbstractBotoSesFactory):
                 return bsm_devops
             else:
                 return BotoSesManager.from_snapshot_file(path=path_bsm_snapshot)
-        # todo: add logic to inject devops boto session manager to glue container runtime
         else:  # pragma: no cover
             raise RuntimeError
 
