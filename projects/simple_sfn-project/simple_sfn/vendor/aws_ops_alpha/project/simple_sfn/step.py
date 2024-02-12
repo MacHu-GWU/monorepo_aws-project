@@ -12,7 +12,6 @@ import typing as T
 # --- third party library (include vendor)
 import aws_console_url.api as aws_console_url
 import tt4human.api as tt4human
-from ...vendor.emoji import Emoji
 from ...vendor.aws_stepfunction_version_and_alias import (
     publish_version,
     deploy_alias,

@@ -84,6 +84,8 @@ jobs:
           python bin/s02_10_setup_venv_in_ci.py
       - name: === ✅ START MAIN LOGICS ===
         run: echo "START MAIN LOGICS"
+      # This is a step function project, if you don't deploy any Lambda Function alone with the step function,
+      # You can remove this Step.
       - name: 🏗️ Build Lambda Source Artifacts
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
@@ -92,6 +94,8 @@ jobs:
         working-directory: ${{ env.DIR_PROJECT }}
         run: |
           .venv/bin/python bin/s03_02_run_cov_test.py
+      # This is a step function project, if you don't deploy any Lambda Function alone with the step function,
+      # You can remove this Step.
       - name: 🏗️ Build Lambda Layer
         if: ${{ startsWith(github.ref, 'refs/heads/simple_sfn/layer') }}
         working-directory: ${{ env.DIR_PROJECT }}

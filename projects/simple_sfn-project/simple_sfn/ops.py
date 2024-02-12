@@ -407,30 +407,17 @@ def create_important_url_table():
     import aws_console_url.api as aws_console_url
 
     aws = aws_console_url.AWSConsole.from_bsm(boto_ses_factory.bsm_devops)
-    name_and_url_list = [
-        ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
-        (
-            "cloudformation stacks",
-            aws.cloudformation.filter_stack(config.project_name_slug),
-        ),
-        ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
-        ("lambda layer", aws.awslambda.filter_layers(config.env.lambda_layer_name)),
-    ] + [
-        (
-            f"state machine - {state_machine.short_name}",
-            aws.step_function.get_state_machine_view_tab(state_machine.arn),
-        )
-        for state_machine in config.env.state_machine_list
-    ]
-    for name, url in name_and_url_list:
-        print(f"{name}: {url}")
     return aws_ops_alpha.rich_helpers.create_url_table(
         # fmt: off
         name_and_url_list=[
             ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
             ("cloudformation stacks", aws.cloudformation.filter_stack(config.project_name_slug)),
-            ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
             ("lambda layer", aws.awslambda.filter_layers(config.env.lambda_layer_name)),
+            ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
+        ] + [
+            (f"lambda function - {lbd_func.short_name}",
+             aws.awslambda.get_function(lbd_func.name))
+            for lbd_func in config.env.lambda_function_list
         ] + [
           (f"state machine - {state_machine.short_name}", aws.step_function.get_state_machine_view_tab(state_machine.arn))
           for state_machine in config.env.state_machine_list
