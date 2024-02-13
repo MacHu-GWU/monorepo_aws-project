@@ -25,11 +25,4 @@ To understand how we manage versioned deployment in the code, let's review the f
    :emphasize-lines: 70-79
    :linenos:
 
-3. ``bin/automation/deploy.py``: This section of the CI automation script contains the ``publish_lambda_version()`` function, which publishes a new version from the ``LATEST`` Lambda functions. This function is called only after a successful deployment in the production environment.
-
-.. literalinclude:: ../../../../bin/automation/deploy.py
-   :language: python
-   :emphasize-lines: 40-62
-   :linenos:
-
 With this setup, we always use the ``LATEST`` version in the ``sbx`` and ``tst`` environments for development and testing. For each successful deployment to production, we create an immutable version. To change the target version, update the ``config.json`` file and rerun the CodePipeline. This process does not involve a full deployment; Instead, it just updates the alias and points to the desired version.

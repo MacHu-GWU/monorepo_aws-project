@@ -7,22 +7,25 @@ Next, let's walkthrough the code that is related to IAC.
 
 The ``cdk`` folder
 ------------------------------------------------------------------------------
-The ``cdk`` folder is the CDK official convention where you should store your IAC declaration code and where you should run the ``cdk deploy`` command. However, for enterprise project, we should break down complicated logics into modules for better maintainability. The ``cdk/app.py`` script just import the declaration code from the ``${python_lib_name}/iac/`` Python modules.
+The ``cdk`` folder is the CDK official convention where you should store your IAC declaration code and where you should run the ``cdk deploy`` command. However, for enterprise project, we should break down complicated logics into modules for better maintainability. The ``cdk/app.py`` script just import the declaration code from the ``simple_lambda/iac/`` Python modules.
 
 
-The ``${python_lib_name}/iac/`` Python Modules
+The ``simple_lambda/iac/`` Python Modules
 ------------------------------------------------------------------------------
-``${python_lib_name}/iac/`` is the root folder of the infrastructure as code source code. Below are the list of important files related to Infrastructure as Code::
+``simple_lambda/iac/`` is the root folder of the infrastructure as code source code. Below are the list of important files related to Infrastructure as Code::
 
-    ${python_lib_name}/iac # the root folder of the infrastructure as code source code
-    ${python_lib_name}/iac/define/ # CDK stack declaration
-    ${python_lib_name}/iac/define/main.py # centralized CDK stack object, AWS resources are break down into sub-modules
-    ${python_lib_name}/iac/define/iam.py # IAM related AWS resources
-    ${python_lib_name}/iac/define/lbd.py # Lambda function related AWS resources
-    ${python_lib_name}/iac/exports.py # CDK stack output exports for other projects to use
+    simple_lambda/iac # the root folder of the infrastructure as code source code
+    simple_lambda/iac/define/ # CDK stack declaration code
+    simple_lambda/iac/define/main.py # centralized CDK stack object, AWS resources are break down into sub-modules
+    simple_lambda/iac/define/iam.py # IAM related AWS resources
+    simple_lambda/iac/define/lbd.py # Lambda function related AWS resources
+    simple_lambda/iac/exports.py # CDK stack output exports for other projects to use
     tests/iac/test_iac_define.py # the unit test for CDK stack declaration
     tests_int/iac/test_iac_exports.py # the integration test for deployed CDK stack output exports
 
+
+CDK Stack Declaration
+------------------------------------------------------------------------------
 The ``main.py`` is a module to choose what IAC module you want to includes. It just import other IAC modules.
 
 .. literalinclude:: ../../../../simple_lambda/iac/define/main.py
@@ -42,13 +45,14 @@ The ``exports.py`` module can be copied to other projects to access IAC output v
    :linenos:
 
 
-The CDK deployment Automation Script
+Deploy CDK Stack
 ------------------------------------------------------------------------------
-This project comes with a command line tool to deploy the CDK stack
+You can run ``make deploy-app`` locally to deploy CDK Stack.
 
-.. literalinclude:: ../../../../bin/automation/deploy.py
-   :language: python
-   :linenos:
+
+CDK Stack Output Exports
+------------------------------------------------------------------------------
+todo
 
 
 IAC Development Workflow

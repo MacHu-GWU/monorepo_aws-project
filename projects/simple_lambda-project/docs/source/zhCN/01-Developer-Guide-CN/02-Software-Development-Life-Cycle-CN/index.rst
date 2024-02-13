@@ -51,7 +51,7 @@ Software Development Life Cycle (SDLC) [CN]
 
 2.1 SDLC - Feature Development
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-一个发布周期的第一步就是开发新功能.
+一个发布周期的往往起始于开发新功能.
 
 1. 创建一个 ``simple_lambda/feature/${description}`` 的 branch, 它的命名规则是 ``${du_name}/feature/${description}``.
 2. 这个项目的所有 SDLC 自动化脚本都是用 Python 实现的, 并且有一些依赖. 你需要在你的全局 Python, 通常是用 `pyenv <https://github.com/pyenv/pyenv>`_ 安装的 Python (注意, 不是你的系统 Python) 运行下面的命令来安装依赖::
