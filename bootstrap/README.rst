@@ -34,13 +34,6 @@ Prerequisites
     - ``PRD_AWS_ACCOUNT_ID``: the production aws account id
 
 
-Run
+Run Boostrap Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Then run the following script using the command ``python /path/to/file_name.py`` in sequence. Any Python>=3.8 is OK, it doesn't have to be the virtualenv Python, it will find the virtualenv Python automatically.
-
-1. `s1_setup_venv.py <./s1_setup_venv.py>`_:
-2. `s2_cdk_bootstrap.py <./s2_cdk_bootstrap.py>`_:
-3. `s3_setup_github_action_oidc.py <./s3_setup_github_action_oidc.py>`_:
-4. `s4_setup_cross_account_permission.py <./s4_setup_cross_account_permission.py>`_:
-5. `s5_setup_cross_account_s3_bucket_permission.py <./s5_setup_cross_account_s3_bucket_permission.py>`_:
+Open the `run_bootstrap.py <./run_bootstrap.py#L139>`_ script, scroll to the ``if __name__ == "__main__":`` section. Execute those bootstrap (or teardown) step one by one.
