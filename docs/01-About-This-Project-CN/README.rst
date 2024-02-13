@@ -51,4 +51,4 @@ AWS DevOps Best Practice
 
 What's Next
 ------------------------------------------------------------------------------
-Read `How to Use This Project <../02-How-to-Use-This-Project/index.rst>`_
+Read `How to Use This Project <../02-How-to-Use-This-Project/README.rst>`_

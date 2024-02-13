@@ -14,4 +14,4 @@ todo
 
 What's Next
 ------------------------------------------------------------------------------
-Read `Template Projects <../03-Template-Projects/index.rst>`_
+Read `Template Projects <../03-Template-Projects/README.rst>`_

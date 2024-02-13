@@ -6,6 +6,6 @@ This project uses GitHub Action Workflow as the CI tool for build, test and depl
 
 Documents:
 
-- `01-About-This-Project-CN <./docs/01-About-This-Project-CN/index.rst>`_
-- `02-How-to-Use-This-Project <./docs/02-How-to-Use-This-Project/index.rst>`_
-- `03-Template-Projects <./docs/03-Template-Projects/index.rst>`_
+- `01-About-This-Project-CN <./docs/01-About-This-Project-CN/README.rst>`_
+- `02-How-to-Use-This-Project <./docs/02-How-to-Use-This-Project/README.rst>`_
+- `03-Template-Projects <./docs/03-Template-Projects/README.rst>`_
