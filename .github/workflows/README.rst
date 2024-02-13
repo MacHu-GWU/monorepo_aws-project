@@ -24,6 +24,11 @@ dummy_lambda_app
 除了 ``dummy_lambda_app`` 之外, 你还能看到 ``simple_cdk1``, ``simple_cdk2``, ``simple_lambda`` 等等 这些 Project 都是用的类似的设置.
 
 
+The simple_lambda Example
+------------------------------------------------------------------------------
+为了更好的理解我们是如何使用 GitHub Action 进行 CI/CD 的, 建议仔细阅读 `simple_lambda.yml <./simple_lambda.yml>`_ 和 `simple_lambda-deploy.yml <./simple_lambda-deploy.yml>`_ 这两个文件中的注释. ``simple_lambda`` 是一个用来展示如何部署 AWS Lambda Function 的例子. 其中包含了, 创建虚拟环境, 安装依赖, 执行单元测试, 构建 Lambda Layer 依赖, 部署 AWS CDK Stack, 执行集成测试, 并按照 sbx, tst, prd 的顺序把这一套流程再执行一遍. 其他的项目跟这个例子的流程是类似的.
+
+
 simple_release
 ------------------------------------------------------------------------------
 按照微服务架构的设计, 每个 Project 都是一个可以单独部署的微服务. 而有的时候我们需要将多个微服务一起部署. 这个 Workflow 就是用来服务这个场景的. 它的本质就是以并行或者串行的方式运行前面的 ``${name}.yml``.

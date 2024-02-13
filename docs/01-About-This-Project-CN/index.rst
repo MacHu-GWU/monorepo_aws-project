@@ -22,11 +22,16 @@ About aws_ops_alpha
 
 About monorepo_aws
 ------------------------------------------------------------------------------
-虽然 ``aws_ops_alpha`` 支持多种 CI 工具, 包括 GitHub Action 和 AWS CodeBuild 等. 在这个 ``monorepo_aws-project`` 项目中, 我们使用 GitHub Action 作为 CI 工具. 使用 monorepo 作为项目目录结构. 以后任何时候我只要做企业级的 AWS 项目, 我就只需要 clone 这个 repo, 然后用种子项目模版为新项目生成代码库, 并且一键配置好所有的基础设施. 在过去, 为了一个新项目我可能需要几天时间来搭建基础设施. 现在, 我只需要几分钟时间就可以开始写核心业务逻辑了, 并在几分钟内就能将 App 按照顺序从 sandbox, test, 一路部署到 production 中 (该工具支持任意多的 environment, 不仅仅是 sbx, tst, prd).
+虽然 ``aws_ops_alpha`` 支持多种 CI 工具, 包括 GitHub Action 和 AWS CodeBuild 等. 在这个 ``monorepo_aws-project`` 项目中, **我们使用 GitHub Action 作为 CI 工具**. 使用 monorepo 作为项目目录结构. 以后任何时候我只要做企业级的 AWS 项目, 我就只需要 clone 这个 repo, 然后用种子项目模版为新项目生成代码库, 并且一键配置好所有的基础设施. 在过去, 为了一个新项目我可能需要几天时间来搭建基础设施. 现在, 我只需要几分钟时间就可以开始写核心业务逻辑了, 并在几分钟内就能将 App 按照顺序从 sandbox, test, 一路部署到 production 中 (该工具支持任意多的 environment, 不仅仅是 sbx, tst, prd).
 
 .. note::
 
     由于这个项目使用 GitHub Action 作为 CI 工具, 所以这个项目也 host 在 GitHub 上. 我在 AWS CodeCommit 上也有一个同名的姊妹项目, 它使用 AWS CodeBuild + CodePipeline 作为 CI 工具. 由于我们使用了一层抽象, 所以它们的 90% 的代码是一样的. 大大降低了我同时维护多个项目的工作量.
+
+
+About GitHub Action CI
+------------------------------------------------------------------------------
+请参考 `.github/workflows/README.rst <../../.github/workflows/README.rst>`_. 中的说明.
 
 
 Seed Projects
