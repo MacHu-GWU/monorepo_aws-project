@@ -47,3 +47,8 @@ Seed Projects
 AWS DevOps Best Practice
 ------------------------------------------------------------------------------
 上一段我们介绍了 Seed Project. 这些项目各有独特的侧重点, 但又共享许多通用的最佳实践. 例如如何管理 Git Branching, 如何管理 Dependencies, 如何管理 Configuration 等. 这些内容都在 `aws_ops_alpha 的文档 <https://aws-ops-alpha.readthedocs.io/en/latest/>`_ 中有详细介绍.
+
+
+What's Next
+------------------------------------------------------------------------------
+Read `How to Use This Project <../02-How-to-Use-This-Project/index.rst>`_
