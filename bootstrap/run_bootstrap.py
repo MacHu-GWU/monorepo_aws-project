@@ -121,7 +121,7 @@ def run_teardown_cdk_bootstrap():
 
 
 def run_teardown_github_action_open_id_connection():
-    aws_ops_alpha.boostrap.github_action.teardown_github_aws_ops_alphaaction_open_id_connection(
+    aws_ops_alpha.boostrap.github_action.teardown_github_action_open_id_connection(
         bsm_devops=bsm_devops,
         stack_name=github_stack_name,
     )
