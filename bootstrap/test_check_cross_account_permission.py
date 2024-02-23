@@ -12,26 +12,27 @@ from cross_aws_account_iam_role.api import (
     IamRoleArn,
     print_account_info,
 )
-from python_lib.config_init import config
+from run_bootstrap import (
+    get_iam_resource_name,
+    workload_env_list,
+)
 
 print("the devops (CI/CD) IAM entity:")
 
 bsm = BotoSesManager()
 print_account_info(bsm)
 
-workload_aws_account_id_list = [
-    os.environ["SBX_AWS_ACCOUNT_ID"],
-    os.environ["TST_AWS_ACCOUNT_ID"],
-    os.environ["PRD_AWS_ACCOUNT_ID"],
-]
-for aws_account_id, workload_aws_account in zip(
-    workload_aws_account_id_list,
-    config.cross_account_iam_permission.workload_aws_accounts,
-):
+aws_region = "us-east-1"
+
+for env_name in workload_env_list:
+    aws_account_id = os.environ[f"{env_name.upper()}_AWS_ACCOUNT_ID"]
+    # note: we assume the workload environment and devops environment are in the
+    # same aws region, this may not true in your setup
+    role_name = get_iam_resource_name(env_name, aws_region)
     bsm_assume_role = bsm.assume_role(
         role_arn=IamRoleArn(
             account=aws_account_id,
-            name=workload_aws_account.owner_role_name,
+            name=role_name,
         ).arn,
         duration_seconds=900,
     )
