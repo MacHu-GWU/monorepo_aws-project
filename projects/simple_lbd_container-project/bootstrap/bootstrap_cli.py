@@ -13,7 +13,7 @@ from pathlib_mate import Path
 from boto_session_manager import BotoSesManager
 
 # **replace the AWS profile to the one you want to use**
-bsm = BotoSesManager(profile_name="awshsh_app_dev_us_east_1")
+bsm = BotoSesManager(profile_name="bmt_app_devops_us_east_1")
 dir_bootstrap = Path.dir_here(__file__)
 
 

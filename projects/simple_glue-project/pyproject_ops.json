@@ -12,8 +12,8 @@
     // if you use AWS S3 to host your document website
     // it is the aws profile you use for doc site deployment
     // leave empty string "" if you don't use it
-    "doc_host_aws_profile": "awshsh_app_dev_us_east_1",
+    "doc_host_aws_profile": "bmt_app_devops_us_east_1",
     // it is the aws s3 bucket you use to store you document files
-    "doc_host_s3_bucket": "awshsh-app-dev-us-east-1-doc-host"
+    "doc_host_s3_bucket": "bmt-app-devops-us-east-1-doc-host"
 }
 
