@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
+
 from boto_session_manager import BotoSesManager
 import aws_ops_alpha.api as aws_ops_alpha
 
@@ -28,6 +30,14 @@ workload_aws_profile_list = [
     tst_aws_profile,
     prd_aws_profile,
 ]
+
+# read github personal access token from file
+github_pac = (
+    Path.home()
+    .joinpath(".github", "pac", "MacHu-GWU-Full-Repo-Access.txt")
+    .read_text()
+    .strip()
+)
 
 # --------------------------------------------------------------------------
 # Don't touch the code below until ``Run bootstrap scripts``
@@ -83,6 +93,14 @@ if __name__ == "__main__":
         for bsm, env_name in zip(workload_bsm_list, workload_env_list)
     ]
 
+    workload_account_bsm_setup_list = [
+        aws_ops_alpha.boostrap.github_action.WorkloadAccountBotoSesManagerSetup(
+            bsm=bsm,
+            env_name=env_name,
+        )
+        for bsm, env_name in zip(workload_bsm_list, workload_env_list)
+    ]
+
     # ------------------------------------------------------------------------------
     # Wrapper function to keep the main function clean
     # ------------------------------------------------------------------------------
@@ -122,6 +140,15 @@ if __name__ == "__main__":
             white_list_your_ip=True,
         )
 
+    def run_setup_github_repository_settings():
+        aws_ops_alpha.boostrap.github_action.setup_github_repository_settings(
+            pac=github_pac,
+            github_org=github_org,
+            github_repo=github_repo,
+            bsm_devops=bsm_devops,
+            workload_account_bsm_setup_list=workload_account_bsm_setup_list,
+        )
+
     def run_teardown_cdk_bootstrap():
         aws_ops_alpha.boostrap.multi_account.teardown_cdk_bootstrap(
             bsm_devops=bsm_devops,
@@ -143,6 +170,14 @@ if __name__ == "__main__":
             workload_account_iam_permission_setup_list=workload_account_iam_permission_setup_list,
         )
 
+    def run_teardown_github_repository_settings():
+        aws_ops_alpha.boostrap.github_action.teardown_github_repository_settings(
+            pac=github_pac,
+            github_org=github_org,
+            github_repo=github_repo,
+            workload_env_list=workload_env_list,
+        )
+
     # --------------------------------------------------------------------------
     # Run bootstrap scripts
     # --------------------------------------------------------------------------
@@ -150,9 +185,11 @@ if __name__ == "__main__":
     # run_setup_github_action_open_id_connection()
     # run_setup_cross_account_iam_permission()
     # run_setup_devops_account_s3_bucket()
+    # run_setup_github_repository_settings()
 
     # run_teardown_cross_account_iam_permission()
     # run_teardown_github_action_open_id_connection()
     # run_teardown_cdk_bootstrap()
+    # run_teardown_github_repository_settings()
 
     pass
