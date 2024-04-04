@@ -19,6 +19,7 @@ from . import paths
 
 
 def _new_project(
+    seed: str,
     dir_seed_project: Path,
     mapper: T.List[T.Tuple[str, str, str]],
     exclude: T.List[str],
@@ -57,6 +58,31 @@ def _new_project(
     ]
     subprocess.run(args, check=True)
 
+    # there are some edge case that the seed project name should not be replaced in the source code
+    print("Run post cookiecutter hook ...")
+    dir_project_root = None
+    for p in paths.dir_template_project.iterdir():
+        if p.is_dir():
+            if not p.name.startswith("{{"):
+                dir_project_root = p
+    package_name = "-".join(dir_project_root.name.split("-")[:-1])
+
+    path_git_py = dir_project_root.joinpath(package_name, "git.py")
+    path_git_py.write_text(
+        path_git_py.read_text().replace(
+            f"aws_ops_alpha.{package_name}",
+            f"aws_ops_alpha.{seed}",
+        )
+    )
+
+    path_ops_py = dir_project_root.joinpath(package_name, "ops.py")
+    path_ops_py.write_text(
+        path_ops_py.read_text().replace(
+            f"{package_name}_project",
+            f"{seed}_project",
+        )
+    )
+
     print(f"preview your project code skeleton at {paths.dir_template_project}")
 
 
@@ -75,6 +101,7 @@ def new_project(
     print(f"🚀 Create a new project like {seed!r}")
     module = importlib.import_module(f"more_project_like_this.seeds.{seed}")
     _new_project(
+        seed=seed,
         dir_seed_project=module.dir_seed_project,
         mapper=module.mapper,
         exclude=module.exclude,
