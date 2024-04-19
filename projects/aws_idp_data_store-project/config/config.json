@@ -20,7 +20,7 @@
             "s3sync": {}
         },
         "*.lambda_functions.*.layers": [
-            "13"
+            "1"
         ],
         "*.lambda_functions.s3sync.timeout": 60,
         "*.lambda_functions.*.timeout": 3,

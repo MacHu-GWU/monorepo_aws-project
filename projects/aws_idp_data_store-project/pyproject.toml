@@ -23,6 +23,9 @@ botocore = "1.33.0"
 boto3 = "1.33.0"
 # advanced boto3 session manager
 boto_session_manager = "1.7.2"
+# Textract tools
+aws_textract_pipeline = "0.1.1"
+aws_textract = "0.1.1"
 # ------------------------------------------------------------------------------
 # AWS DevOps tools
 # ------------------------------------------------------------------------------
@@ -44,8 +47,7 @@ config_patterns = "1.0.6"
 aws_console_url = "1.4.1"
 # build AWS lambda layer and deployment package
 aws_lambda_layer = "0.5.1"
-# build AWS Glue artifact
-aws_glue_artifact = "0.2.1"
+
 # AWS devops best practices
 #aws_ops_alpha = "0.1.1"
 # ------------------------------------------------------------------------------
