@@ -39,11 +39,11 @@ class StackExports:
     _exports: T.Dict[str, str] = dataclasses.field(default_factory=dict)
 
     @property
-    def prefix_name_snake(self) -> str: # pragma: no cover
+    def prefix_name_snake(self) -> str:  # pragma: no cover
         return f"{project_name_snake}-{self.env_name}"
 
     @property
-    def prefix_name_slug(self) -> str: # pragma: no cover
+    def prefix_name_slug(self) -> str:  # pragma: no cover
         return f"{project_name_slug}-{self.env_name}"
 
     @property
@@ -66,3 +66,15 @@ class StackExports:
         # return self._outputs["IamRoleForLambdaArn"]
         # use export name
         return self._exports[f"{self.prefix_name_slug}-lambda-role-arn"]
+
+    def get_iam_role_for_textract_arn(self) -> str:
+        # use output key
+        # return self._outputs["IamRoleForTextract"]
+        # use export name
+        return self._exports[f"{self.prefix_name_slug}-textract-role-arn"]
+
+    def get_sns_topic_for_textract_arn(self) -> str:
+        # use output key
+        # return self._outputs["SNSTopicForTextractArn"]
+        # use export name
+        return self._exports[f"{self.prefix_name_slug}-textract-sns-topic-arn"]

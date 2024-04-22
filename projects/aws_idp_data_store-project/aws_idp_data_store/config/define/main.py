@@ -9,6 +9,7 @@ from ..._api import EnvNameEnum, detect_current_env
 # You may have a long list of config field definition
 # put them in different module and use Mixin class
 from .app import AppMixin
+from .name import NameMixin
 from .lbd_deploy import LambdaDeployMixin
 from .lbd_func import LambdaFunction, LambdaFunctionMixin
 
@@ -19,6 +20,7 @@ from .lbd_func import LambdaFunction, LambdaFunctionMixin
 @dataclasses.dataclass
 class Env(
     AppMixin,
+    NameMixin,
     LambdaDeployMixin,
     LambdaFunctionMixin,
     aws_ops_alpha.BaseEnv,

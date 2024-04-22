@@ -27,7 +27,7 @@ class TextractMixin:
             topic_name=self.env.textract_sns_topic_name,
             fifo=False,
         )
-        self.output_sns_topic_arn = cdk.CfnOutput(
+        self.output_sns_topic_for_textract_arn = cdk.CfnOutput(
             self,
             "SNSTopicForTextractArn",
             value=self.sns_topic_for_textract.topic_arn,
@@ -50,7 +50,7 @@ class TextractMixin:
             self,
             "IamRoleForTextract",
             assumed_by=iam.ServicePrincipal("textract.amazonaws.com"),
-            role_name=f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-textract",
+            role_name=self.env.textract_iam_role_name,
             inline_policies={
                 f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-textract": iam.PolicyDocument(
                     statements=[

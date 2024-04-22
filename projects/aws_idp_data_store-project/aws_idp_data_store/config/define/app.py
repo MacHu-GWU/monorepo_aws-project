@@ -15,6 +15,13 @@ if T.TYPE_CHECKING:  # pragma: no cover
 class AppMixin:
 
     @property
+    def s3dir_documents_data_store(self: "Env") -> S3Path:
+        """
+        The root directory to store all IDP documents data.
+        """
+        return self.s3dir_data.joinpath("documents_data_store").to_dir()
+
+    @property
     def s3dir_source(self: "Env") -> S3Path:
         return self.s3dir_env_data.joinpath("source").to_dir()
 
@@ -49,12 +56,3 @@ class AppMixin:
         tags = super().workload_aws_tags
         tags["tech:package_version"] = __version__
         return tags
-
-    @property
-    def status_tracking_dynamodb_table_name(self: "Env") -> str:
-        return f"{self.project_name_snake}-tracker"
-
-    @property
-    def textract_sns_topic_name(self: "Env") -> str:
-        return f"{self.project_name_snake}-textract"
-

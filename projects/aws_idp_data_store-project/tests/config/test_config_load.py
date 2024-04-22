@@ -12,14 +12,13 @@ def test():
     # app.py
     _ = config.env.s3uri_data
     _ = config.env.s3dir_data
+    _ = config.env.s3dir_documents_data_store
     _ = config.env.s3dir_source
     _ = config.env.s3dir_target
     _ = config.env.env_vars
     _ = config.env.devops_aws_tags
     _ = config.env.workload_aws_tags
     _ = config.env.s3dir_target
-    _ = config.env.status_tracking_dynamodb_table_name
-    _ = config.env.textract_sns_topic_name
 
     # deploy.py
     _ = config.env.s3uri_artifacts
@@ -30,6 +29,13 @@ def test():
     _ = config.env.s3dir_tmp
     _ = config.env.s3dir_config
     _ = config.env.s3dir_docs
+
+    # name.py
+    _ = config.env.status_tracking_dynamodb_table_name
+    _ = config.env.textract_sns_topic_name
+    _ = config.env.textract_sns_topic_arn
+    _ = config.env.textract_iam_role_name
+    _ = config.env.textract_iam_role_arn
 
     # lbd_deploy.py
     _ = config.env.chalice_app_name

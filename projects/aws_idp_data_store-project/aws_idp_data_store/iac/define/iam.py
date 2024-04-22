@@ -78,10 +78,22 @@ class IamMixin:
             ],
         )
 
+        self.stat_sts = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "sts:GetCallerIdentity",
+            ],
+            resources=[
+                "*",
+            ],
+        )
+
         self.stat_textract = iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=[
+                "textract:StartDocumentTextDetection",
                 "textract:StartDocumentAnalysis",
+                "textract:GetDocumentTextDetection",
                 "textract:GetDocumentAnalysis",
             ],
             resources=[
@@ -107,6 +119,7 @@ class IamMixin:
                         self.stat_s3_bucket_read,
                         self.stat_s3_bucket_write,
                         self.stat_dynamodb,
+                        self.stat_sts,
                         self.stat_textract,
                     ]
                 )
