@@ -69,6 +69,9 @@ def test():
 
     _ = config.env.lbd_hello
     _ = config.env.lbd_s3sync
+    _ = config.env.lbd_landing_to_raw
+    _ = config.env.lbd_raw_to_tt
+    _ = config.env.lbd_tt_to_text
 
     # name.py
     _ = config.env.cloudformation_stack_name

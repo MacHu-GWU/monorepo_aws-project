@@ -149,3 +149,15 @@ class LambdaFunctionMixin:
     @property
     def lbd_s3sync(self) -> LambdaFunction:
         return self.lambda_functions["s3sync"]
+
+    @property
+    def lbd_landing_to_raw(self) -> LambdaFunction:
+        return self.lambda_functions["landing_to_raw"]
+
+    @property
+    def lbd_raw_to_tt(self) -> LambdaFunction:
+        return self.lambda_functions["raw_to_tt"]
+
+    @property
+    def lbd_tt_to_text(self) -> LambdaFunction:
+        return self.lambda_functions["tt_to_text"]

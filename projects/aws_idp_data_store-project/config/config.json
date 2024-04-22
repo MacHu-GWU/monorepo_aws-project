@@ -17,12 +17,20 @@
         // ---------------------------------------------------------------------
         "*.lambda_functions": {
             "hello": {},
-            "s3sync": {}
+            "s3sync": {},
+            "landing_to_raw": {},
+            "raw_to_tt": {},
+            "tt_to_text": {}
         },
         "*.lambda_functions.*.layers": [
             "1"
         ],
         "*.lambda_functions.s3sync.timeout": 60,
+        "*.lambda_functions.landing_to_raw.timeout": 10,
+        "*.lambda_functions.raw_to_tt.timeout": 60,
+        "*.lambda_functions.raw_to_tt.memory": 256,
+        "*.lambda_functions.tt_to_text.timeout": 60,
+        "*.lambda_functions.tt_to_text.memory": 256,
         "*.lambda_functions.*.timeout": 3,
         "*.lambda_functions.*.memory": 128,
         "*.lambda_functions.*.iam_role": null,
@@ -42,23 +50,36 @@
         "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/aws_idp_data_store/",
         "lambda_functions": {
             "hello": {},
-            "s3sync": {}
+            "s3sync": {},
+            "landing_to_raw": {
+                "timeout": 10
+            },
+            "raw_to_tt": {},
+            "tt_to_text": {}
         }
     },
     "tst": {
         "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/aws_idp_data_store/",
         "lambda_functions": {
             "hello": {},
-            "s3sync": {}
+            "s3sync": {},
+            "landing_to_raw": {
+                "timeout": 10
+            },
+            "raw_to_tt": {},
+            "tt_to_text": {}
         }
     },
     "prd": {
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/aws_idp_data_store/",
         "lambda_functions": {
-            "hello": {
+            "hello": {},
+            "s3sync": {},
+            "landing_to_raw": {
+                "timeout": 10
             },
-            "s3sync": {
-            }
+            "raw_to_tt": {},
+            "tt_to_text": {}
         }
     }
 }
