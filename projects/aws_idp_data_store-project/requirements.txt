@@ -10,12 +10,12 @@ aws-lambda-event==2.0.2 ; python_version >= "3.9.dev0" and python_version < "3.1
 aws-lambda-layer==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:04f93c57827948744b49e485931de13260e5855aeac57c74c3ef40e48bdd922f \
     --hash=sha256:7a37f89b3a3b1a353bc419e5a9877d563f2885cc4e6bf8ef6eab500e1cdffed0
-aws-textract-pipeline==0.1.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:13a7f6cee57a4c270bc11cc586cc5e9564ba3a30dc3b12a1bab63d6da6465af7 \
-    --hash=sha256:db35b94eb861bb2c99a09790cbac0b73f1302cbc8cc9474771e6337ff6c37d2a
-aws-textract==0.1.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:8da1647c746a67c408311f2d138f4a8fc4c359044d176aaaeb2ac196221078c2 \
-    --hash=sha256:a9b74d2212f63bef5a662913c081fbe43025c9f5c91805e155a7122293c8e66c
+aws-textract-pipeline==0.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:322d35416dcf4198d1bf0b5034f06ab7db105b746b5b0cfb63af484f19059e1f \
+    --hash=sha256:6167705ad21b476c24278a5c41a664059eb4744529272a12f294cb304e3e7923
+aws-textract==0.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:2cbffe13ea605af040dcc7e369422fa020e0e2f4e1040029f68f4f736d1554cc \
+    --hash=sha256:e20a70c35446cca77eb8796406905d58fa76b454de0332f9fd4b059b65149c2b
 boltons==21.0.0 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:65e70a79a731a7fe6e98592ecfb5ccf2115873d01dbc576079874629e5c90f13 \
     --hash=sha256:b9bb7b58b2b420bbe11a6025fdef6d3e5edc9f76a42fb467afe7ca212ef9948b
