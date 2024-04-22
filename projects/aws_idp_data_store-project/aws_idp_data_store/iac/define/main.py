@@ -11,12 +11,14 @@ from ...config.define.api import Env, Config
 from ...git import git_repo
 
 from .iam import IamMixin
+from .textract import TextractMixin
 from .lbd import LambdaMixin
 
 
 class MainStack(
     cdk.Stack,
     IamMixin,
+    TextractMixin,
     LambdaMixin,
 ):
     """
@@ -39,7 +41,8 @@ class MainStack(
         self.config = config
         self.env = env
         self.mk_rg1_iam()
-        self.mk_rg2_lbd()
+        self.mk_rg2_textract()
+        self.mk_rg3_lbd()
 
         for key, value in config.env.workload_aws_tags.items():
             cdk.Tags.of(self).add(key, value)

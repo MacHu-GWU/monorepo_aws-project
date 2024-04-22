@@ -39,7 +39,6 @@
         "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/aws_idp_data_store/"
     },
     "sbx": {
-        "username": "sbx.user",
         "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/aws_idp_data_store/",
         "lambda_functions": {
             "hello": {},
@@ -47,7 +46,6 @@
         }
     },
     "tst": {
-        "username": "tst.user",
         "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/aws_idp_data_store/",
         "lambda_functions": {
             "hello": {},
@@ -55,7 +53,6 @@
         }
     },
     "prd": {
-        "username": "prd.user",
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/aws_idp_data_store/",
         "lambda_functions": {
             "hello": {

@@ -10,16 +10,16 @@ def test():
     _ = config.env
 
     # app.py
-    _ = config.env.username
-    _ = config.env.password
     _ = config.env.s3uri_data
-
     _ = config.env.s3dir_data
     _ = config.env.s3dir_source
     _ = config.env.s3dir_target
     _ = config.env.env_vars
     _ = config.env.devops_aws_tags
     _ = config.env.workload_aws_tags
+    _ = config.env.s3dir_target
+    _ = config.env.status_tracking_dynamodb_table_name
+    _ = config.env.textract_sns_topic_name
 
     # deploy.py
     _ = config.env.s3uri_artifacts

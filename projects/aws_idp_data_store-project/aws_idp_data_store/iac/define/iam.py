@@ -57,6 +57,38 @@ class IamMixin:
             ],
         )
 
+        self.stat_dynamodb = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                # read
+                "dynamodb:DescribeTable",
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                # write
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+            ],
+            resources=[
+                f"arn:aws:dynamodb:{cdk.Aws.REGION}:{cdk.Aws.ACCOUNT_ID}:table/{self.env.status_tracking_dynamodb_table_name}",
+                f"arn:aws:dynamodb:{cdk.Aws.REGION}:{cdk.Aws.ACCOUNT_ID}:table/{self.env.status_tracking_dynamodb_table_name}/index/*",
+            ],
+        )
+
+        self.stat_textract = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "textract:StartDocumentAnalysis",
+                "textract:GetDocumentAnalysis",
+            ],
+            resources=[
+                "*",
+            ],
+        )
+
         # declare iam role
         self.iam_role_for_lambda = iam.Role(
             self,
@@ -74,6 +106,8 @@ class IamMixin:
                         self.stat_parameter_store,
                         self.stat_s3_bucket_read,
                         self.stat_s3_bucket_write,
+                        self.stat_dynamodb,
+                        self.stat_textract,
                     ]
                 )
             },

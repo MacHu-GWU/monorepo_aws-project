@@ -13,8 +13,6 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 @dataclasses.dataclass
 class AppMixin:
-    username: T.Optional[str] = dataclasses.field(default=None)
-    password: T.Optional[str] = dataclasses.field(default=None)
 
     @property
     def s3dir_source(self: "Env") -> S3Path:
@@ -51,3 +49,12 @@ class AppMixin:
         tags = super().workload_aws_tags
         tags["tech:package_version"] = __version__
         return tags
+
+    @property
+    def status_tracking_dynamodb_table_name(self: "Env") -> str:
+        return f"{self.project_name_snake}-tracker"
+
+    @property
+    def textract_sns_topic_name(self: "Env") -> str:
+        return f"{self.project_name_snake}-textract"
+

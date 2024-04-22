@@ -27,7 +27,7 @@ USER_ENV_NAME = aws_ops_alpha.EnvVarNameEnum.USER_ENV_NAME.value
 
 
 class LambdaMixin:
-    def mk_rg2_lbd(self: "MainStack"):
+    def mk_rg3_lbd(self: "MainStack"):
         # fmt: off
         source_sha256 = hashes.of_paths([dir_lambda_deploy])
         KEY_FUNC = "func"
