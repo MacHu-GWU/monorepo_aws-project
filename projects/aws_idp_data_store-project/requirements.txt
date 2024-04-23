@@ -10,9 +10,9 @@ aws-lambda-event==2.0.2 ; python_version >= "3.9.dev0" and python_version < "3.1
 aws-lambda-layer==0.5.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:04f93c57827948744b49e485931de13260e5855aeac57c74c3ef40e48bdd922f \
     --hash=sha256:7a37f89b3a3b1a353bc419e5a9877d563f2885cc4e6bf8ef6eab500e1cdffed0
-aws-textract-pipeline==0.3.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
-    --hash=sha256:506b50665291cdc56d939d48bb58496c655cea74a04610f6dc79ec957ebe105f \
-    --hash=sha256:88b7797122cdb6baa7ef55b42164273b6e3731e1355740868b43414e3910e149
+aws-textract-pipeline==0.4.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
+    --hash=sha256:18a896da559b2ed498c1c3910844a8bd0a615fe7e288916911033932a474921c \
+    --hash=sha256:f3c1b77bf9457aeb4c58df4d35246edcc0f7913d2b32f824ad0b7cb237dec18b
 aws-textract==0.2.1 ; python_version >= "3.9.dev0" and python_version < "3.10.dev0" \
     --hash=sha256:2cbffe13ea605af040dcc7e369422fa020e0e2f4e1040029f68f4f736d1554cc \
     --hash=sha256:e20a70c35446cca77eb8796406905d58fa76b454de0332f9fd4b059b65149c2b

@@ -41,7 +41,10 @@
         "*.lambda_functions.*.live_version2": null,
         "*.lambda_functions.*.live_version2_percentage": null,
         "*.lambda_functions.hello.handler": "hello_handler",
-        "*.lambda_functions.s3sync.handler": "s3sync_handler"
+        "*.lambda_functions.s3sync.handler": "s3sync_handler",
+        "*.lambda_functions.landing_to_raw.handler": "landing_to_raw_handler",
+        "*.lambda_functions.raw_to_tt.handler": "raw_to_tt_handler",
+        "*.lambda_functions.tt_to_text.handler": "tt_to_text_handler"
     },
     "devops": {
         "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/aws_idp_data_store/"

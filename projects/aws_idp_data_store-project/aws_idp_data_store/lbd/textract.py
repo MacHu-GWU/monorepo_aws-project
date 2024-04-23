@@ -41,7 +41,7 @@ def lambda_handler(event: dict, context):  # pragma: no cover
     if "Records" in event:
         # s3 event
         if "s3" in event["Records"][0]:
-            s3_put_event = S3PutEvent.from_dict(**event)
+            s3_put_event = S3PutEvent.from_dict(event)
             s3uri = s3_put_event.Records[0].uri
             s3path = S3Path(s3uri)
             if s3uri.startswith(workspace.s3dir_landing.uri):
@@ -76,7 +76,7 @@ def lambda_handler(event: dict, context):  # pragma: no cover
 
         # sns event
         elif "Sns" in event["Records"][0]:
-            sns_event = SNSTopicNotificationEvent.from_dict(**event)
+            sns_event = SNSTopicNotificationEvent.from_dict(event)
             textract_event = TextractEvent.from_dict(
                 json.loads(sns_event.Records[0].message)
             )
