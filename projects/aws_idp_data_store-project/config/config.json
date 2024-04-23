@@ -23,7 +23,7 @@
             "tt_to_text": {}
         },
         "*.lambda_functions.*.layers": [
-            "1"
+            "3"
         ],
         "*.lambda_functions.s3sync.timeout": 60,
         "*.lambda_functions.landing_to_raw.timeout": 10,
