@@ -48,7 +48,8 @@ def lambda_handler(event: dict, context):  # pragma: no cover
                 tracker = Tracker.new_from_landing_doc(
                     bsm=bsm,
                     landing_doc=aws_textract_pipeline.LandingDocument.load(
-                        bsm=bsm, s3path=s3path
+                        bsm=bsm,
+                        s3path=s3path,
                     ),
                 )
                 tracker.landing_to_raw(bsm=bsm, workspace=workspace, debug=True)
@@ -67,7 +68,6 @@ def lambda_handler(event: dict, context):  # pragma: no cover
                     bsm=bsm,
                     workspace=workspace,
                     debug=True,
-                    use_form_feature=True,
                     sns_topic_arn=config.env.textract_sns_topic_arn,
                     role_arn=config.env.textract_iam_role_arn,
                 )

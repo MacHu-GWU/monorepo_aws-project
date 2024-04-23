@@ -389,6 +389,7 @@ def create_important_url_table():
             # fmt: off
             ("parameter store", aws.ssm.filter_parameters(config.parameter_name)),
             ("cloudformation stacks", aws.cloudformation.filter_stack(config.project_name_slug)),
+            ("dynamodb table", aws.dynamodb.get_table_items(config.env.status_tracking_dynamodb_table_name)),
             ("lambda functions", aws.awslambda.filter_functions(config.project_name)),
             ("lambda layer", aws.awslambda.filter_layers(config.env.lambda_layer_name)),
             # fmt: on

@@ -14,5 +14,6 @@ s3path = workspace.s3dir_landing.joinpath(path.basename)
 landing_doc = aws_textract_pipeline.LandingDocument(
     s3uri=s3path.uri,
     doc_type=aws_textract_pipeline.DocTypeEnum.pdf.value,
+    features=["FORMS"],
 )
 landing_doc.dump(bsm=bsm, body=path.read_bytes())

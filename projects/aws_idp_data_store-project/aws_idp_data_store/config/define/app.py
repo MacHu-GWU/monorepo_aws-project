@@ -19,7 +19,7 @@ class AppMixin:
         """
         The root directory to store all IDP documents data.
         """
-        return self.s3dir_data.joinpath("documents_data_store").to_dir()
+        return self.s3dir_env_data.joinpath("documents_data_store").to_dir()
 
     @property
     def s3dir_source(self: "Env") -> S3Path:
