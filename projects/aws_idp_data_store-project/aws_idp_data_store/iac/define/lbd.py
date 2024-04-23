@@ -7,6 +7,7 @@ from aws_cdk import (
     aws_iam as iam,
     aws_s3 as s3,
     aws_s3_notifications as s3_notifications,
+    aws_sns_subscriptions as sns_subscriptions,
     aws_lambda as lambda_,
 )
 
@@ -17,6 +18,7 @@ from ...paths import (
 )
 from ...git import git_repo
 from ...boto_ses import boto_ses_factory
+from ...lbd.textract import workspace
 from ...vendor.hashes import hashes
 
 if T.TYPE_CHECKING:  # pragma: no cover
@@ -185,6 +187,42 @@ class LambdaMixin:
             s3.NotificationKeyFilter(
                 prefix=f"{self.env.s3dir_source.key}",
             ),
+        )
+
+        bucket.add_event_notification(
+            s3.EventType.OBJECT_CREATED,
+            s3_notifications.LambdaDestination(
+                lambda_.Function.from_function_attributes(
+                    self,
+                    f"LambdaAliasAttribute{self.env.lbd_landing_to_raw.short_name_camel}",
+                    function_arn=self.lambda_func_mapper[self.env.lbd_landing_to_raw.name][KEY_ALIAS].function_arn,
+                    same_environment=True,
+                ),
+            ),
+            s3.NotificationKeyFilter(
+                prefix=f"{workspace.s3dir_landing.key}",
+            ),
+        )
+
+        bucket.add_event_notification(
+            s3.EventType.OBJECT_CREATED,
+            s3_notifications.LambdaDestination(
+                lambda_.Function.from_function_attributes(
+                    self,
+                    f"LambdaAliasAttribute{self.env.lbd_raw_to_tt.short_name_camel}",
+                    function_arn=self.lambda_func_mapper[self.env.lbd_raw_to_tt.name][KEY_ALIAS].function_arn,
+                    same_environment=True,
+                ),
+            ),
+            s3.NotificationKeyFilter(
+                prefix=f"{workspace.s3dir_raw.key}",
+            ),
+        )
+
+        self.sns_topic_for_textract.add_subscription(
+            sns_subscriptions.LambdaSubscription(
+                self.lambda_func_mapper[self.env.lbd_tt_to_text.name][KEY_ALIAS].lambda_
+            )
         )
 
         # add custom resource tags to Lambda Function

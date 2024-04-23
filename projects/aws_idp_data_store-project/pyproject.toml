@@ -24,7 +24,7 @@ boto3 = "1.33.0"
 # advanced boto3 session manager
 boto_session_manager = "1.7.2"
 # Textract tools
-aws_textract_pipeline = "0.2.1"
+aws_textract_pipeline = "0.3.1"
 # ------------------------------------------------------------------------------
 # AWS DevOps tools
 # ------------------------------------------------------------------------------

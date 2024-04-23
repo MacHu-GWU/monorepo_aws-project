@@ -216,13 +216,13 @@ tests = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "aws-textract-pipeline"
-version = "0.2.1"
+version = "0.3.1"
 description = "Package short description."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "aws_textract_pipeline-0.2.1-py3-none-any.whl", hash = "sha256:322d35416dcf4198d1bf0b5034f06ab7db105b746b5b0cfb63af484f19059e1f"},
-    {file = "aws_textract_pipeline-0.2.1.tar.gz", hash = "sha256:6167705ad21b476c24278a5c41a664059eb4744529272a12f294cb304e3e7923"},
+    {file = "aws_textract_pipeline-0.3.1-py3-none-any.whl", hash = "sha256:88b7797122cdb6baa7ef55b42164273b6e3731e1355740868b43414e3910e149"},
+    {file = "aws_textract_pipeline-0.3.1.tar.gz", hash = "sha256:506b50665291cdc56d939d48bb58496c655cea74a04610f6dc79ec957ebe105f"},
 ]
 
 [package.dependencies]
@@ -3148,4 +3148,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "3.9.*"
-content-hash = "ff998a542716e5563d133d794ec1cea1e6c2828c6559e1b4f6210a49c5599bb2"
+content-hash = "c8115618fb0b7777a89fa6a23c7df216098ccd72a02b95f2a936efa422c83098"
