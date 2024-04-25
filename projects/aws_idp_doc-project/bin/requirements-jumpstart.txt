@@ -1,0 +1,7 @@
+# this is the dependencies you need for the make command automation
+# make command uses the global Python to create the virtualenv and install
+# dependencies into it. However, the create virtualenv
+virtualenv
+poetry==1.6.1
+pyproject_ops==0.7.2
+tomli==2.0.1
