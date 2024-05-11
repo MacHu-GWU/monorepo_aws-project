@@ -1,6 +1,6 @@
 Welcome to ``aws_idp_doc`` Documentation
 ==============================================================================
-This is the main documentation for AWS Intelligent Document Processing Solution. It gives you an overview about this solution and will walk you through all sub-projects.
+该项目是 ``aws_idp`` 项目中的一个子模块, 实现了 `Data Store <https://bmt-app-devops-us-east-1-doc-host.s3.amazonaws.com/projects/monorepo_aws/aws_idp_doc/latest/03-Data-Store/index.html>`_ 中提到的模块.
 
 For doc maintainer, please run the following command to build project documentation website and read it::
 
@@ -21,4 +21,3 @@ For doc maintainer, please run the following command to build project documentat
 
     # View latest documentation website on S3
     make view-latest-doc
-

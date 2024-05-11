@@ -27,6 +27,8 @@ Related Open Source Project
 - `aws_textract_pipeline <https://github.com/MacHu-GWU/aws_textract_pipeline-project>`_: 这套 Solution 的底层 Python 实现. 不包含 AWS 的服务, 只是在内存里的纯计算. 这套实现可以用任何平台部署, 不局限于 AWS 平台. 并且既可以用虚拟机或容器的形式作为 Batch Job 部署, 也可以用 Event driven 的架构用于实时处理. 由 Sanhe Hu 维护.
 
 
+.. _aws-idp-main-diagram:
+
 Architecture Diagram
 ------------------------------------------------------------------------------
 .. raw:: html
