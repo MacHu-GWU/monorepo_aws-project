@@ -1,6 +1,6 @@
 Welcome to ``aws_idp_doc`` Documentation
 ==============================================================================
-This is the document site source code for ``aws_idp`` project. ``aws_idp`` is highly modularized solution for intelligent document processing on AWS.
+This is the main documentation for AWS Intelligent Document Processing Solution. It gives you an overview about this solution and will walk you through all sub-projects.
 
 For doc maintainer, please run the following command to build project documentation website and read it::
 
