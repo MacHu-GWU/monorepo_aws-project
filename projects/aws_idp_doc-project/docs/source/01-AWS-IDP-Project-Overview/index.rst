@@ -13,12 +13,12 @@ AWS IDP Project
 ------------------------------------------------------------------------------
 AWS IDP 项目由多个可单独部署的模块组成:
 
-- `aws_idp_doc-project`: 项目文档.
-- `aws_idp_doc_store-project`: data ingestion, document data pre-processing, document data storage.
-- `aws_idp_annotator-project`: 负责给数据打标签, 用于训练模型.
-- `aws_idp_hil-project`: 人工审核 ML 模型的预测结果, 以及审核 data extraction 的结果.
-- `aws_idp_doc_classify-project`: 对文档进行分类的 ML 模型.
-- `aws_idp_data_extract-project`: 从文档中提取数据的程序.
+- ``aws_idp_doc-project``: 项目文档.
+- ``aws_idp_doc_store-project``: data ingestion, document data pre-processing, document data storage.
+- ``aws_idp_annotator-project``: 负责给数据打标签, 用于训练模型.
+- ``aws_idp_hil-project``: 人工审核 ML 模型的预测结果, 以及审核 data extraction 的结果.
+- ``aws_idp_doc_classify-project``: 对文档进行分类的 ML 模型.
+- ``aws_idp_data_extract-project``: 从文档中提取数据的程序.
 
 
 Related Open Source Project
