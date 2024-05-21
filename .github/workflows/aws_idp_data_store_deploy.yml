@@ -1,0 +1,120 @@
+name: aws_idp_data_store_deploy
+
+on:
+  workflow_call:
+    inputs:
+      user_env_name:
+        type: string
+        description: 'The user defined environment name'
+        required: true
+
+env:
+  AWS_REGION: "us-east-1"
+  DIR_PROJECT: "projects/aws_idp_data_store-project"
+  DEVOPS_AWS_ACCOUNT_ID: ${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}
+  SBX_AWS_ACCOUNT_ID: ${{ secrets.SBX_AWS_ACCOUNT_ID }}
+  TST_AWS_ACCOUNT_ID: ${{ secrets.TST_AWS_ACCOUNT_ID }}
+  PRD_AWS_ACCOUNT_ID: ${{ secrets.PRD_AWS_ACCOUNT_ID }}
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to ${{ inputs.user_env_name }}
+    runs-on: ubuntu-latest
+    environment:
+      # note that the ${{ env.ENV_NAME }} context is not available, we have to use ${{ inputs.user_env_name }}
+      name: ${{ inputs.user_env_name }}
+    env:
+      USER_ENV_NAME: ${{ inputs.user_env_name }}
+    steps:
+      - name: === 💾 PREPARATION ===
+        run: echo "PREPARATION"
+      - name: Git Clone the Repository
+        uses: actions/checkout@v4
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.DEVOPS_AWS_ACCOUNT_ID }}:role/monorepo-aws-github-oidc
+          role-session-name: devops_role_session
+          aws-region: ${{ env.AWS_REGION }}
+          disable-retry: true
+      - name: 🛠 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: 💾 Install CDK in Node
+        run: |
+          npm install -g aws-cdk@2.111.0
+          which cdk
+          cdk --version
+      - name: 🐍 Setup Python with pip cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/requirements-automation.txt
+      - name: 💾 Install virtualenv, poetry Dependencies
+        run: |
+          pip install -r ${{ env.DIR_PROJECT }}/requirements-automation.txt
+      - name: 🐍 Setup Python with poetry cache
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'poetry'
+          cache-dependency-path: ${{ env.DIR_PROJECT }}/poetry.lock
+      - name: 🐍 💾 Create Virtual Environment and Install all dependencies
+        working-directory: ${{ env.DIR_PROJECT }}
+        # at this moment, the virtualenv is not created it, so we should use the global Python here
+        run: |
+          python bin/s02_10_setup_venv_in_ci.py
+      - name: === ✅ START MAIN LOGICS ===
+        run: echo "START MAIN LOGICS"
+      - name: 🚀 Deploy Lambda App via CDK
+        if: ${{
+          startsWith(github.ref, 'refs/heads/aws_idp_data_store/release')
+          || startsWith(github.ref, 'refs/heads/aws_idp_data_store/rls')
+          || startsWith(github.ref, 'refs/heads/aws_idp_data_store/app')
+          || startsWith(github.ref, 'refs/heads/simple_release/release')
+          || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          }}
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_05_deploy_app.py
+      - name: 🧪 Run Integration Test
+        if: ${{
+          startsWith(github.ref, 'refs/heads/aws_idp_data_store/release')
+          || startsWith(github.ref, 'refs/heads/aws_idp_data_store/rls')
+          || startsWith(github.ref, 'refs/heads/aws_idp_data_store/app')
+          || startsWith(github.ref, 'refs/heads/simple_release/release')
+          || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          }}
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s03_04_run_int_test.py
+      - name: ⚙️ Create Config Snapshot
+        if: ${{ 
+          env.USER_ENV_NAME == 'prd' && 
+          (
+               startsWith(github.ref, 'refs/heads/aws_idp_data_store/release')
+            || startsWith(github.ref, 'refs/heads/simple_release/release')
+            || startsWith(github.ref, 'refs/heads/simple_release/rls')
+          )
+          }}
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_07_create_config_snapshot.py
+      - name: 🗑 Delete Lambda App
+        if: ${{
+             startsWith(github.ref, 'refs/heads/aws_idp_data_store/cleanup')
+          || startsWith(github.ref, 'refs/heads/aws_idp_data_store/clean')
+          || startsWith(github.ref, 'refs/heads/simple_release/cleanup')
+          || startsWith(github.ref, 'refs/heads/simple_release/clean')
+          }}
+        working-directory: ${{ env.DIR_PROJECT }}
+        run: |
+          .venv/bin/python bin/s04_06_delete_app.py
+      - name: === 🛑 END OF THE JOB ===
+        run: echo "END OF THE JOB"
