@@ -22,7 +22,14 @@
         "*.lambda_functions": {
             "s1_start": {},
             "s2_run_job": {},
-            "s3_check_status": {}
+            "s3_check_status": {},
+            "step1_check_up": {},
+            "step2_run_export_job": {},
+            "step3_run_etl_planner":  {},
+            "step4_run_snap_to_stage_orch": {},
+            "step5_run_snap_to_stage_work":  {},
+            "step6_run_stage_to_lake_orch": {},
+            "step7_run_stage_to_lake_work":  {}
         },
         "*.lambda_functions.*.layers": [
             "1"
@@ -40,6 +47,14 @@
         "*.lambda_functions.s1_start.handler": "s1_start_handler",
         "*.lambda_functions.s2_run_job.handler": "s2_run_job_handler",
         "*.lambda_functions.s3_check_status.handler": "s3_check_status_handler",
+        "*.lambda_functions.step1_check_up.handler": "step1_check_up_handler",
+        "*.lambda_functions.step2_run_export_job.handler": "step2_run_export_job_handler",
+        "*.lambda_functions.step3_run_etl_planner.handler": "step3_run_etl_planner_handler",
+        "*.lambda_functions.step4_run_snap_to_stage_orch.handler": "step4_run_snap_to_stage_orch_handler",
+        "*.lambda_functions.step5_run_snap_to_stage_work.handler": "step5_run_snap_to_stage_work_handler",
+        "*.lambda_functions.step6_run_stage_to_lake_orch.handler": "step6_run_stage_to_lake_orch_handler",
+        "*.lambda_functions.step7_run_stage_to_lake_work.handler": "step7_run_stage_to_lake_work_handler",
+
         // --- State Machine ---
         "*.state_machines": {
             "run_job": {}
@@ -56,7 +71,14 @@
         "lambda_functions": {
             "s1_start": {},
             "s2_run_job": {},
-            "s3_check_status": {}
+            "s3_check_status": {},
+            "step1_check_up": {},
+            "step2_run_export_job": {},
+            "step3_run_etl_planner":  {},
+            "step4_run_snap_to_stage_orch": {},
+            "step5_run_snap_to_stage_work":  {},
+            "step6_run_stage_to_lake_orch": {},
+            "step7_run_stage_to_lake_work":  {}
         },
         "state_machines": {
             "run_job": {}
@@ -67,7 +89,14 @@
         "lambda_functions": {
             "s1_start": {},
             "s2_run_job": {},
-            "s3_check_status": {}
+            "s3_check_status": {},
+            "step1_check_up": {},
+            "step2_run_export_job": {},
+            "step3_run_etl_planner":  {},
+            "step4_run_snap_to_stage_orch": {},
+            "step5_run_snap_to_stage_work":  {},
+            "step6_run_stage_to_lake_orch": {},
+            "step7_run_stage_to_lake_work":  {}
         },
         "state_machines": {
             "run_job": {}
@@ -78,7 +107,14 @@
         "lambda_functions": {
             "s1_start": {},
             "s2_run_job": {},
-            "s3_check_status": {}
+            "s3_check_status": {},
+            "step1_check_up": {},
+            "step2_run_export_job": {},
+            "step3_run_etl_planner":  {},
+            "step4_run_snap_to_stage_orch": {},
+            "step5_run_snap_to_stage_work":  {},
+            "step6_run_stage_to_lake_orch": {},
+            "step7_run_stage_to_lake_work":  {}
         },
         "state_machines": {
             "run_job": {}

@@ -142,7 +142,7 @@
                     },
                     {
                         "Key": "tech:git_commit_id",
-                        "Value": "0532447393532891f010b5538320a99b7c2b7c38"
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
                     },
                     {
                         "Key": "tech:git_repo_name",
@@ -246,7 +246,7 @@
                     },
                     {
                         "Key": "tech:git_commit_id",
-                        "Value": "0532447393532891f010b5538320a99b7c2b7c38"
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
                     },
                     {
                         "Key": "tech:git_repo_name",
@@ -277,7 +277,7 @@
                         "BUCKET": "bmt-app-dev-us-east-1-data",
                         "CONFIG_VERSION": "local",
                         "ENV_NAME": "sbx",
-                        "GIT_COMMIT_ID": "0532447393532891f010b5538320a99b7c2b7c38",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
                         "PACKAGE_VERSION": "0.1.1",
                         "PARAMETER_NAME": "dynamodbsnaplake-sbx",
                         "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
@@ -306,7 +306,7 @@
                     },
                     {
                         "Key": "tech:git_commit_id",
-                        "Value": "0532447393532891f010b5538320a99b7c2b7c38"
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
                     },
                     {
                         "Key": "tech:git_repo_name",
@@ -331,7 +331,7 @@
                 "IamRoleForLambdaEEC2E2DA"
             ]
         },
-        "LambdaFuncS1StartCurrentVersionC96701F1d028c2412ca32dd2aa000bea2f06784a": {
+        "LambdaFuncS1StartCurrentVersionC96701F17b48a434c221800cbbb7afb64611c1a0": {
             "Type": "AWS::Lambda::Version",
             "Properties": {
                 "FunctionName": {
@@ -350,7 +350,7 @@
                 "MaximumRetryAttempts": 1,
                 "Qualifier": {
                     "Fn::GetAtt": [
-                        "LambdaFuncS1StartCurrentVersionC96701F1d028c2412ca32dd2aa000bea2f06784a",
+                        "LambdaFuncS1StartCurrentVersionC96701F17b48a434c221800cbbb7afb64611c1a0",
                         "Version"
                     ]
                 }
@@ -364,7 +364,7 @@
                 },
                 "FunctionVersion": {
                     "Fn::GetAtt": [
-                        "LambdaFuncS1StartCurrentVersionC96701F1d028c2412ca32dd2aa000bea2f06784a",
+                        "LambdaFuncS1StartCurrentVersionC96701F17b48a434c221800cbbb7afb64611c1a0",
                         "Version"
                     ]
                 },
@@ -372,7 +372,7 @@
             },
             "DependsOn": [
                 "LambdaFuncS1StartCurrentVersionEventInvokeConfig9C1C8EE0",
-                "LambdaFuncS1StartCurrentVersionC96701F1d028c2412ca32dd2aa000bea2f06784a",
+                "LambdaFuncS1StartCurrentVersionC96701F17b48a434c221800cbbb7afb64611c1a0",
                 "LambdaFuncS1Start47C4A828"
             ]
         },
@@ -390,7 +390,7 @@
                         "BUCKET": "bmt-app-dev-us-east-1-data",
                         "CONFIG_VERSION": "local",
                         "ENV_NAME": "sbx",
-                        "GIT_COMMIT_ID": "0532447393532891f010b5538320a99b7c2b7c38",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
                         "PACKAGE_VERSION": "0.1.1",
                         "PARAMETER_NAME": "dynamodbsnaplake-sbx",
                         "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
@@ -419,7 +419,7 @@
                     },
                     {
                         "Key": "tech:git_commit_id",
-                        "Value": "0532447393532891f010b5538320a99b7c2b7c38"
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
                     },
                     {
                         "Key": "tech:git_repo_name",
@@ -444,7 +444,7 @@
                 "IamRoleForLambdaEEC2E2DA"
             ]
         },
-        "LambdaFuncS2RunJobCurrentVersion594572F23e78d1d8cfe0b70769799bc58ed02ca6": {
+        "LambdaFuncS2RunJobCurrentVersion594572F259c43384da1d8c03058416b122ec57fa": {
             "Type": "AWS::Lambda::Version",
             "Properties": {
                 "FunctionName": {
@@ -463,7 +463,7 @@
                 "MaximumRetryAttempts": 1,
                 "Qualifier": {
                     "Fn::GetAtt": [
-                        "LambdaFuncS2RunJobCurrentVersion594572F23e78d1d8cfe0b70769799bc58ed02ca6",
+                        "LambdaFuncS2RunJobCurrentVersion594572F259c43384da1d8c03058416b122ec57fa",
                         "Version"
                     ]
                 }
@@ -477,7 +477,7 @@
                 },
                 "FunctionVersion": {
                     "Fn::GetAtt": [
-                        "LambdaFuncS2RunJobCurrentVersion594572F23e78d1d8cfe0b70769799bc58ed02ca6",
+                        "LambdaFuncS2RunJobCurrentVersion594572F259c43384da1d8c03058416b122ec57fa",
                         "Version"
                     ]
                 },
@@ -485,7 +485,7 @@
             },
             "DependsOn": [
                 "LambdaFuncS2RunJobCurrentVersionEventInvokeConfig59D57DD9",
-                "LambdaFuncS2RunJobCurrentVersion594572F23e78d1d8cfe0b70769799bc58ed02ca6",
+                "LambdaFuncS2RunJobCurrentVersion594572F259c43384da1d8c03058416b122ec57fa",
                 "LambdaFuncS2RunJobA367DE96"
             ]
         },
@@ -503,7 +503,7 @@
                         "BUCKET": "bmt-app-dev-us-east-1-data",
                         "CONFIG_VERSION": "local",
                         "ENV_NAME": "sbx",
-                        "GIT_COMMIT_ID": "0532447393532891f010b5538320a99b7c2b7c38",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
                         "PACKAGE_VERSION": "0.1.1",
                         "PARAMETER_NAME": "dynamodbsnaplake-sbx",
                         "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
@@ -532,7 +532,7 @@
                     },
                     {
                         "Key": "tech:git_commit_id",
-                        "Value": "0532447393532891f010b5538320a99b7c2b7c38"
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
                     },
                     {
                         "Key": "tech:git_repo_name",
@@ -557,7 +557,7 @@
                 "IamRoleForLambdaEEC2E2DA"
             ]
         },
-        "LambdaFuncS3CheckStatusCurrentVersionDA30A8546b84ac668d88a2cc84dc938b4045c473": {
+        "LambdaFuncS3CheckStatusCurrentVersionDA30A854a7b6152b22f73cff7c93220a90e51124": {
             "Type": "AWS::Lambda::Version",
             "Properties": {
                 "FunctionName": {
@@ -576,7 +576,7 @@
                 "MaximumRetryAttempts": 1,
                 "Qualifier": {
                     "Fn::GetAtt": [
-                        "LambdaFuncS3CheckStatusCurrentVersionDA30A8546b84ac668d88a2cc84dc938b4045c473",
+                        "LambdaFuncS3CheckStatusCurrentVersionDA30A854a7b6152b22f73cff7c93220a90e51124",
                         "Version"
                     ]
                 }
@@ -590,7 +590,7 @@
                 },
                 "FunctionVersion": {
                     "Fn::GetAtt": [
-                        "LambdaFuncS3CheckStatusCurrentVersionDA30A8546b84ac668d88a2cc84dc938b4045c473",
+                        "LambdaFuncS3CheckStatusCurrentVersionDA30A854a7b6152b22f73cff7c93220a90e51124",
                         "Version"
                     ]
                 },
@@ -598,8 +598,799 @@
             },
             "DependsOn": [
                 "LambdaFuncS3CheckStatusCurrentVersionEventInvokeConfigADF2BD46",
-                "LambdaFuncS3CheckStatusCurrentVersionDA30A8546b84ac668d88a2cc84dc938b4045c473",
+                "LambdaFuncS3CheckStatusCurrentVersionDA30A854a7b6152b22f73cff7c93220a90e51124",
                 "LambdaFuncS3CheckStatusFCBCB9CF"
+            ]
+        },
+        "LambdaFuncStep1CheckUp03BC0092": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                    },
+                    "S3Key": "b8357c9170469c8ee281ffa9c93cac81a4f9d3ba8e7369c8b28c607323b4b104.zip"
+                },
+                "Environment": {
+                    "Variables": {
+                        "BUCKET": "bmt-app-dev-us-east-1-data",
+                        "CONFIG_VERSION": "local",
+                        "ENV_NAME": "sbx",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
+                        "PACKAGE_VERSION": "0.1.1",
+                        "PARAMETER_NAME": "dynamodbsnaplake-sbx",
+                        "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
+                        "PROJECT_NAME": "dynamodbsnaplake",
+                        "SOURCE_SHA256": "44a28fc1e1dafbbacd879023e529ce44",
+                        "USER_ENV_NAME": "sbx"
+                    }
+                },
+                "FunctionName": "dynamodbsnaplake-sbx-step1_check_up",
+                "Handler": "lambda_function.step1_check_up_handler",
+                "Layers": [
+                    "arn:aws:lambda:us-east-1:862612136886:layer:dynamodbsnaplake:1"
+                ],
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleForLambdaEEC2E2DA",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.9",
+                "Tags": [
+                    {
+                        "Key": "tech:env_name",
+                        "Value": "sbx"
+                    },
+                    {
+                        "Key": "tech:git_commit_id",
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
+                    },
+                    {
+                        "Key": "tech:git_repo_name",
+                        "Value": "monorepo_aws-project"
+                    },
+                    {
+                        "Key": "tech:package_version",
+                        "Value": "0.1.1"
+                    },
+                    {
+                        "Key": "tech:project_name",
+                        "Value": "dynamodbsnaplake"
+                    },
+                    {
+                        "Key": "tech:source_sha256",
+                        "Value": "44a28fc1e1dafbbacd879023e529ce44"
+                    }
+                ],
+                "Timeout": 3
+            },
+            "DependsOn": [
+                "IamRoleForLambdaEEC2E2DA"
+            ]
+        },
+        "LambdaFuncStep1CheckUpCurrentVersion1DDD261Cf1005c49bd47bd7a5e19f2c9117f5077": {
+            "Type": "AWS::Lambda::Version",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep1CheckUp03BC0092"
+                }
+            },
+            "UpdateReplacePolicy": "Retain",
+            "DeletionPolicy": "Retain"
+        },
+        "LambdaFuncStep1CheckUpCurrentVersionEventInvokeConfig8F45A45C": {
+            "Type": "AWS::Lambda::EventInvokeConfig",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep1CheckUp03BC0092"
+                },
+                "MaximumRetryAttempts": 1,
+                "Qualifier": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep1CheckUpCurrentVersion1DDD261Cf1005c49bd47bd7a5e19f2c9117f5077",
+                        "Version"
+                    ]
+                }
+            }
+        },
+        "LambdaAliasStep1CheckUpD02809E0": {
+            "Type": "AWS::Lambda::Alias",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep1CheckUp03BC0092"
+                },
+                "FunctionVersion": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep1CheckUpCurrentVersion1DDD261Cf1005c49bd47bd7a5e19f2c9117f5077",
+                        "Version"
+                    ]
+                },
+                "Name": "LIVE"
+            },
+            "DependsOn": [
+                "LambdaFuncStep1CheckUpCurrentVersionEventInvokeConfig8F45A45C",
+                "LambdaFuncStep1CheckUpCurrentVersion1DDD261Cf1005c49bd47bd7a5e19f2c9117f5077",
+                "LambdaFuncStep1CheckUp03BC0092"
+            ]
+        },
+        "LambdaFuncStep2RunExportJob0DB462ED": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                    },
+                    "S3Key": "b8357c9170469c8ee281ffa9c93cac81a4f9d3ba8e7369c8b28c607323b4b104.zip"
+                },
+                "Environment": {
+                    "Variables": {
+                        "BUCKET": "bmt-app-dev-us-east-1-data",
+                        "CONFIG_VERSION": "local",
+                        "ENV_NAME": "sbx",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
+                        "PACKAGE_VERSION": "0.1.1",
+                        "PARAMETER_NAME": "dynamodbsnaplake-sbx",
+                        "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
+                        "PROJECT_NAME": "dynamodbsnaplake",
+                        "SOURCE_SHA256": "44a28fc1e1dafbbacd879023e529ce44",
+                        "USER_ENV_NAME": "sbx"
+                    }
+                },
+                "FunctionName": "dynamodbsnaplake-sbx-step2_run_export_job",
+                "Handler": "lambda_function.step2_run_export_job_handler",
+                "Layers": [
+                    "arn:aws:lambda:us-east-1:862612136886:layer:dynamodbsnaplake:1"
+                ],
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleForLambdaEEC2E2DA",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.9",
+                "Tags": [
+                    {
+                        "Key": "tech:env_name",
+                        "Value": "sbx"
+                    },
+                    {
+                        "Key": "tech:git_commit_id",
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
+                    },
+                    {
+                        "Key": "tech:git_repo_name",
+                        "Value": "monorepo_aws-project"
+                    },
+                    {
+                        "Key": "tech:package_version",
+                        "Value": "0.1.1"
+                    },
+                    {
+                        "Key": "tech:project_name",
+                        "Value": "dynamodbsnaplake"
+                    },
+                    {
+                        "Key": "tech:source_sha256",
+                        "Value": "44a28fc1e1dafbbacd879023e529ce44"
+                    }
+                ],
+                "Timeout": 3
+            },
+            "DependsOn": [
+                "IamRoleForLambdaEEC2E2DA"
+            ]
+        },
+        "LambdaFuncStep2RunExportJobCurrentVersion130D431D99bb1ceef8d1d9c92219515be123ef4c": {
+            "Type": "AWS::Lambda::Version",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep2RunExportJob0DB462ED"
+                }
+            },
+            "UpdateReplacePolicy": "Retain",
+            "DeletionPolicy": "Retain"
+        },
+        "LambdaFuncStep2RunExportJobCurrentVersionEventInvokeConfigE9065511": {
+            "Type": "AWS::Lambda::EventInvokeConfig",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep2RunExportJob0DB462ED"
+                },
+                "MaximumRetryAttempts": 1,
+                "Qualifier": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep2RunExportJobCurrentVersion130D431D99bb1ceef8d1d9c92219515be123ef4c",
+                        "Version"
+                    ]
+                }
+            }
+        },
+        "LambdaAliasStep2RunExportJobF3779F4A": {
+            "Type": "AWS::Lambda::Alias",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep2RunExportJob0DB462ED"
+                },
+                "FunctionVersion": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep2RunExportJobCurrentVersion130D431D99bb1ceef8d1d9c92219515be123ef4c",
+                        "Version"
+                    ]
+                },
+                "Name": "LIVE"
+            },
+            "DependsOn": [
+                "LambdaFuncStep2RunExportJobCurrentVersionEventInvokeConfigE9065511",
+                "LambdaFuncStep2RunExportJobCurrentVersion130D431D99bb1ceef8d1d9c92219515be123ef4c",
+                "LambdaFuncStep2RunExportJob0DB462ED"
+            ]
+        },
+        "LambdaFuncStep3RunEtlPlannerDBAAF02C": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                    },
+                    "S3Key": "b8357c9170469c8ee281ffa9c93cac81a4f9d3ba8e7369c8b28c607323b4b104.zip"
+                },
+                "Environment": {
+                    "Variables": {
+                        "BUCKET": "bmt-app-dev-us-east-1-data",
+                        "CONFIG_VERSION": "local",
+                        "ENV_NAME": "sbx",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
+                        "PACKAGE_VERSION": "0.1.1",
+                        "PARAMETER_NAME": "dynamodbsnaplake-sbx",
+                        "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
+                        "PROJECT_NAME": "dynamodbsnaplake",
+                        "SOURCE_SHA256": "44a28fc1e1dafbbacd879023e529ce44",
+                        "USER_ENV_NAME": "sbx"
+                    }
+                },
+                "FunctionName": "dynamodbsnaplake-sbx-step3_run_etl_planner",
+                "Handler": "lambda_function.step3_run_etl_planner_handler",
+                "Layers": [
+                    "arn:aws:lambda:us-east-1:862612136886:layer:dynamodbsnaplake:1"
+                ],
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleForLambdaEEC2E2DA",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.9",
+                "Tags": [
+                    {
+                        "Key": "tech:env_name",
+                        "Value": "sbx"
+                    },
+                    {
+                        "Key": "tech:git_commit_id",
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
+                    },
+                    {
+                        "Key": "tech:git_repo_name",
+                        "Value": "monorepo_aws-project"
+                    },
+                    {
+                        "Key": "tech:package_version",
+                        "Value": "0.1.1"
+                    },
+                    {
+                        "Key": "tech:project_name",
+                        "Value": "dynamodbsnaplake"
+                    },
+                    {
+                        "Key": "tech:source_sha256",
+                        "Value": "44a28fc1e1dafbbacd879023e529ce44"
+                    }
+                ],
+                "Timeout": 3
+            },
+            "DependsOn": [
+                "IamRoleForLambdaEEC2E2DA"
+            ]
+        },
+        "LambdaFuncStep3RunEtlPlannerCurrentVersion577A0F9045bcb55a4a6504f9f0c0acaf2a423f27": {
+            "Type": "AWS::Lambda::Version",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep3RunEtlPlannerDBAAF02C"
+                }
+            },
+            "UpdateReplacePolicy": "Retain",
+            "DeletionPolicy": "Retain"
+        },
+        "LambdaFuncStep3RunEtlPlannerCurrentVersionEventInvokeConfig90D9E797": {
+            "Type": "AWS::Lambda::EventInvokeConfig",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep3RunEtlPlannerDBAAF02C"
+                },
+                "MaximumRetryAttempts": 1,
+                "Qualifier": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep3RunEtlPlannerCurrentVersion577A0F9045bcb55a4a6504f9f0c0acaf2a423f27",
+                        "Version"
+                    ]
+                }
+            }
+        },
+        "LambdaAliasStep3RunEtlPlannerBB59A6A5": {
+            "Type": "AWS::Lambda::Alias",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep3RunEtlPlannerDBAAF02C"
+                },
+                "FunctionVersion": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep3RunEtlPlannerCurrentVersion577A0F9045bcb55a4a6504f9f0c0acaf2a423f27",
+                        "Version"
+                    ]
+                },
+                "Name": "LIVE"
+            },
+            "DependsOn": [
+                "LambdaFuncStep3RunEtlPlannerCurrentVersionEventInvokeConfig90D9E797",
+                "LambdaFuncStep3RunEtlPlannerCurrentVersion577A0F9045bcb55a4a6504f9f0c0acaf2a423f27",
+                "LambdaFuncStep3RunEtlPlannerDBAAF02C"
+            ]
+        },
+        "LambdaFuncStep4RunSnapToStageOrch87572688": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                    },
+                    "S3Key": "b8357c9170469c8ee281ffa9c93cac81a4f9d3ba8e7369c8b28c607323b4b104.zip"
+                },
+                "Environment": {
+                    "Variables": {
+                        "BUCKET": "bmt-app-dev-us-east-1-data",
+                        "CONFIG_VERSION": "local",
+                        "ENV_NAME": "sbx",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
+                        "PACKAGE_VERSION": "0.1.1",
+                        "PARAMETER_NAME": "dynamodbsnaplake-sbx",
+                        "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
+                        "PROJECT_NAME": "dynamodbsnaplake",
+                        "SOURCE_SHA256": "44a28fc1e1dafbbacd879023e529ce44",
+                        "USER_ENV_NAME": "sbx"
+                    }
+                },
+                "FunctionName": "dynamodbsnaplake-sbx-step4_run_snap_to_stage_orch",
+                "Handler": "lambda_function.step4_run_snap_to_stage_orch_handler",
+                "Layers": [
+                    "arn:aws:lambda:us-east-1:862612136886:layer:dynamodbsnaplake:1"
+                ],
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleForLambdaEEC2E2DA",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.9",
+                "Tags": [
+                    {
+                        "Key": "tech:env_name",
+                        "Value": "sbx"
+                    },
+                    {
+                        "Key": "tech:git_commit_id",
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
+                    },
+                    {
+                        "Key": "tech:git_repo_name",
+                        "Value": "monorepo_aws-project"
+                    },
+                    {
+                        "Key": "tech:package_version",
+                        "Value": "0.1.1"
+                    },
+                    {
+                        "Key": "tech:project_name",
+                        "Value": "dynamodbsnaplake"
+                    },
+                    {
+                        "Key": "tech:source_sha256",
+                        "Value": "44a28fc1e1dafbbacd879023e529ce44"
+                    }
+                ],
+                "Timeout": 3
+            },
+            "DependsOn": [
+                "IamRoleForLambdaEEC2E2DA"
+            ]
+        },
+        "LambdaFuncStep4RunSnapToStageOrchCurrentVersion6F58E7586b66f6fb1811cc6ca303e989a321ce21": {
+            "Type": "AWS::Lambda::Version",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep4RunSnapToStageOrch87572688"
+                }
+            },
+            "UpdateReplacePolicy": "Retain",
+            "DeletionPolicy": "Retain"
+        },
+        "LambdaFuncStep4RunSnapToStageOrchCurrentVersionEventInvokeConfig38A00949": {
+            "Type": "AWS::Lambda::EventInvokeConfig",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep4RunSnapToStageOrch87572688"
+                },
+                "MaximumRetryAttempts": 1,
+                "Qualifier": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep4RunSnapToStageOrchCurrentVersion6F58E7586b66f6fb1811cc6ca303e989a321ce21",
+                        "Version"
+                    ]
+                }
+            }
+        },
+        "LambdaAliasStep4RunSnapToStageOrchAD49CFD6": {
+            "Type": "AWS::Lambda::Alias",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep4RunSnapToStageOrch87572688"
+                },
+                "FunctionVersion": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep4RunSnapToStageOrchCurrentVersion6F58E7586b66f6fb1811cc6ca303e989a321ce21",
+                        "Version"
+                    ]
+                },
+                "Name": "LIVE"
+            },
+            "DependsOn": [
+                "LambdaFuncStep4RunSnapToStageOrchCurrentVersionEventInvokeConfig38A00949",
+                "LambdaFuncStep4RunSnapToStageOrchCurrentVersion6F58E7586b66f6fb1811cc6ca303e989a321ce21",
+                "LambdaFuncStep4RunSnapToStageOrch87572688"
+            ]
+        },
+        "LambdaFuncStep5RunSnapToStageWork6402E184": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                    },
+                    "S3Key": "b8357c9170469c8ee281ffa9c93cac81a4f9d3ba8e7369c8b28c607323b4b104.zip"
+                },
+                "Environment": {
+                    "Variables": {
+                        "BUCKET": "bmt-app-dev-us-east-1-data",
+                        "CONFIG_VERSION": "local",
+                        "ENV_NAME": "sbx",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
+                        "PACKAGE_VERSION": "0.1.1",
+                        "PARAMETER_NAME": "dynamodbsnaplake-sbx",
+                        "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
+                        "PROJECT_NAME": "dynamodbsnaplake",
+                        "SOURCE_SHA256": "44a28fc1e1dafbbacd879023e529ce44",
+                        "USER_ENV_NAME": "sbx"
+                    }
+                },
+                "FunctionName": "dynamodbsnaplake-sbx-step5_run_snap_to_stage_work",
+                "Handler": "lambda_function.step5_run_snap_to_stage_work_handler",
+                "Layers": [
+                    "arn:aws:lambda:us-east-1:862612136886:layer:dynamodbsnaplake:1"
+                ],
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleForLambdaEEC2E2DA",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.9",
+                "Tags": [
+                    {
+                        "Key": "tech:env_name",
+                        "Value": "sbx"
+                    },
+                    {
+                        "Key": "tech:git_commit_id",
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
+                    },
+                    {
+                        "Key": "tech:git_repo_name",
+                        "Value": "monorepo_aws-project"
+                    },
+                    {
+                        "Key": "tech:package_version",
+                        "Value": "0.1.1"
+                    },
+                    {
+                        "Key": "tech:project_name",
+                        "Value": "dynamodbsnaplake"
+                    },
+                    {
+                        "Key": "tech:source_sha256",
+                        "Value": "44a28fc1e1dafbbacd879023e529ce44"
+                    }
+                ],
+                "Timeout": 3
+            },
+            "DependsOn": [
+                "IamRoleForLambdaEEC2E2DA"
+            ]
+        },
+        "LambdaFuncStep5RunSnapToStageWorkCurrentVersion873B977450a10ec1615cbaa021043d19783474de": {
+            "Type": "AWS::Lambda::Version",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep5RunSnapToStageWork6402E184"
+                }
+            },
+            "UpdateReplacePolicy": "Retain",
+            "DeletionPolicy": "Retain"
+        },
+        "LambdaFuncStep5RunSnapToStageWorkCurrentVersionEventInvokeConfig0D8C5C5F": {
+            "Type": "AWS::Lambda::EventInvokeConfig",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep5RunSnapToStageWork6402E184"
+                },
+                "MaximumRetryAttempts": 1,
+                "Qualifier": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep5RunSnapToStageWorkCurrentVersion873B977450a10ec1615cbaa021043d19783474de",
+                        "Version"
+                    ]
+                }
+            }
+        },
+        "LambdaAliasStep5RunSnapToStageWorkF0C25C09": {
+            "Type": "AWS::Lambda::Alias",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep5RunSnapToStageWork6402E184"
+                },
+                "FunctionVersion": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep5RunSnapToStageWorkCurrentVersion873B977450a10ec1615cbaa021043d19783474de",
+                        "Version"
+                    ]
+                },
+                "Name": "LIVE"
+            },
+            "DependsOn": [
+                "LambdaFuncStep5RunSnapToStageWorkCurrentVersionEventInvokeConfig0D8C5C5F",
+                "LambdaFuncStep5RunSnapToStageWorkCurrentVersion873B977450a10ec1615cbaa021043d19783474de",
+                "LambdaFuncStep5RunSnapToStageWork6402E184"
+            ]
+        },
+        "LambdaFuncStep6RunStageToLakeOrch343825D1": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                    },
+                    "S3Key": "b8357c9170469c8ee281ffa9c93cac81a4f9d3ba8e7369c8b28c607323b4b104.zip"
+                },
+                "Environment": {
+                    "Variables": {
+                        "BUCKET": "bmt-app-dev-us-east-1-data",
+                        "CONFIG_VERSION": "local",
+                        "ENV_NAME": "sbx",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
+                        "PACKAGE_VERSION": "0.1.1",
+                        "PARAMETER_NAME": "dynamodbsnaplake-sbx",
+                        "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
+                        "PROJECT_NAME": "dynamodbsnaplake",
+                        "SOURCE_SHA256": "44a28fc1e1dafbbacd879023e529ce44",
+                        "USER_ENV_NAME": "sbx"
+                    }
+                },
+                "FunctionName": "dynamodbsnaplake-sbx-step6_run_stage_to_lake_orch",
+                "Handler": "lambda_function.step6_run_stage_to_lake_orch_handler",
+                "Layers": [
+                    "arn:aws:lambda:us-east-1:862612136886:layer:dynamodbsnaplake:1"
+                ],
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleForLambdaEEC2E2DA",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.9",
+                "Tags": [
+                    {
+                        "Key": "tech:env_name",
+                        "Value": "sbx"
+                    },
+                    {
+                        "Key": "tech:git_commit_id",
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
+                    },
+                    {
+                        "Key": "tech:git_repo_name",
+                        "Value": "monorepo_aws-project"
+                    },
+                    {
+                        "Key": "tech:package_version",
+                        "Value": "0.1.1"
+                    },
+                    {
+                        "Key": "tech:project_name",
+                        "Value": "dynamodbsnaplake"
+                    },
+                    {
+                        "Key": "tech:source_sha256",
+                        "Value": "44a28fc1e1dafbbacd879023e529ce44"
+                    }
+                ],
+                "Timeout": 3
+            },
+            "DependsOn": [
+                "IamRoleForLambdaEEC2E2DA"
+            ]
+        },
+        "LambdaFuncStep6RunStageToLakeOrchCurrentVersion630BA4534108e2496ad57f6fea5006d1309b253d": {
+            "Type": "AWS::Lambda::Version",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep6RunStageToLakeOrch343825D1"
+                }
+            },
+            "UpdateReplacePolicy": "Retain",
+            "DeletionPolicy": "Retain"
+        },
+        "LambdaFuncStep6RunStageToLakeOrchCurrentVersionEventInvokeConfig782C44D3": {
+            "Type": "AWS::Lambda::EventInvokeConfig",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep6RunStageToLakeOrch343825D1"
+                },
+                "MaximumRetryAttempts": 1,
+                "Qualifier": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep6RunStageToLakeOrchCurrentVersion630BA4534108e2496ad57f6fea5006d1309b253d",
+                        "Version"
+                    ]
+                }
+            }
+        },
+        "LambdaAliasStep6RunStageToLakeOrch64E95EBF": {
+            "Type": "AWS::Lambda::Alias",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep6RunStageToLakeOrch343825D1"
+                },
+                "FunctionVersion": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep6RunStageToLakeOrchCurrentVersion630BA4534108e2496ad57f6fea5006d1309b253d",
+                        "Version"
+                    ]
+                },
+                "Name": "LIVE"
+            },
+            "DependsOn": [
+                "LambdaFuncStep6RunStageToLakeOrchCurrentVersionEventInvokeConfig782C44D3",
+                "LambdaFuncStep6RunStageToLakeOrchCurrentVersion630BA4534108e2496ad57f6fea5006d1309b253d",
+                "LambdaFuncStep6RunStageToLakeOrch343825D1"
+            ]
+        },
+        "LambdaFuncStep7RunStageToLakeWork3733EF3E": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                    },
+                    "S3Key": "b8357c9170469c8ee281ffa9c93cac81a4f9d3ba8e7369c8b28c607323b4b104.zip"
+                },
+                "Environment": {
+                    "Variables": {
+                        "BUCKET": "bmt-app-dev-us-east-1-data",
+                        "CONFIG_VERSION": "local",
+                        "ENV_NAME": "sbx",
+                        "GIT_COMMIT_ID": "9e156de1a6337b3c06cef521f270361feeefab94",
+                        "PACKAGE_VERSION": "0.1.1",
+                        "PARAMETER_NAME": "dynamodbsnaplake-sbx",
+                        "PREFIX": "projects/dynamodbsnaplake/envs/sbx/sfn-executions/",
+                        "PROJECT_NAME": "dynamodbsnaplake",
+                        "SOURCE_SHA256": "44a28fc1e1dafbbacd879023e529ce44",
+                        "USER_ENV_NAME": "sbx"
+                    }
+                },
+                "FunctionName": "dynamodbsnaplake-sbx-step7_run_stage_to_lake_work",
+                "Handler": "lambda_function.step7_run_stage_to_lake_work_handler",
+                "Layers": [
+                    "arn:aws:lambda:us-east-1:862612136886:layer:dynamodbsnaplake:1"
+                ],
+                "MemorySize": 128,
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IamRoleForLambdaEEC2E2DA",
+                        "Arn"
+                    ]
+                },
+                "Runtime": "python3.9",
+                "Tags": [
+                    {
+                        "Key": "tech:env_name",
+                        "Value": "sbx"
+                    },
+                    {
+                        "Key": "tech:git_commit_id",
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
+                    },
+                    {
+                        "Key": "tech:git_repo_name",
+                        "Value": "monorepo_aws-project"
+                    },
+                    {
+                        "Key": "tech:package_version",
+                        "Value": "0.1.1"
+                    },
+                    {
+                        "Key": "tech:project_name",
+                        "Value": "dynamodbsnaplake"
+                    },
+                    {
+                        "Key": "tech:source_sha256",
+                        "Value": "44a28fc1e1dafbbacd879023e529ce44"
+                    }
+                ],
+                "Timeout": 3
+            },
+            "DependsOn": [
+                "IamRoleForLambdaEEC2E2DA"
+            ]
+        },
+        "LambdaFuncStep7RunStageToLakeWorkCurrentVersionB67C74AAb02c5ea1416e6c158c33e6e405f754b3": {
+            "Type": "AWS::Lambda::Version",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep7RunStageToLakeWork3733EF3E"
+                }
+            },
+            "UpdateReplacePolicy": "Retain",
+            "DeletionPolicy": "Retain"
+        },
+        "LambdaFuncStep7RunStageToLakeWorkCurrentVersionEventInvokeConfigF1657017": {
+            "Type": "AWS::Lambda::EventInvokeConfig",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep7RunStageToLakeWork3733EF3E"
+                },
+                "MaximumRetryAttempts": 1,
+                "Qualifier": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep7RunStageToLakeWorkCurrentVersionB67C74AAb02c5ea1416e6c158c33e6e405f754b3",
+                        "Version"
+                    ]
+                }
+            }
+        },
+        "LambdaAliasStep7RunStageToLakeWork33368EA9": {
+            "Type": "AWS::Lambda::Alias",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "LambdaFuncStep7RunStageToLakeWork3733EF3E"
+                },
+                "FunctionVersion": {
+                    "Fn::GetAtt": [
+                        "LambdaFuncStep7RunStageToLakeWorkCurrentVersionB67C74AAb02c5ea1416e6c158c33e6e405f754b3",
+                        "Version"
+                    ]
+                },
+                "Name": "LIVE"
+            },
+            "DependsOn": [
+                "LambdaFuncStep7RunStageToLakeWorkCurrentVersionEventInvokeConfigF1657017",
+                "LambdaFuncStep7RunStageToLakeWorkCurrentVersionB67C74AAb02c5ea1416e6c158c33e6e405f754b3",
+                "LambdaFuncStep7RunStageToLakeWork3733EF3E"
             ]
         },
         "StateMachineLogGroupRunJob7A9D4F4A": {
@@ -614,7 +1405,7 @@
                     },
                     {
                         "Key": "tech:git_commit_id",
-                        "Value": "0532447393532891f010b5538320a99b7c2b7c38"
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
                     },
                     {
                         "Key": "tech:git_repo_name",
@@ -746,7 +1537,7 @@
                     },
                     {
                         "Key": "tech:git_commit_id",
-                        "Value": "0532447393532891f010b5538320a99b7c2b7c38"
+                        "Value": "9e156de1a6337b3c06cef521f270361feeefab94"
                     },
                     {
                         "Key": "tech:git_repo_name",

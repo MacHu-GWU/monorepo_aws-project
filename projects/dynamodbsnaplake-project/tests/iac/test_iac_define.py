@@ -21,8 +21,8 @@ def test():
         cdk.Tags.of(app).add(key, value)
     template = assertions.Template.from_stack(stack)
     cfn_content = json.dumps(template.to_json(), indent=4)
-    print(cfn_content)
-    dir_project_root.joinpath("cfn.json").write_text(cfn_content)
+    # print(cfn_content)
+    # dir_project_root.joinpath("cfn.json").write_text(cfn_content)
 
 
 if __name__ == "__main__":

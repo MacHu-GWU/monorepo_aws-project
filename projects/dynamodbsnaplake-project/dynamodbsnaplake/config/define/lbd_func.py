@@ -123,3 +123,31 @@ class LambdaFunctionMixin:
     @property
     def lbd_s3_check_status(self) -> LambdaFunction:
         return self.lambda_functions["s3_check_status"]
+
+    @property
+    def lbd_step1_check_up(self) -> LambdaFunction:
+        return self.lambda_functions["step1_check_up"]
+
+    @property
+    def lbd_step2_run_export_job(self) -> LambdaFunction:
+        return self.lambda_functions["step2_run_export_job"]
+
+    @property
+    def lbd_step3_run_etl_planner(self) -> LambdaFunction:
+        return self.lambda_functions["step3_run_etl_planner"]
+
+    @property
+    def lbd_step4_run_snap_to_stage_orch(self) -> LambdaFunction:
+        return self.lambda_functions["step4_run_snap_to_stage_orch"]
+
+    @property
+    def lbd_step5_run_snap_to_stage_work(self) -> LambdaFunction:
+        return self.lambda_functions["step5_run_snap_to_stage_work"]
+
+    @property
+    def lbd_step6_run_stage_to_lake_orch(self) -> LambdaFunction:
+        return self.lambda_functions["step6_run_stage_to_lake_orch"]
+
+    @property
+    def lbd_step7_run_stage_to_lake_work(self) -> LambdaFunction:
+        return self.lambda_functions["step7_run_stage_to_lake_work"]
