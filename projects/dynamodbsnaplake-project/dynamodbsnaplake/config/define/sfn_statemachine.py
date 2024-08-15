@@ -142,5 +142,5 @@ class StateMachineMixin:
     # Enumerate State Machines
     # --------------------------------------------------------------------------
     @property
-    def sm_run_job(self) -> StateMachine:
-        return self.state_machines["run_job"]
+    def sm_dynamodbsnaplake_workflow(self) -> StateMachine:
+        return self.state_machines["dynamodbsnaplake_workflow"]

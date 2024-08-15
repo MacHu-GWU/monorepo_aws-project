@@ -20,9 +20,6 @@
         // ---------------------------------------------------------------------
         // --- Lambda Functions
         "*.lambda_functions": {
-            "s1_start": {},
-            "s2_run_job": {},
-            "s3_check_status": {},
             "step1_check_up": {},
             "step2_run_export_job": {},
             "step3_run_etl_planner":  {},
@@ -34,8 +31,9 @@
         "*.lambda_functions.*.layers": [
             "1"
         ],
-        "*.lambda_functions.s2_run_job.timeout": 30, // this lambda takes 30 seconds to finish
-        "*.lambda_functions.*.timeout": 3,
+        "*.lambda_functions.step5_run_snap_to_stage_work.timeout": 300,
+        "*.lambda_functions.step7_run_stage_to_lake_work.timeout": 300,
+        "*.lambda_functions.*.timeout": 30,
         "*.lambda_functions.*.memory": 128,
         "*.lambda_functions.*.iam_role": null,
         "*.lambda_functions.*.subnet_ids": null,
@@ -44,9 +42,6 @@
         "*.lambda_functions.*.live_version1": null,
         "*.lambda_functions.*.live_version2": null,
         "*.lambda_functions.*.live_version2_percentage": null,
-        "*.lambda_functions.s1_start.handler": "s1_start_handler",
-        "*.lambda_functions.s2_run_job.handler": "s2_run_job_handler",
-        "*.lambda_functions.s3_check_status.handler": "s3_check_status_handler",
         "*.lambda_functions.step1_check_up.handler": "step1_check_up_handler",
         "*.lambda_functions.step2_run_export_job.handler": "step2_run_export_job_handler",
         "*.lambda_functions.step3_run_etl_planner.handler": "step3_run_etl_planner_handler",
@@ -57,7 +52,7 @@
 
         // --- State Machine ---
         "*.state_machines": {
-            "run_job": {}
+            "dynamodbsnaplake_workflow": {}
         },
         "*.state_machines.*.live_version1": null,
         "*.state_machines.*.live_version2": null,
@@ -69,9 +64,6 @@
     "sbx": {
         "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/dynamodbsnaplake/",
         "lambda_functions": {
-            "s1_start": {},
-            "s2_run_job": {},
-            "s3_check_status": {},
             "step1_check_up": {},
             "step2_run_export_job": {},
             "step3_run_etl_planner":  {},
@@ -81,15 +73,12 @@
             "step7_run_stage_to_lake_work":  {}
         },
         "state_machines": {
-            "run_job": {}
+            "dynamodbsnaplake_workflow": {}
         }
     },
     "tst": {
         "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/dynamodbsnaplake/",
         "lambda_functions": {
-            "s1_start": {},
-            "s2_run_job": {},
-            "s3_check_status": {},
             "step1_check_up": {},
             "step2_run_export_job": {},
             "step3_run_etl_planner":  {},
@@ -99,15 +88,12 @@
             "step7_run_stage_to_lake_work":  {}
         },
         "state_machines": {
-            "run_job": {}
+            "dynamodbsnaplake_workflow": {}
         }
     },
     "prd": {
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/dynamodbsnaplake/",
         "lambda_functions": {
-            "s1_start": {},
-            "s2_run_job": {},
-            "s3_check_status": {},
             "step1_check_up": {},
             "step2_run_export_job": {},
             "step3_run_etl_planner":  {},
@@ -117,7 +103,7 @@
             "step7_run_stage_to_lake_work":  {}
         },
         "state_machines": {
-            "run_job": {}
+            "dynamodbsnaplake_workflow": {}
         }
     }
 }

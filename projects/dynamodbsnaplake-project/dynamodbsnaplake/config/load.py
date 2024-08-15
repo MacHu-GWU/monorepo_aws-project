@@ -19,4 +19,4 @@ def smart_load():
     )
 
 
-config = smart_load()
+config: "Config" = smart_load()

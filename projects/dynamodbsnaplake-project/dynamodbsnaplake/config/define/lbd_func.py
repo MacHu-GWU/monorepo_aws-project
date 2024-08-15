@@ -113,18 +113,6 @@ class LambdaFunctionMixin:
         return list(self.lambda_functions.values())
 
     @property
-    def lbd_s1_start(self) -> LambdaFunction:
-        return self.lambda_functions["s1_start"]
-
-    @property
-    def lbd_s2_run_job(self) -> LambdaFunction:
-        return self.lambda_functions["s2_run_job"]
-
-    @property
-    def lbd_s3_check_status(self) -> LambdaFunction:
-        return self.lambda_functions["s3_check_status"]
-
-    @property
     def lbd_step1_check_up(self) -> LambdaFunction:
         return self.lambda_functions["step1_check_up"]
 

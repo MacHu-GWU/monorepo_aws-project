@@ -94,6 +94,9 @@ class IamMixin:
                 iam.ManagedPolicy.from_aws_managed_policy_name(
                     "service-role/AWSLambdaBasicExecutionRole"
                 ),
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "PowerUserAccess"
+                ),
             ],
             inline_policies={
                 f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-lambda": iam.PolicyDocument(
