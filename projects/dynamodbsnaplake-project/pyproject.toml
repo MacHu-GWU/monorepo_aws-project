@@ -14,13 +14,13 @@ authors = ["Sanhe Hu <husanhe@gmail.com>"]
 # core dependencies for deployment
 # ------------------------------------------------------------------------------
 [tool.poetry.dependencies]
-python = "3.9.*"
+python = "^3.9"
 # ------------------------------------------------------------------------------
 # AWS Python SDK
 # ------------------------------------------------------------------------------
 # official AWS Python SDK
-botocore = "1.33.0"
-boto3 = "1.33.0"
+botocore = "1.33.13"
+boto3 = "1.33.13"
 # advanced boto3 session manager
 boto_session_manager = "1.7.2"
 # ------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ tt4human = "0.3.1"
 # smart IO, dependency of s3pathlib
 smart-open = "6.2.0"
 # AWS s3 SDK manipulation
-s3pathlib = "2.1.2"
+s3pathlib = "2.2.1"
 # AWS parameter store, secret manager integration
 pysecret = "2.2.4"
 # multi environment config management
@@ -44,8 +44,15 @@ config_patterns = "1.0.6"
 aws_console_url = "1.4.1"
 # build AWS lambda layer and deployment package
 aws_lambda_layer = "0.5.1"
-# build AWS Glue artifact
-aws_glue_artifact = "0.2.1"
+polars = "1.2.1"
+jsonpickle = "3.1.0"
+pynamodb_mate = "6.0.0.4"
+aws_dynamodb_io = "0.1.3"
+fast_dynamodb_json = "0.1.1"
+s3manifesto = "0.4.1"
+dbsnaplake = "0.1.1"
+urllib3 = "1.26.19"
+
 # AWS devops best practices
 #aws_ops_alpha = "0.1.1"
 # ------------------------------------------------------------------------------
