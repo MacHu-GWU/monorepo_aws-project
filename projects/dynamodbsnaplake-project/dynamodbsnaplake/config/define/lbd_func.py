@@ -139,3 +139,7 @@ class LambdaFunctionMixin:
     @property
     def lbd_step7_run_stage_to_lake_work(self) -> LambdaFunction:
         return self.lambda_functions["step7_run_stage_to_lake_work"]
+
+    @property
+    def lbd_step8_validate_results(self) -> LambdaFunction:
+        return self.lambda_functions["step8_validate_results"]

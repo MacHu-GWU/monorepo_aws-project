@@ -8,7 +8,7 @@ and a main class for tracking and managing DynamoDB export jobs.
 
 requirements::
 
-    aws_dynamodb_io>=0.1.3,<1.0.0
+    aws_dynamodb_io>=0.1.4,<1.0.0
     fast_dynamodb_json>=0.1.1,<1.0.0
     jsonpickle>=3.0.0,<4.0.0
 """
@@ -35,6 +35,10 @@ if T.TYPE_CHECKING:  # pragma: no cover
 
 @dataclasses.dataclass
 class DynamoDBTableArn:
+    """
+    Parse and generate DynamoDB table ARN.
+    """
+
     account_id: str = dataclasses.field()
     region: str = dataclasses.field()
     name: str = dataclasses.field()
@@ -153,6 +157,9 @@ def dynamodb_json_file_to_polars_dataframe(
         ...     "Items": List(...),
         ... }
 
+    :param scan_ndjson_kwargs: Additional arguments for ``pl.read_ndjson``.
+    :param n_lines: The number of lines to read from the file.
+
     :return: A Polars DataFrame.
     """
     b = gzip.decompress(S3Path.from_s3_uri(uri).read_bytes(bsm=s3_client))
@@ -189,6 +196,8 @@ def many_dynamodb_json_file_to_polars_dataframe(
     :param s3_client: ``boto3.client("s3")``.
     :param uri_list: The list of S3 URI of the DynamoDB export ``json.gz`` file.
     :param simple_schema: DynamoDB item data schema.
+    :param scan_ndjson_kwargs: Additional arguments for ``pl.read_ndjson``.
+    :param n_lines: The number of lines to read from the file.
 
     :return: A Polars DataFrame.
     """
@@ -213,6 +222,17 @@ def db_snapshot_file_group_manifest_file_to_polars_dataframe(
     scan_ndjson_kwargs: T_OPTIONAL_KWARGS = None,
     n_lines: T.Optional[int] = None,
 ) -> pl.DataFrame:
+    """
+    Read a DB snapshot file group manifest file and convert it to a Polars DataFrame.
+
+    :param db_snapshot_file_group_manifest_file:
+    :param s3_client: ``boto3.client("s3")``.
+    :param simple_schema: DynamoDB item data schema.
+    :param scan_ndjson_kwargs: Additional arguments for ``pl.read_ndjson``.
+    :param n_lines: The number of lines to read from the file.
+
+    :return: A Polars DataFrame.
+    """
     return many_dynamodb_json_file_to_polars_dataframe(
         s3_client=s3_client,
         uri_list=[

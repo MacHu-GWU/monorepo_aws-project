@@ -22,7 +22,13 @@ s3dir_root = S3Path(
 ).to_dir()
 path_python_module = dir_project_root.joinpath("debug", "workflow_settings.py")
 s3path_python_module = s3dir_root.joinpath(path_python_module.name)
-s3path_python_module.upload_file(str(path_python_module), overwrite=True, bsm=bsm)
+s3path_python_module.write_text(
+    path_python_module.read_text(),
+    content_type="text/plain",
+    bsm=bsm,
+)
+print(f"{s3path_python_module.uri = }")
+
 sfn_input = SfnInput(
     table_arn=table_arn,
     export_time=export_time,
@@ -31,26 +37,31 @@ sfn_input = SfnInput(
     s3uri_python_module=s3path_python_module.uri,
     sort_by=["update_time"],
     descending=[False],
+    count_on_column="OrderID",
     s3uri_datalake_override=None,
     extract_record_id_override=None,
     extract_create_time_override=None,
     extract_update_time_override=None,
     extract_partition_keys_override=None,
 )
-
 input_data = sfn_input.to_dict()
+# print(input_data)
 input_json = json.dumps(input_data, indent=4)
 now = datetime.now()
-# print(input_json)
+print(input_json)
+
+# --- reset
+# sfn_input.s3_loc.s3dir_staging.delete(bsm=bsm)
+sfn_input.download_python_module(s3_client=bsm.s3_client)
+# sfn_input.project.task_model_step_0_prepare_db_snapshot_manifest.delete_all()
+
 bsm.sfn_client.start_execution(
     stateMachineArn=config.env.sm_dynamodbsnaplake_workflow.arn,
     name=now.strftime("%Y-%m-%d-%H-%M-%S"),
-    input=json.dumps(input_data,),
+    input=json.dumps(
+        input_data,
+    ),
 )
 
 # sfn_input.download_python_module(s3_client=bsm.s3_client)
 # sfn_input.project.connect_dynamodb(bsm=bsm)
-
-# --- reset
-# sfn_input.s3_loc.s3dir_staging.delete(bsm=bsm)
-# sfn_input.project.task_model_step_0_prepare_db_snapshot_manifest.delete_all()

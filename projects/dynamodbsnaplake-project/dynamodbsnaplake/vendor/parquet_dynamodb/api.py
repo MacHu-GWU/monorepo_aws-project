@@ -9,7 +9,6 @@ from .dynamodb import DynamoDBExportManager
 from .dynamodb import dynamodb_json_file_to_polars_dataframe
 from .dynamodb import many_dynamodb_json_file_to_polars_dataframe
 from .dynamodb import db_snapshot_file_group_manifest_file_to_polars_dataframe
-from .sfn_input import s3uri_staging_dir_to_s3uri_sfn_ctx_dir
 from .sfn_input import SfnInput
 from .sfn_ctx import SfnCtx
 from .lbd import RequestTypeEnum

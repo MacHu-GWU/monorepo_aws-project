@@ -26,15 +26,20 @@
             "step4_run_snap_to_stage_orch": {},
             "step5_run_snap_to_stage_work":  {},
             "step6_run_stage_to_lake_orch": {},
-            "step7_run_stage_to_lake_work":  {}
+            "step7_run_stage_to_lake_work":  {},
+            "step8_validate_results": {}
         },
         "*.lambda_functions.*.layers": [
             "1"
         ],
         "*.lambda_functions.step5_run_snap_to_stage_work.timeout": 300,
+        "*.lambda_functions.step5_run_snap_to_stage_work.memory": 10240,
         "*.lambda_functions.step7_run_stage_to_lake_work.timeout": 300,
+        "*.lambda_functions.step7_run_stage_to_lake_work.memory": 10240,
+        "*.lambda_functions.step8_validate_results.timeout": 300,
+        "*.lambda_functions.step8_validate_results.memory": 1024,
         "*.lambda_functions.*.timeout": 30,
-        "*.lambda_functions.*.memory": 128,
+        "*.lambda_functions.*.memory": 256,
         "*.lambda_functions.*.iam_role": null,
         "*.lambda_functions.*.subnet_ids": null,
         "*.lambda_functions.*.security_group_ids": null,
@@ -49,7 +54,7 @@
         "*.lambda_functions.step5_run_snap_to_stage_work.handler": "step5_run_snap_to_stage_work_handler",
         "*.lambda_functions.step6_run_stage_to_lake_orch.handler": "step6_run_stage_to_lake_orch_handler",
         "*.lambda_functions.step7_run_stage_to_lake_work.handler": "step7_run_stage_to_lake_work_handler",
-
+        "*.lambda_functions.step8_validate_results.handler": "step8_validate_results_handler",
         // --- State Machine ---
         "*.state_machines": {
             "dynamodbsnaplake_workflow": {}
@@ -70,7 +75,8 @@
             "step4_run_snap_to_stage_orch": {},
             "step5_run_snap_to_stage_work":  {},
             "step6_run_stage_to_lake_orch": {},
-            "step7_run_stage_to_lake_work":  {}
+            "step7_run_stage_to_lake_work":  {},
+            "step8_validate_results": {}
         },
         "state_machines": {
             "dynamodbsnaplake_workflow": {}
@@ -85,7 +91,8 @@
             "step4_run_snap_to_stage_orch": {},
             "step5_run_snap_to_stage_work":  {},
             "step6_run_stage_to_lake_orch": {},
-            "step7_run_stage_to_lake_work":  {}
+            "step7_run_stage_to_lake_work":  {},
+            "step8_validate_results": {}
         },
         "state_machines": {
             "dynamodbsnaplake_workflow": {}
@@ -100,7 +107,8 @@
             "step4_run_snap_to_stage_orch": {},
             "step5_run_snap_to_stage_work":  {},
             "step6_run_stage_to_lake_orch": {},
-            "step7_run_stage_to_lake_work":  {}
+            "step7_run_stage_to_lake_work":  {},
+            "step8_validate_results": {}
         },
         "state_machines": {
             "dynamodbsnaplake_workflow": {}

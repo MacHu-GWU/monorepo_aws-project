@@ -201,7 +201,10 @@ class SfnMixin:
                     "ItemReader": {
                         "Resource": "arn:aws:states:::s3:getObject",
                         "ReaderConfig": {"InputType": "JSON"},
-                        "Parameters": {"Bucket": "bucket", "Key": "file.json"},
+                        "Parameters": {
+                            "Bucket.$": "$.map_payload_bucket",
+                            "Key.$": "$.map_payload_key",
+                        },
                     },
                 },
                 "Step 6 - Generate Partition File Group Manifest and Dispatch to Workers": {
@@ -264,14 +267,42 @@ class SfnMixin:
                             }
                         },
                     },
-                    "Next": "Success",
+                    "Next": "Step 8 - Validate Results",
                     "Label": "StagingToDatalakeWorkers",
                     "MaxConcurrency": 100,
                     "ItemReader": {
                         "Resource": "arn:aws:states:::s3:getObject",
                         "ReaderConfig": {"InputType": "JSON"},
-                        "Parameters": {"Bucket": "bucket", "Key": "file.json"},
+                        "Parameters": {
+                            "Bucket.$": "$.map_payload_bucket",
+                            "Key.$": "$.map_payload_key",
+                        },
                     },
+                },
+                "Step 8 - Validate Results": {
+                    "Type": "Task",
+                    "Resource": "arn:aws:states:::lambda:invoke",
+                    "OutputPath": "$.Payload",
+                    "Parameters": {
+                        "Payload": {
+                            "exec_arn.$": "$$.Execution.Id",
+                            "sfn_input.$": "$$.Execution.Input"
+                        }
+                    },
+                    "Retry": [
+                        {
+                            "ErrorEquals": [
+                                "Lambda.ServiceException",
+                                "Lambda.AWSLambdaException",
+                                "Lambda.SdkClientException",
+                                "Lambda.TooManyRequestsException"
+                            ],
+                            "IntervalSeconds": 1,
+                            "MaxAttempts": 3,
+                            "BackoffRate": 2
+                        }
+                    ],
+                    "Next": "Success"
                 },
                 "Success": {"Type": "Succeed"},
                 "Fail": {"Type": "Fail"},

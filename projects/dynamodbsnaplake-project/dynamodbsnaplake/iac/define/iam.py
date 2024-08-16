@@ -66,6 +66,15 @@ class IamMixin:
             resources=["*"],
         )
 
+        self.stat_dynamodb = iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                "lambda:InvokeFunction",
+                "lambda:InvokeAsync",
+            ],
+            resources=["*"],
+        )
+
         # reference: https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html#cloudwatch-iam-policy
         self.stat_sfn_cloudwatch_log = iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
@@ -123,6 +132,11 @@ class IamMixin:
             "IamRoleForSFN",
             assumed_by=iam.ServicePrincipal("states.amazonaws.com"),
             role_name=f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-sfn",
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "PowerUserAccess"
+                ),
+            ],
             inline_policies={
                 f"{self.env.prefix_name_snake}-{cdk.Aws.REGION}-sfn": iam.PolicyDocument(
                     statements=[

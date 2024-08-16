@@ -4,7 +4,20 @@
 AWS Step Functions Context Management Module
 
 This module provides utilities and classes for managing AWS Step Functions execution context,
-including serialization, deserialization, and S3 storage operations.
+including serialization, deserialization, and S3 storage operations. It aims to simplify
+the process of storing and retrieving arbitrary data for AWS Step Function executions,
+avoiding the complexity of AWS Step Function's built-in inter-state input/output mechanism.
+
+Usage:
+
+This module allows passing only the execution ID as input to each Lambda function
+using the ``"Payload": {"exec_arn.$": "$$.Execution.Id"}`` syntax,
+while storing and retrieving the full context data from S3. This approach provides
+better control and flexibility in managing context and input/ouput data across multiple steps.
+
+Classes:
+
+- :class:`SfnCtx`: Represents the context of an AWS Step Functions execution.
 """
 
 import typing as T
@@ -16,7 +29,10 @@ if T.TYPE_CHECKING:  # pragma: no cover
     from mypy_boto3_s3.client import S3Client
 
 
-def split_uri(uri: str):
+def split_uri(uri: str) -> T.Tuple[str, str]:
+    """
+    Splits an S3 URI into bucket and key parts.
+    """
     parts = uri.split("/", 3)
     bucket, key = parts[2], parts[3]
     return bucket, key
@@ -37,14 +53,25 @@ class SfnCtx:
 
     This class encapsulates the execution ARN and associated data,
     providing methods to serialize the context to S3 and deserialize it back.
+    It serves as a utility to store arbitrary data for an AWS Step Function execution,
+    avoiding the need to use AWS Step Function's built-in complex inter-state
+    input/output mechanism.
 
     :param exec_arn: The ARN (Amazon Resource Name) of the Step Functions execution.
     :param data: A dictionary containing the context data of the execution.
 
-    Methods
+    **Methods**
 
     - :meth:`write`: Serializes and writes the context to an S3 location.
     - :meth:`read`: Class method to read and deserialize a context from an S3 location.
+
+    **Example**
+
+    >>> ctx = SfnCtx(exec_arn="arn:aws:states:...:execution:...", data={"key": "value"})
+    >>> s3_uri = ctx.write(s3_client, "s3://my-bucket/my_state_machine_name/")
+    >>> retrieved_ctx = SfnCtx.read(s3_client, "s3://my-bucket/contexts/", "arn:aws:states:...:execution:...")
+    >>> retrieved_ctx.data
+    {'key': 'value'}
 
     .. seealso::
 

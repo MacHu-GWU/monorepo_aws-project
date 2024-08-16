@@ -1,12 +1,23 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module implement the AWS Lambda Function in two ways:
+
+1. :class:`Request` dataclass is a container to hold all the necessary parameter
+    for the Lambda Function to run. The :meth:`Request.main` method execute the
+    main logic of the Lambda Function. It also can be used for local testing
+    without using real AWS Lambda Function.
+2. :meth:`Request.lambda_handler` is the entry point for the AWS Lambda Function.
+    It reads data from the event, create a :class:`Request` object, and call the
+    :meth:`Request.main` method.
+"""
+
 import typing as T
 import os
 import enum
 import json
 import dataclasses
 
-import boto3
 import botocore.exceptions
 from s3pathlib import S3Path
 from boto_session_manager import BotoSesManager
@@ -15,6 +26,7 @@ from dbsnaplake.api import (
     DBSnapshotManifestFile,
     DBSnapshotFileGroupManifestFile,
     PartitionFileGroupManifestFile,
+    validate_datalake,
     step_1_3_process_db_snapshot_file_group_manifest_file,
     step_2_3_process_partition_file_group_manifest_file,
 )
@@ -41,22 +53,37 @@ class RequestTypeEnum(str, enum.Enum):
 
 @dataclasses.dataclass
 class Request:
+    """
+    Base class for all the Lambda Function Request dataclass.
+
+    :param bsm: Boto3 Session Manager.
+    :param exec_arn: ARN of the Step Function Execution.
+    :param sfn_input: The :class:`input data <parquet_dynamodb.sfn_input.SfnInput>`
+        for the Step Function.
+    """
+
     bsm: "BotoSesManager" = dataclasses.field()
     exec_arn: str = dataclasses.field()
     sfn_input: SfnInput = dataclasses.field()
 
-    def get_sfn_ctx(self) -> SfnCtx:
+    def get_sfn_ctx(self) -> SfnCtx:  # pragma: no cover
         return SfnCtx.read(
             s3_client=self.bsm.s3_client,
             exec_arn=self.exec_arn,
             s3dir_uri=self.sfn_input.s3dir_sfn_ctx.uri,
         )
 
-    def to_dict(self):
+    def to_dict(self):  # pragma: no cover
         return dataclasses.asdict(self)
 
     @classmethod
-    def from_dict(cls, dct: T.Dict[str, T.Any]):
+    def from_dict(cls, dct: T.Dict[str, T.Any]):  # pragma: no cover
+        raise NotImplementedError
+
+    def main(self):  # pragma: no cover
+        raise NotImplementedError
+
+    def lambda_handler(self, event: dict, context):  # pragma: no cover
         raise NotImplementedError
 
 
@@ -180,18 +207,25 @@ class Step1CheckAndSetupPrerequisitesRequest(Request):
             sfn_input=sfn_input,
             aws_region=aws_region,
         )
-        request.main()
+        return request.main()
 
 
 @dataclasses.dataclass
 class Step2RunDynamoDBExportJob(Request):
-    """ """
+    """
+    todo: add docstring
+    """
 
     def main(self):
-        self.sfn_input.run_or_get_dynamodb_export(
+        export_job = self.sfn_input.run_or_get_dynamodb_export(
             s3_client=self.bsm.s3_client,
             dynamodb_client=self.bsm.dynamodb_client,
         )
+        return {
+            "ExportDescription": {
+                "ExportArn": export_job.arn,
+            }
+        }
 
     @classmethod
     def lambda_handler(cls, event: dict, context):  # pragma: no cover
@@ -204,12 +238,14 @@ class Step2RunDynamoDBExportJob(Request):
             exec_arn=exec_arn,
             sfn_input=sfn_input,
         )
-        request.main()
+        return request.main()
 
 
 @dataclasses.dataclass
 class Step3RunEtlJobPlanner(Request):
-    """ """
+    """
+    todo: add docstring
+    """
 
     def main(self):
         """ """
@@ -220,6 +256,8 @@ class Step3RunEtlJobPlanner(Request):
         if export_job.is_completed() is False:
             raise ValueError(f"Export job {export_job.arn} is not completed yet.")
 
+        if self.sfn_input.s3uri_python_module is not None:
+            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         Task = self.sfn_input.project.task_model_step_0_prepare_db_snapshot_manifest
 
         task_id = "run_etl_job_planner"
@@ -271,17 +309,24 @@ class Step3RunEtlJobPlanner(Request):
             exec_arn=exec_arn,
             sfn_input=sfn_input,
         )
-        request.main()
+        return request.main()
 
 
 @dataclasses.dataclass
 class Step4SnapshotToStagingOrchestrator(Request):
-    """ """
+    """
+    todo: add docstring
+    """
 
     def main(self):
+        """
+        :return: db_snapshot_file_group_manifest_file_uri_summary_list, so that
+            we can use it to simulate the Map State in local test.
+        """
+        if self.sfn_input.s3uri_python_module is not None:
+            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
         self.sfn_input.project.step_1_1_plan_snapshot_to_staging()
-
         Task = (
             self.sfn_input.project.task_model_step_1_2_process_db_snapshot_file_group_manifest_file
         )
@@ -290,6 +335,8 @@ class Step4SnapshotToStagingOrchestrator(Request):
             task.data["uri_summary"] for task in task_list
         ]
         payload = [
+            # the structure of the payload matches
+            # ``Step5ProcessDbSnapshotFileGroupManifest.lambda_handler`` method
             {
                 "exec_arn": self.exec_arn,
                 "sfn_input": self.sfn_input.to_dict(),
@@ -301,10 +348,17 @@ class Step4SnapshotToStagingOrchestrator(Request):
             json.dumps(payload, indent=4),
             content_type="application/json",
         )
+        # for local development, we return the input parameter for the next step
         return db_snapshot_file_group_manifest_file_uri_summary_list
 
     @classmethod
     def lambda_handler(cls, event: dict, context):  # pragma: no cover
+        """
+        .. note::
+
+            It returns ``{"map_payload_bucket": ..., "map_payload_key": ...}``
+            for the next Map State to use.
+        """
         aws_region = os.environ["AWS_DEFAULT_REGION"]
         bsm = BotoSesManager(region_name=aws_region)
         exec_arn = event["exec_arn"]
@@ -315,15 +369,25 @@ class Step4SnapshotToStagingOrchestrator(Request):
             sfn_input=sfn_input,
         )
         request.main()
+        # for lambda function, we return the input parameter for the next
+        # lambda function in step function
+        return {
+            "map_payload_bucket": sfn_input.s3path_snapshot_to_staging_worker_payload.bucket,
+            "map_payload_key": sfn_input.s3path_snapshot_to_staging_worker_payload.key,
+        }
 
 
 @dataclasses.dataclass
 class Step5ProcessDbSnapshotFileGroupManifest(Request):
-    """ """
+    """
+    todo: add docstring
+    """
 
     db_snapshot_file_group_manifest_file_uri_summary: str = dataclasses.field()
 
     def main(self):
+        if self.sfn_input.s3uri_python_module is not None:
+            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
 
         Task = (
@@ -385,14 +449,22 @@ class Step5ProcessDbSnapshotFileGroupManifest(Request):
             sfn_input=sfn_input,
             db_snapshot_file_group_manifest_file_uri_summary=uri_summary,
         )
-        request.main()
+        return request.main()
 
 
 @dataclasses.dataclass
 class Step6StagingToDatalakeOrchestrator(Request):
-    """ """
+    """
+    todo: add docstring
+    """
 
     def main(self):
+        """
+        :return: partition_file_group_manifest_file_uri_summary_list, so that
+            we can use it to simulate the Map State in local test.
+        """
+        if self.sfn_input.s3uri_python_module is not None:
+            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
         self.sfn_input.project.step_2_1_plan_staging_to_datalake()
 
@@ -404,6 +476,8 @@ class Step6StagingToDatalakeOrchestrator(Request):
             task.data["uri_summary"] for task in task_list
         ]
         payload = [
+            # the structure of the payload matches
+            # ``Step7ProcessPartitionFileGroupManifest.lambda_handler`` method
             {
                 "exec_arn": self.exec_arn,
                 "sfn_input": self.sfn_input.to_dict(),
@@ -415,10 +489,18 @@ class Step6StagingToDatalakeOrchestrator(Request):
             json.dumps(payload, indent=4),
             content_type="application/json",
         )
+
+        # for local development, we return the input parameter for the next step
         return partition_file_group_manifest_file_uri_summary_list
 
     @classmethod
     def lambda_handler(cls, event: dict, context):  # pragma: no cover
+        """
+        .. note::
+
+            It returns ``{"map_payload_bucket": ..., "map_payload_key": ...}``
+            for the next Map State to use.
+        """
         aws_region = os.environ["AWS_DEFAULT_REGION"]
         bsm = BotoSesManager(region_name=aws_region)
         exec_arn = event["exec_arn"]
@@ -429,17 +511,26 @@ class Step6StagingToDatalakeOrchestrator(Request):
             sfn_input=sfn_input,
         )
         request.main()
+        # for lambda function, we return the input parameter for the next
+        # lambda function in step function
+        return {
+            "map_payload_bucket": sfn_input.s3path_staging_to_datalake_worker_payload.bucket,
+            "map_payload_key": sfn_input.s3path_staging_to_datalake_worker_payload.key,
+        }
 
 
 @dataclasses.dataclass
 class Step7ProcessPartitionFileGroupManifest(Request):
-    """ """
+    """
+    todo: add docstring
+    """
 
     partition_file_group_manifest_file_uri_summary: str = dataclasses.field()
 
     def main(self):
+        if self.sfn_input.s3uri_python_module is not None:
+            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
-
         Task = (
             self.sfn_input.project.task_model_step_2_2_process_partition_file_group_manifest_file
         )
@@ -474,7 +565,44 @@ class Step7ProcessPartitionFileGroupManifest(Request):
             sfn_input=sfn_input,
             partition_file_group_manifest_file_uri_summary=uri_summary,
         )
-        request.main()
+        return request.main()
+
+
+@dataclasses.dataclass
+class Step8ValidateResults(Request):
+    """
+    todo: add docstring
+    """
+
+    def main(self) -> dict:
+        if self.sfn_input.s3uri_python_module is not None:
+            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
+        self.sfn_input.project.s3_client = self.bsm.s3_client
+        if self.sfn_input.count_on_column is None:
+            print(
+                f"You didn't specified `count_on_column` in Step Function input, "
+                f"so that the number of record information will not be available in "
+                f"validation result."
+            )
+        result = self.sfn_input.project.step_3_1_validate_datalake()
+        result_data = dataclasses.asdict(result)
+        s3path = self.sfn_input.s3_loc.s3path_validate_datalake_result
+        result_data["result_s3_uri"] = s3path.uri
+        result_data["result_s3_console_url"] = s3path.console_url
+        return result_data
+
+    @classmethod
+    def lambda_handler(cls, event: dict, context):  # pragma: no cover
+        aws_region = os.environ["AWS_DEFAULT_REGION"]
+        bsm = BotoSesManager(region_name=aws_region)
+        exec_arn = event["exec_arn"]
+        sfn_input = SfnInput(**event["sfn_input"])
+        request = cls(
+            bsm=bsm,
+            exec_arn=exec_arn,
+            sfn_input=sfn_input,
+        )
+        return request.main()
 
 
 mapping = {
@@ -485,5 +613,5 @@ mapping = {
     RequestTypeEnum.step5_process_db_snapshot_file_group_manifest.value: Step5ProcessDbSnapshotFileGroupManifest,
     RequestTypeEnum.step6_generate_partition_file_group_manifest_and_dispatch_to_workers.value: Step6StagingToDatalakeOrchestrator,
     RequestTypeEnum.step7_process_partition_file_group_manifest.value: Step7ProcessPartitionFileGroupManifest,
-    RequestTypeEnum.step8_validate_results.value: None,
+    RequestTypeEnum.step8_validate_results.value: Step8ValidateResults,
 }
