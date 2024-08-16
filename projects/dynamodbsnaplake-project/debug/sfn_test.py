@@ -51,8 +51,9 @@ now = datetime.now()
 print(input_json)
 
 # --- reset
-# sfn_input.s3_loc.s3dir_staging.delete(bsm=bsm)
 sfn_input.download_python_module(s3_client=bsm.s3_client)
+# sfn_input.s3_loc.s3dir_staging.delete(bsm=bsm)
+# sfn_input.s3_loc.s3dir_datalake.delete(bsm=bsm)
 # sfn_input.project.task_model_step_0_prepare_db_snapshot_manifest.delete_all()
 
 bsm.sfn_client.start_execution(
@@ -62,6 +63,3 @@ bsm.sfn_client.start_execution(
         input_data,
     ),
 )
-
-# sfn_input.download_python_module(s3_client=bsm.s3_client)
-# sfn_input.project.connect_dynamodb(bsm=bsm)

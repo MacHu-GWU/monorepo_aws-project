@@ -13,6 +13,7 @@ from dynamodbsnaplake.vendor.parquet_dynamodb.api import (
     Step5ProcessDbSnapshotFileGroupManifest,
     Step6StagingToDatalakeOrchestrator,
     Step7ProcessPartitionFileGroupManifest,
+    Step8ValidateResults,
 )
 
 # fmt: off
@@ -23,4 +24,5 @@ step4_run_snap_to_stage_orch_handler = Step4SnapshotToStagingOrchestrator.lambda
 step5_run_snap_to_stage_work_handler = Step5ProcessDbSnapshotFileGroupManifest.lambda_handler
 step6_run_stage_to_lake_orch_handler = Step6StagingToDatalakeOrchestrator.lambda_handler
 step7_run_stage_to_lake_work_handler = Step7ProcessPartitionFileGroupManifest.lambda_handler
+step8_validate_results_handler = Step8ValidateResults.lambda_handler
 # fmt: on

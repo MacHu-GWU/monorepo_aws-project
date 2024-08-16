@@ -20,3 +20,4 @@ from .lbd import Step4SnapshotToStagingOrchestrator
 from .lbd import Step5ProcessDbSnapshotFileGroupManifest
 from .lbd import Step6StagingToDatalakeOrchestrator
 from .lbd import Step7ProcessPartitionFileGroupManifest
+from .lbd import Step8ValidateResults
