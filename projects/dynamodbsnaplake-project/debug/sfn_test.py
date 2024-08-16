@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
+"""
+This script run an end to end test of the DynamoDB Snapshot to Datalake workflow.
+"""
+
 import json
-from datetime import datetime, timezone
+from datetime import datetime
 from s3pathlib import S3Path
 from boto_session_manager import BotoSesManager
 
@@ -11,15 +15,28 @@ from dynamodbsnaplake.vendor.parquet_dynamodb.lbd import (
     SfnInput,
 )
 
-bsm = BotoSesManager(profile_name="bmt_app_dev_us_east_1")
-table_arn = f"arn:aws:dynamodb:us-east-1:{bsm.aws_account_id}:table/aws_s3_dynamodb_data_analysis-example-ecommerce_orders"
-export_datetime = datetime(2024, 8, 14, 14, 0, 0, tzinfo=timezone.utc)
-export_time = export_datetime.isoformat()
-exec_arn = f"arn:aws:states:us-east-1:{bsm.aws_account_id}:execution:sfn-poc:a1b2c3d4-9669-40e1-becc-367b03b553d5"
-s3dir_root = S3Path(
-    f"s3://{bsm.aws_account_alias}-{bsm.aws_region}-data"
-    f"/projects/dynamodbsnaplake/envs/sbx/"
-).to_dir()
+# ------------------------------------------------------------------------------
+# Enter your test settings here.
+# ------------------------------------------------------------------------------
+aws_profile = "bmt_app_dev_us_east_1"
+dynamodb_table_name = "aws_s3_dynamodb_data_analysis-example-ecommerce_orders"
+export_time_str = "2024-08-14T16:00:00+00:00"
+reset_data = True
+reset_tracker = True
+
+
+# ------------------------------------------------------------------------------
+# Don't change anything below this line.
+# ------------------------------------------------------------------------------
+bsm = BotoSesManager(profile_name=aws_profile)
+dynamodb_table_arn = f"arn:aws:dynamodb:{bsm.aws_region}:{bsm.aws_account_id}:table/{dynamodb_table_name}"
+export_datetime = datetime.fromisoformat(export_time_str)
+bucket = f"{bsm.aws_account_alias}-{bsm.aws_region}-data"
+s3dir_root = S3Path(f"s3://{bucket}/projects/dynamodbsnaplake/envs/sbx/").to_dir()
+s3uri_staging_dir = s3dir_root.joinpath("staging").to_dir().uri
+s3uri_database_dir = s3dir_root.joinpath("database").to_dir().uri
+# See this python module at
+# https://github.com/MacHu-GWU/monorepo_aws-project/blob/main/projects/dynamodbsnaplake-project/debug/workflow_settings.py
 path_python_module = dir_project_root.joinpath("debug", "workflow_settings.py")
 s3path_python_module = s3dir_root.joinpath(path_python_module.name)
 s3path_python_module.write_text(
@@ -28,12 +45,14 @@ s3path_python_module.write_text(
     bsm=bsm,
 )
 print(f"{s3path_python_module.uri = }")
+print(f"{s3path_python_module.console_url = }")
 
+# Create the most-important StepFunction input object
 sfn_input = SfnInput(
-    table_arn=table_arn,
-    export_time=export_time,
-    s3uri_staging_dir=s3dir_root.joinpath("staging").to_dir().uri,
-    s3uri_database_dir=s3dir_root.joinpath("database").to_dir().uri,
+    table_arn=dynamodb_table_arn,
+    export_time=export_time_str,
+    s3uri_staging_dir=s3uri_staging_dir,
+    s3uri_database_dir=s3uri_database_dir,
     s3uri_python_module=s3path_python_module.uri,
     sort_by=["update_time"],
     descending=[False],
@@ -45,21 +64,22 @@ sfn_input = SfnInput(
     extract_partition_keys_override=None,
 )
 input_data = sfn_input.to_dict()
-# print(input_data)
+print(input_data)
 input_json = json.dumps(input_data, indent=4)
-now = datetime.now()
 print(input_json)
 
-# --- reset
 sfn_input.download_python_module(s3_client=bsm.s3_client)
-# sfn_input.s3_loc.s3dir_staging.delete(bsm=bsm)
-# sfn_input.s3_loc.s3dir_datalake.delete(bsm=bsm)
-# sfn_input.project.task_model_step_0_prepare_db_snapshot_manifest.delete_all()
+# reset data and tracker if needed
+if reset_data:
+    sfn_input.s3_loc.s3dir_staging.delete(bsm=bsm)
+    sfn_input.s3_loc.s3dir_datalake.delete(bsm=bsm)
+if reset_tracker:
+    sfn_input.project.task_model_step_0_prepare_db_snapshot_manifest.delete_all()
 
+now = datetime.now()
+exec_name = now.strftime("%Y-%m-%d-%H-%M-%S")
 bsm.sfn_client.start_execution(
     stateMachineArn=config.env.sm_dynamodbsnaplake_workflow.arn,
-    name=now.strftime("%Y-%m-%d-%H-%M-%S"),
-    input=json.dumps(
-        input_data,
-    ),
+    name=exec_name,
+    input=input_json,
 )
