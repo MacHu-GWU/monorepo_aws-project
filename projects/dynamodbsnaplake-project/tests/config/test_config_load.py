@@ -59,9 +59,14 @@ def test():
         _ = lambda_function.short_name_camel
         _ = lambda_function.target_live_version1
 
-    _ = config.env.lbd_s1_start
-    _ = config.env.lbd_s2_run_job
-    _ = config.env.lbd_s3_check_status
+    _ = config.env.lbd_step1_check_up
+    _ = config.env.lbd_step2_run_export_job
+    _ = config.env.lbd_step3_run_etl_planner
+    _ = config.env.lbd_step4_run_snap_to_stage_orch
+    _ = config.env.lbd_step5_run_snap_to_stage_work
+    _ = config.env.lbd_step6_run_stage_to_lake_orch
+    _ = config.env.lbd_step7_run_stage_to_lake_work
+    _ = config.env.lbd_step8_validate_results
 
     # sfn_state_machine.py
     _ = config.env.state_machines
@@ -80,7 +85,7 @@ def test():
         _ = state_machine.short_name_camel
         # _ = state_machine.target_live_version1
 
-    _ = config.env.sm_run_job
+    _ = config.env.sm_dynamodbsnaplake_workflow
 
     # name.py
     _ = config.env.cloudformation_stack_name
