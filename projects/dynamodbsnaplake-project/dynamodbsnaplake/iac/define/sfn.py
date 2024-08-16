@@ -287,7 +287,8 @@ class SfnMixin:
                         "Payload": {
                             "exec_arn.$": "$$.Execution.Id",
                             "sfn_input.$": "$$.Execution.Input"
-                        }
+                        },
+                        "FunctionName": self.env.lbd_step8_validate_results.name,
                     },
                     "Retry": [
                         {
