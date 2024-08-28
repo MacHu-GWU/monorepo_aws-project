@@ -58,10 +58,8 @@
         "username": "prd.user",
         "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_lbd_container/",
         "lambda_functions": {
-            "hello": {
-            },
-            "s3sync": {
-            }
+            "hello": {},
+            "s3sync": {}
         }
     }
 }
