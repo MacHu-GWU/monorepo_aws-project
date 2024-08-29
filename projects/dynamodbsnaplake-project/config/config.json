@@ -30,7 +30,7 @@
             "step8_validate_results": {}
         },
         "*.lambda_functions.*.layers": [
-            "3"
+            "4"
         ],
         "*.lambda_functions.step5_run_snap_to_stage_work.timeout": 300,
         "*.lambda_functions.step5_run_snap_to_stage_work.memory": 10240,
