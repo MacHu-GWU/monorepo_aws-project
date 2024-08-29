@@ -50,7 +50,7 @@ pynamodb_mate = "6.0.0.4"
 aws_dynamodb_io = "0.1.4"
 s3manifesto = "0.4.1"
 polars_writer = "0.3.1"
-jsonpolars = "0.2.1"
+jsonpolars = "0.2.2"
 dbsnaplake = "0.3.1"
 urllib3 = "1.26.19"
 

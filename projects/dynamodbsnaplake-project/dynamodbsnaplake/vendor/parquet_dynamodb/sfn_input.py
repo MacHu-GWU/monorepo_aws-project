@@ -29,7 +29,7 @@ from dbsnaplake.api import (
 )
 from polars_writer.api import Writer
 from jsonpolars.api import parse_dfop
-from parquet_dynamodb.vendor.fast_dynamodb_json.api import (
+from .vendor.fast_dynamodb_json.api import (
     T_SIMPLE_SCHEMA,
     json_type_to_simple_type,
 )
@@ -372,11 +372,20 @@ class SfnInput:
             export_time=self.export_time,
             s3uri_staging_dir=self.s3uri_staging_dir,
             s3uri_database_dir=self.s3uri_database_dir,
+            s3uri_datalake_override=self.s3uri_datalake_override,
+            schema=self.schema,
+            transforms=self.transforms,
+            col_record_id=self.col_record_id,
+            col_create_time=self.col_create_time,
+            col_partition_keys=self.col_partition_keys,
+            col_record_count=self.col_record_count,
+            create_datalake=self.create_datalake,
             sort_by=self.sort_by,
             descending=self.descending,
             target_db_snapshot_file_group_size=self.target_db_snapshot_file_group_size,
             target_parquet_file_size=self.target_parquet_file_size,
-            s3uri_datalake_override=self.s3uri_datalake_override,
+            writer_options=self.writer_options,
+            gzip_compression=self.gzip_compression,
         )
 
     @classmethod

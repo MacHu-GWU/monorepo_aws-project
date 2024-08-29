@@ -53,22 +53,144 @@ sfn_input = SfnInput(
     export_time=export_time_str,
     s3uri_staging_dir=s3uri_staging_dir,
     s3uri_database_dir=s3uri_database_dir,
-    s3uri_python_module=s3path_python_module.uri,
+    s3uri_datalake_override=None,
+    schema={
+        "OrderID": {"type": "str"},
+        "CustomerID": {"type": "str"},
+        "OrderDate": {"type": "str"},
+        "TotalAmount": {"type": "float"},
+        "Status": {"type": "str"},
+        "ShippingAddress": {
+            "type": "map",
+            "values": {
+                "StreetAddress": {"type": "str"},
+                "City": {"type": "str"},
+                "State": {"type": "str"},
+                "ZipCode": {"type": "str"},
+                "Country": {"type": "str"},
+            },
+        },
+        "Items": {
+            "type": "list",
+            "item": {
+                "type": "map",
+                "values": {
+                    "ProductID": {"type": "str"},
+                    "Name": {"type": "str"},
+                    "Price": {"type": "float"},
+                    "Quantity": {"type": "int"},
+                },
+            },
+        },
+        "AppliedCoupons": {
+            "type": "list",
+            "item": {"type": "str"},
+        },
+        "PaymentMethod": {"type": "str"},
+        "LastFourDigits": {"type": "str"},
+        "EstimatedDeliveryDate": {"type": "str"},
+        "GiftWrap": {"type": "bool"},
+        "GiftMessage": {"type": "str"},
+    },
+    transforms=[
+        {
+            "type": "with_columns",
+            "exprs": [],
+            "named_exprs": {
+                "record_id": {
+                    "type": "func_concat_str",
+                    "exprs": [
+                        {
+                            "type": "column",
+                            "name": "CustomerID",
+                        },
+                        {
+                            "type": "column",
+                            "name": "OrderID",
+                        },
+                    ],
+                    "separator": "#",
+                },
+                "create_time": {
+                    "type": "str_to_datetime",
+                    "expr": {
+                        "type": "column",
+                        "name": "OrderDate",
+                    },
+                },
+                "update_time": {
+                    "type": "str_to_datetime",
+                    "expr": {
+                        "type": "column",
+                        "name": "OrderDate",
+                    },
+                },
+            },
+        },
+        {
+            "type": "with_columns",
+            "exprs": [],
+            "named_exprs": {
+                "year": {
+                    "type": "str_zfill",
+                    "expr": {
+                        "type": "cast",
+                        "expr": {
+                            "type": "dt_year",
+                            "expr": {
+                                "type": "column",
+                                "name": "create_time",
+                            },
+                        },
+                        "dtype": "String",
+                    },
+                    "length": 4,
+                },
+                "month": {
+                    "type": "str_zfill",
+                    "expr": {
+                        "type": "cast",
+                        "expr": {
+                            "type": "dt_month",
+                            "expr": {
+                                "type": "column",
+                                "name": "create_time",
+                            },
+                        },
+                        "dtype": "String",
+                    },
+                    "length": 2,
+                },
+            },
+        },
+    ],
+    col_record_id="record_id",
+    col_create_time="create_time",
+    col_partition_keys=["year", "month"],
+    col_record_count="OrderID",
     sort_by=["update_time"],
     descending=[False],
-    count_on_column="OrderID",
-    s3uri_datalake_override=None,
-    extract_record_id_override=None,
-    extract_create_time_override=None,
-    extract_update_time_override=None,
-    extract_partition_keys_override=None,
+    writer_options={
+        # --- use parquet datalake
+        # "format": "parquet",
+        # "parquet_compression": "snappy",
+        # --- use deltalake
+        "format": "delta",
+        "delta_mode": "append",
+        "delta_merge_options": {
+            "predicate": "s.record_id = t.record_id",
+            "source_alias": "s",
+            "target_alias": "t",
+        },
+    },
+    gzip_compression=False,
 )
 input_data = sfn_input.to_dict()
 print(input_data)
 input_json = json.dumps(input_data, indent=4)
 print(input_json)
 
-sfn_input.download_python_module(s3_client=bsm.s3_client)
+# sfn_input.download_python_module(s3_client=bsm.s3_client)
 # reset data and tracker if needed
 if reset_data:
     sfn_input.s3_loc.s3dir_staging.delete(bsm=bsm)

@@ -1221,13 +1221,13 @@ testing = ["bson", "ecdsa", "feedparser", "gmpy2", "numpy", "pandas", "pymongo",
 
 [[package]]
 name = "jsonpolars"
-version = "0.2.1"
+version = "0.2.2"
 description = "Package short description."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonpolars-0.2.1-py3-none-any.whl", hash = "sha256:061297110e20649535caa5c99f74df921201bc08a5757b1dee86c6ebf6adf29d"},
-    {file = "jsonpolars-0.2.1.tar.gz", hash = "sha256:dfc2267d8638532de38c0130ddbc5e323c86c48da7a13917355ede7b4264a6e6"},
+    {file = "jsonpolars-0.2.2-py3-none-any.whl", hash = "sha256:4623289461bf195970cf73c1414671cbaa7f005af8c9c6d87e534615d3b2c178"},
+    {file = "jsonpolars-0.2.2.tar.gz", hash = "sha256:bc4efa926ad825eb1d2e4fb87e2175880b6da1bda5d188feb6dfe16cb9babd9f"},
 ]
 
 [package.dependencies]
@@ -2941,4 +2941,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "ceeb0c63f79f1e579d99c70af13236c32013fd953f9874ec2896ee5b6ba369de"
+content-hash = "8a740cdd3f8805d2999feea80b4e11d3079b8f38311546784b904fc1077f30f2"
