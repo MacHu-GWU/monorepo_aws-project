@@ -26,7 +26,7 @@ from dbsnaplake.api import (
     DBSnapshotManifestFile,
     DBSnapshotFileGroupManifestFile,
     PartitionFileGroupManifestFile,
-    validate_datalake,
+    logger,
     step_1_3_process_db_snapshot_file_group_manifest_file,
     step_2_3_process_partition_file_group_manifest_file,
 )
@@ -162,6 +162,9 @@ class Step1CheckAndSetupPrerequisitesRequest(Request):
 
     aws_region: str = dataclasses.field()
 
+    @logger.start_and_end(
+        msg="Check and Setup Prerequisites",
+    )
     def main(self):
         create_s3_bucket_if_not_exists(
             s3_client=self.bsm.s3_client,
@@ -215,12 +218,23 @@ class Step2RunDynamoDBExportJob(Request):
     """
     todo: add docstring
     """
-
+    @logger.start_and_end(
+        msg="Run DynamoDB Export Job",
+    )
     def main(self):
-        export_job = self.sfn_input.run_or_get_dynamodb_export(
+        logger.info("Check if we already launched the export job ...")
+        export_job, is_already_launched = self.sfn_input.run_or_get_dynamodb_export(
             s3_client=self.bsm.s3_client,
             dynamodb_client=self.bsm.dynamodb_client,
         )
+        if is_already_launched is False:
+            logger.info("  We never launched the export job, now launch a new one.")
+        else:
+            logger.info("  We already launched the export job.")
+        logger.info("Export job details:")
+        logger.info(f"  {export_job.arn = }")
+        logger.info(f"  {export_job.start_time = }")
+        logger.info(f"  {export_job.status = }")
         return {
             "ExportDescription": {
                 "ExportArn": export_job.arn,
@@ -246,18 +260,21 @@ class Step3RunEtlJobPlanner(Request):
     """
     todo: add docstring
     """
-
+    @logger.start_and_end(
+        msg="Run ETL Job Planner",
+    )
     def main(self):
         """ """
-        export_job = self.sfn_input.run_or_get_dynamodb_export(
+        logger.info("Verify the DynamoDB export is completed.")
+        export_job, is_already_launched = self.sfn_input.run_or_get_dynamodb_export(
             s3_client=self.bsm.s3_client,
             dynamodb_client=self.bsm.dynamodb_client,
         )
         if export_job.is_completed() is False:
             raise ValueError(f"Export job {export_job.arn} is not completed yet.")
 
-        if self.sfn_input.s3uri_python_module is not None:
-            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
+        # if self.sfn_input.s3uri_python_module is not None:
+        #     self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         Task = self.sfn_input.project.task_model_step_0_prepare_db_snapshot_manifest
 
         task_id = "run_etl_job_planner"
@@ -268,6 +285,7 @@ class Step3RunEtlJobPlanner(Request):
             return
 
         with Task.start(task_id=task_id, debug=True) as exec_ctx:
+            logger.info("Analyze export job manifest data, convert it to DBSnapshotManifestFile format ...")
             manifest_summary = export_job.get_manifest_summary(
                 dynamodb_client=self.bsm.dynamodb_client,
                 s3_client=self.bsm.s3_client,
@@ -288,6 +306,8 @@ class Step3RunEtlJobPlanner(Request):
                 }
                 new_data_file_list.append(new_dat_file)
 
+            logger.info(f"Write DbSnapshotManifestSummary to {self.sfn_input.s3path_db_snapshot_manifest_summary.uri}")
+            logger.info(f"  preview at: {self.sfn_input.s3path_db_snapshot_manifest_summary.console_url}")
             db_snapshot_manifest_file = DBSnapshotManifestFile.new(
                 uri=self.sfn_input.s3path_db_snapshot_manifest_data.uri,
                 uri_summary=self.sfn_input.s3path_db_snapshot_manifest_summary.uri,
@@ -323,8 +343,6 @@ class Step4SnapshotToStagingOrchestrator(Request):
         :return: db_snapshot_file_group_manifest_file_uri_summary_list, so that
             we can use it to simulate the Map State in local test.
         """
-        if self.sfn_input.s3uri_python_module is not None:
-            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
         self.sfn_input.project.step_1_1_plan_snapshot_to_staging()
         Task = (
@@ -385,9 +403,10 @@ class Step5ProcessDbSnapshotFileGroupManifest(Request):
 
     db_snapshot_file_group_manifest_file_uri_summary: str = dataclasses.field()
 
+    @logger.start_and_end(
+        msg="Process DB Snapshot File Group Manifest",
+    )
     def main(self):
-        if self.sfn_input.s3uri_python_module is not None:
-            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
 
         Task = (
@@ -403,38 +422,33 @@ class Step5ProcessDbSnapshotFileGroupManifest(Request):
                 uri_summary=self.db_snapshot_file_group_manifest_file_uri_summary,
                 s3_client=self.bsm.s3_client,
             )
-            if self.sfn_input.batch_read_snapshot_data_file_override is not None:
 
-                def batch_read_snapshot_data_file_func(
-                    db_snapshot_file_group_manifest_file,
-                    **kwargs,
-                ):
-                    return self.sfn_input.batch_read_snapshot_data_file_override(
-                        db_snapshot_file_group_manifest_file=db_snapshot_file_group_manifest_file,
-                        s3_client=self.bsm.s3_client,
-                    )
+            def batch_read_snapshot_data_file_func(
+                db_snapshot_file_group_manifest_file,
+                **kwargs,
+            ):
+                return self.sfn_input.batch_read_snapshot_data_file(
+                    db_snapshot_file_group_manifest_file=db_snapshot_file_group_manifest_file,
+                    s3_client=self.bsm.s3_client,
+                )
 
-            else:
-
-                def batch_read_snapshot_data_file_func(
-                    db_snapshot_file_group_manifest_file,
-                    **kwargs,
-                ):
-                    return self.sfn_input._py_mod_batch_read_snapshot_data_file(
-                        db_snapshot_file_group_manifest_file=db_snapshot_file_group_manifest_file,
-                        s3_client=self.bsm.s3_client,
-                    )
-
-            staging_file_group_manifest_file = step_1_3_process_db_snapshot_file_group_manifest_file(
-                db_snapshot_file_group_manifest_file=db_snapshot_file_group_manifest_file,
-                s3_client=self.bsm.s3_client,
-                s3_loc=self.sfn_input.s3_loc,
-                batch_read_snapshot_data_file_func=batch_read_snapshot_data_file_func,
-                extract_record_id=self.sfn_input.project.extract_record_id,
-                extract_create_time=self.sfn_input.project.extract_create_time,
-                extract_update_time=self.sfn_input.project.extract_update_time,
-                extract_partition_keys=self.sfn_input.project.extract_partition_keys,
+            basename = db_snapshot_file_group_manifest_file.uri_summary.split("/")[-1]
+            new_step_1_3_process_db_snapshot_file_group_manifest_file = (
+                logger.start_and_end(
+                    msg=f"process manifest file {basename}",
+                )(step_1_3_process_db_snapshot_file_group_manifest_file)
             )
+            with logger.nested():
+                staging_file_group_manifest_file = new_step_1_3_process_db_snapshot_file_group_manifest_file(
+                    db_snapshot_file_group_manifest_file=db_snapshot_file_group_manifest_file,
+                    s3_client=self.bsm.s3_client,
+                    s3_loc=self.sfn_input.s3_loc,
+                    batch_read_snapshot_data_file_func=batch_read_snapshot_data_file_func,
+                    partition_keys=self.sfn_input.project.partition_keys,
+                    sort_by=self.sfn_input.sort_by,
+                    descending=self.sfn_input.descending,
+                    logger=logger,
+                )
 
     @classmethod
     def lambda_handler(cls, event: dict, context):  # pragma: no cover
@@ -463,8 +477,6 @@ class Step6StagingToDatalakeOrchestrator(Request):
         :return: partition_file_group_manifest_file_uri_summary_list, so that
             we can use it to simulate the Map State in local test.
         """
-        if self.sfn_input.s3uri_python_module is not None:
-            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
         self.sfn_input.project.step_2_1_plan_staging_to_datalake()
 
@@ -528,8 +540,6 @@ class Step7ProcessPartitionFileGroupManifest(Request):
     partition_file_group_manifest_file_uri_summary: str = dataclasses.field()
 
     def main(self):
-        if self.sfn_input.s3uri_python_module is not None:
-            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
         Task = (
             self.sfn_input.project.task_model_step_2_2_process_partition_file_group_manifest_file
@@ -544,13 +554,21 @@ class Step7ProcessPartitionFileGroupManifest(Request):
                 uri_summary=self.partition_file_group_manifest_file_uri_summary,
                 s3_client=self.bsm.s3_client,
             )
-            staging_file_group_manifest_file = step_2_3_process_partition_file_group_manifest_file(
-                partition_file_group_manifest_file=partition_file_group_manifest_file,
-                s3_client=self.bsm.s3_client,
-                s3_loc=self.sfn_input.project.s3_loc,
-                sort_by=self.sfn_input.sort_by,
-                descending=self.sfn_input.descending,
-            )
+            basename = partition_file_group_manifest_file.uri_summary.split("/")[-1]
+            new_step_2_3_process_partition_file_group_manifest_file = logger.start_and_end(
+                msg=f"process manifest file {basename}",
+            )(step_2_3_process_partition_file_group_manifest_file)
+            with logger.nested():
+                staging_file_group_manifest_file = new_step_2_3_process_partition_file_group_manifest_file(
+                    partition_file_group_manifest_file=partition_file_group_manifest_file,
+                    s3_client=self.bsm.s3_client,
+                    s3_loc=self.sfn_input.project.s3_loc,
+                    polars_writer=self.sfn_input.project.polars_writer,
+                    gzip_compress=self.sfn_input.project.gzip_compression,
+                    sort_by=self.sfn_input.sort_by,
+                    descending=self.sfn_input.descending,
+                    logger=logger,
+                )
 
     @classmethod
     def lambda_handler(cls, event: dict, context):  # pragma: no cover
@@ -575,10 +593,8 @@ class Step8ValidateResults(Request):
     """
 
     def main(self) -> dict:
-        if self.sfn_input.s3uri_python_module is not None:
-            self.sfn_input.download_python_module(s3_client=self.bsm.s3_client)
         self.sfn_input.project.s3_client = self.bsm.s3_client
-        if self.sfn_input.count_on_column is None:
+        if self.sfn_input.col_record_count is None:
             print(
                 f"You didn't specified `count_on_column` in Step Function input, "
                 f"so that the number of record information will not be available in "

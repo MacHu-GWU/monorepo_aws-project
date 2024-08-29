@@ -23,9 +23,12 @@ import botocore.exceptions
 import polars as pl
 from s3pathlib import S3Path
 from aws_dynamodb_io.api import ExportJob
-from fast_dynamodb_json.api import T_SIMPLE_SCHEMA, deserialize_df
 from s3manifesto.api import KeyEnum
 from dbsnaplake.api import DBSnapshotFileGroupManifestFile, T_OPTIONAL_KWARGS
+from parquet_dynamodb.vendor.fast_dynamodb_json.api import (
+    T_SIMPLE_SCHEMA,
+    deserialize_df,
+)
 
 from .utils import dt_to_str
 

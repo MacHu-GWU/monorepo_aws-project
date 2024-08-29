@@ -6,27 +6,48 @@ AWS Step Functions input and the ``dbsnaplake.api.Project`` class,
 where the data processing logic is implemented.
 """
 
+# standard library
 import typing as T
 import os
 import sys
+import textwrap
 import importlib
 import dataclasses
 from datetime import datetime
 from pathlib import Path
 from functools import cached_property
 
+# third party
+import boto3
 from s3pathlib import S3Path
+import polars as pl
 from aws_dynamodb_io.api import ExportJob, ExportFormatEnum
-from fast_dynamodb_json.api import T_SIMPLE_SCHEMA
 from dbsnaplake.api import (
     S3Location,
-    DerivedColumn,
+    DBSnapshotFileGroupManifestFile,
     Project,
-    T_BatchReadSnapshotDataFileCallable,
+)
+from polars_writer.api import Writer
+from jsonpolars.api import parse_dfop
+from parquet_dynamodb.vendor.fast_dynamodb_json.api import (
+    T_SIMPLE_SCHEMA,
+    json_type_to_simple_type,
 )
 
+try:
+    import duckdb
+
+    has_duckdb = True
+except ImportError:  # pragma: no cover
+    has_duckdb = False
+
 from .utils import dt_to_str
-from .dynamodb import DynamoDBTableArn, DynamoDBExportManager
+from .dynamodb import (
+    DynamoDBTableArn,
+    DynamoDBExportManager,
+    db_snapshot_file_group_manifest_file_to_polars_dataframe,
+)
+from .sentinel import NOTHING, REQUIRED, OPTIONAL
 
 if T.TYPE_CHECKING:  # pragma: no cover
     from mypy_boto3_s3.client import S3Client
@@ -47,12 +68,36 @@ class SfnInput:
     """
     Represents the input data of an AWS Step Functions execution.
 
+    .. note::
+
+        这个 dataclass 的所有属性都是可以被 JSON 序列化的, 而不能是复杂的 Python 对象.
+        例如 ``s3uri_staging_dir`` 定义了我们的 staging 数据存储的 S3 URI, 这个是一个字符串,
+        但是在后续的操作中我们会将这个字符串转换成 :class:`s3pathlib.S3Path` 对象.
+        为了保证这个 dataclass 跟 StepFunction Input 兼容, 所以这个属性我们就以字符串的形式
+        存储.
+
+    --- Core parameter
     :param table_arn: ARN of the DynamoDB table to export.
     :param export_time: The DynamoDB export time in ISO format.
     :param s3uri_staging: S3 URI where staging data is stored.
     :param s3uri_database: S3 URI where the final data lake files will be stored.
-    :param s3uri_python_module: S3 URI of a Python module containing
-        DynamoDB schema, custom transformation logic.
+
+    # --- Transformation logic related
+    :param transforms: dataframe transformation logic written in JSON format.
+    :param col_record_id: which column is considered as the unique record id.
+        for DynamoDB table only has partition key, use a string, for DynamoDB table
+        has both partition key and sort key, use a tuple of two string.
+        If not provided, then you cannot write it to datalake format like
+        Deltalake, Hudi, Iceburg.
+    :param col_create_time: which column is considered as the immutable create time
+        of a record.
+    :param col_partition_keys: which columns is considered as the partition keys.
+        if not given, then we end up with ONE file in the final datalake.
+    :param col_record_count: which column is used to count the number of records.
+        this column cannot have NULL value in all records. If not given, then we
+        don't check number of records in the validation result.
+    :param create_datalake: if False, skip the data lake ingestion step. We end up
+        with a parquet datalake in the staging folder.
     :param sort_by: List of column names to sort by before writing to parquet.
     :param descending: List of booleans indicating if the sort is descending.
     :param target_db_snapshot_file_group_size: Target size for DB snapshot file groups.
@@ -63,30 +108,29 @@ class SfnInput:
     """
 
     # fmt: off
-    table_arn: str = dataclasses.field()
-    export_time: str = dataclasses.field()
-    s3uri_staging_dir: str = dataclasses.field()
-    s3uri_database_dir: str = dataclasses.field()
-    s3uri_python_module: T.Optional[str] = dataclasses.field()
-    sort_by: T.List[str] = dataclasses.field()
-    descending: T.List[bool] = dataclasses.field()
+    # --- Core parameter
+    table_arn: str = dataclasses.field(default=REQUIRED)
+    export_time: str = dataclasses.field(default=REQUIRED)
+    s3uri_staging_dir: str = dataclasses.field(default=REQUIRED)
+    s3uri_database_dir: str = dataclasses.field(default=REQUIRED)
+    s3uri_datalake_override: T.Optional[str] = dataclasses.field(default=None)
+
+    # --- Transformation logic related
+    schema: T.Dict[str, T.Dict[str, T.Any]] = dataclasses.field(default_factory=dict)
+    transforms: T.List[T.Dict[str, T.Any]] = dataclasses.field(default_factory=list)
+    col_record_id: T.Optional[T.Union[str, T.Tuple[str, str]]] = dataclasses.field(default=None)
+    col_create_time: T.Optional[str] = dataclasses.field(default=None)
+    col_partition_keys: T.Optional[T.List[str]] = dataclasses.field(default=None)
+    col_record_count: T.Optional[str] = dataclasses.field(default=None)
+    create_datalake: bool = dataclasses.field(default=True)
+    sort_by: T.List[str] = dataclasses.field(default_factory=list)
+    descending: T.List[bool] = dataclasses.field(default_factory=list)
+
+    # --- Output configuration
     target_db_snapshot_file_group_size: int = dataclasses.field(default=128_000_000)
     target_parquet_file_size: int = dataclasses.field(default=128_000_000)
-    count_on_column: T.Optional[str] = dataclasses.field(default=None)
-    s3uri_datalake_override: T.Optional[str] = dataclasses.field(default=None)
-    # The following properties are typically imported from the s3uri_python_module
-    # when running in AWS Lambda or Step Functions environments. However, these
-    # "*_override" properties serve a specific purpose:
-    # They allow for local testing and development of the workflow without
-    # relying on the actual AWS services.
-    # This design facilitates easier debugging, testing, and rapid prototyping
-    # while maintaining compatibility with the production AWS environment.
-    extract_record_id_override: T.Optional[DerivedColumn] = dataclasses.field(default=None)
-    extract_create_time_override: T.Optional[DerivedColumn] = dataclasses.field(default=None)
-    extract_update_time_override: T.Optional[DerivedColumn] = dataclasses.field(default=None)
-    extract_partition_keys_override: T.Optional[T.List[DerivedColumn]] = dataclasses.field(default=None)
-    simple_schema_override: T.Optional[T_SIMPLE_SCHEMA]  = dataclasses.field(default=None)
-    batch_read_snapshot_data_file_override: T.Optional[T_BatchReadSnapshotDataFileCallable] = dataclasses.field(default=None)
+    writer_options: T.Optional[T.Dict[str, T.Any]] = dataclasses.field(default=None)
+    gzip_compression: bool = dataclasses.field(default=False)
     # fmt: on
 
     def __post_init__(self):
@@ -94,92 +138,6 @@ class SfnInput:
             self.s3uri_staging_dir = self.s3uri_staging_dir + "/"
         if self.s3uri_database_dir.endswith("/") is False:
             self.s3uri_database_dir = self.s3uri_database_dir + "/"
-        if self.s3uri_python_module is not None:
-            if self.s3uri_python_module.endswith("/"):
-                raise ValueError("s3uri_python_module should not end with '/'")
-
-    # --------------------------------------------------------------------------
-    # Python Module Import for Custom Logic
-    #
-    # While users can provide input to Step Functions via JSON, certain
-    # customizations require more complex logic that JSON cannot represent.
-    # To address this limitation, we allow users to define a Python module
-    # with custom logic and store it in S3. The execution engine can then
-    # dynamically download and import this module at runtime, enabling
-    # advanced customization without modifying the core application code.
-    # --------------------------------------------------------------------------
-    def download_python_module(self, s3_client: "S3Client"):
-        """
-        Download the Python module from S3 and save it to a temporary directory.
-
-        This method retrieves a custom Python module from S3 and saves it to a
-        predefined temporary location for later use in the workflow.
-        """
-        # do nothing if the Python module is not provided
-        # then you must provide ``extract_record_id_override``, ``simple_schema_override``
-        # ``batch_read_snapshot_data_file_override`` etc ...
-        if self.s3uri_python_module is None:
-            return
-        dir_tmp.mkdir(exist_ok=True)
-        s3path = S3Path.from_s3_uri(self.s3uri_python_module)
-        content = s3path.read_text(bsm=s3_client)
-        path_workflow_settings.write_text(content)
-
-    @cached_property
-    def _imported_python_module(self):
-        """
-        Import the Python module from the temporary directory.
-        """
-        if path_workflow_settings.exists() is False:
-            raise FileNotFoundError(
-                f"{path_workflow_settings} not found, "
-                f"you may need to run Project.download_python_module(s3_client=...) first."
-            )
-        sys.path.append(str(dir_tmp))
-        module = importlib.import_module(path_workflow_settings.stem)
-        return module
-
-    @property
-    def _py_mod_extract_record_id(self):
-        """
-        Return the extract_record_id polars expression from the imported module.
-        """
-        return getattr(self._imported_python_module, "extract_record_id")
-
-    @property
-    def _py_mod_extract_create_time(self):
-        """
-        Return the extract_create_time polars expression from the imported module.
-        """
-        return getattr(self._imported_python_module, "extract_create_time")
-
-    @property
-    def _py_mod_extract_update_time(self):
-        """
-        Return the extract_update_time polars expression from the imported module.
-        """
-        return getattr(self._imported_python_module, "extract_update_time")
-
-    @property
-    def _py_mod_extract_partition_keys(self):
-        """
-        Return the extract_partition_keys polars expression list from the imported module.
-        """
-        return getattr(self._imported_python_module, "extract_partition_keys")
-
-    @property
-    def _py_mod_simple_schema(self):
-        """
-        Return the SIMPLE_SCHEMA constant from the imported module.
-        """
-        return getattr(self._imported_python_module, "SIMPLE_SCHEMA")
-
-    @property
-    def _py_mod_batch_read_snapshot_data_file(self):
-        """
-        Return the batch_read_snapshot_data_file function from the imported module.
-        """
-        return getattr(self._imported_python_module, "batch_read_snapshot_data_file")
 
     @cached_property
     def table_name(self) -> str:
@@ -226,15 +184,6 @@ class SfnInput:
         return S3Path.from_s3_uri(self.s3uri_database_dir)
 
     @cached_property
-    def s3path_python_module(self) -> T.Optional[S3Path]:
-        """
-        Return an S3Path object for the Python module, if specified.
-        """
-        if self.s3uri_python_module is None:
-            return None
-        return S3Path.from_s3_uri(self.s3uri_python_module)
-
-    @cached_property
     def _s3dir_dynamodb_export_manager(self) -> S3Path:
         return self._s3dir_staging.joinpath("exports_history").to_dir()
 
@@ -247,14 +196,14 @@ class SfnInput:
         return DynamoDBExportManager(s3dir_uri=self._s3dir_dynamodb_export_manager.uri)
 
     @cached_property
-    def _s3dir_dynamodb_export(self) -> S3Path:
+    def s3dir_dynamodb_export(self) -> S3Path:
         return self._s3dir_staging.joinpath("exports").to_dir()
 
     def run_or_get_dynamodb_export(
         self,
         s3_client: "S3Client",
         dynamodb_client: "DynamoDBClient",
-    ) -> "ExportJob":
+    ) -> T.Tuple["ExportJob", bool]:
         """
         Run a new DynamoDB export job or retrieve an existing one.
 
@@ -268,15 +217,18 @@ class SfnInput:
             export_time=self.export_datetime,
         )
         if export_job is None:
+            is_already_launched = False
             export_job = ExportJob.export_table_to_point_in_time(
                 dynamodb_client=dynamodb_client,
                 table_arn=self.table_arn,
                 export_time=self.export_datetime,
-                s3_bucket=self._s3dir_dynamodb_export.bucket,
-                s3_prefix=self._s3dir_dynamodb_export.key,
+                s3_bucket=self.s3dir_dynamodb_export.bucket,
+                s3_prefix=self.s3dir_dynamodb_export.key,
                 export_format=ExportFormatEnum.DYNAMODB_JSON.value,
             )
             self.export_manager.write(s3_client=s3_client, export_job=export_job)
+        else:
+            is_already_launched = True
 
         export_job.get_details(dynamodb_client=dynamodb_client)
 
@@ -293,7 +245,7 @@ class SfnInput:
                 f"S3 console url: {s3path.console_url}"
             )
 
-        return export_job
+        return export_job, is_already_launched
 
     @cached_property
     def s3_loc(self) -> S3Location:
@@ -370,6 +322,46 @@ class SfnInput:
         """
         return self._s3dir_staging.joinpath("sfn_ctx").to_dir()
 
+    @cached_property
+    def simple_schema(self) -> T_SIMPLE_SCHEMA:
+        simple_schema = {}
+        for k, v in self.schema.items():
+            simple_schema[k] = json_type_to_simple_type(v)
+        return simple_schema
+
+    def batch_read_snapshot_data_file(
+        self,
+        db_snapshot_file_group_manifest_file: DBSnapshotFileGroupManifestFile,
+        s3_client: "S3Client",
+        **kwargs,
+    ) -> pl.DataFrame:
+        """ """
+        df = db_snapshot_file_group_manifest_file_to_polars_dataframe(
+            db_snapshot_file_group_manifest_file=db_snapshot_file_group_manifest_file,
+            s3_client=s3_client,
+            simple_schema=self.simple_schema,
+            **kwargs,
+        )
+        for transform in self.transforms:
+            op = parse_dfop(transform)
+            df = op.to_polars(df)
+        return df
+
+    @property
+    def default_writer(self) -> Writer:
+        return Writer(
+            format="parquet",
+            parquet_compression="snappy",
+        )
+
+    @cached_property
+    def writer(self) -> Writer:
+        if self.writer_options is None:
+            writer = self.default_writer
+        else:
+            writer = Writer(**self.writer_options)
+        return writer
+
     def to_dict(self) -> T.Dict[str, T.Any]:
         """
         Serialize the object to a dictionary that is ready to be used in
@@ -380,7 +372,6 @@ class SfnInput:
             export_time=self.export_time,
             s3uri_staging_dir=self.s3uri_staging_dir,
             s3uri_database_dir=self.s3uri_database_dir,
-            s3uri_python_module=self.s3uri_python_module,
             sort_by=self.sort_by,
             descending=self.descending,
             target_db_snapshot_file_group_size=self.target_db_snapshot_file_group_size,
@@ -401,41 +392,104 @@ class SfnInput:
         Derive the :class:`dbsnaplake.project.Project` object to access data
         processing methods.
         """
-        if self.extract_record_id_override is not None:
-            extract_record_id = self.extract_record_id_override
-        else:
-            extract_record_id = self._py_mod_extract_record_id
-
-        if self.extract_create_time_override is not None:
-            extract_create_time = self.extract_create_time_override
-        else:
-            extract_create_time = self._py_mod_extract_create_time
-
-        if self.extract_update_time_override is not None:
-            extract_update_time = self.extract_update_time_override
-        else:
-            extract_update_time = self._py_mod_extract_update_time
-
-        if self.extract_partition_keys_override is not None:
-            extract_partition_keys = self.extract_partition_keys_override
-        else:
-            extract_partition_keys = self._py_mod_extract_partition_keys
-
         return Project(
             s3_client=None,  # s3_client will be set later in the lambda function handler
             s3uri_db_snapshot_manifest_summary=self.s3path_db_snapshot_manifest_summary.uri,
             s3uri_staging=self.s3_loc.s3dir_staging.uri,
             s3uri_datalake=self.s3_loc.s3dir_datalake.uri,
             target_db_snapshot_file_group_size=self.target_db_snapshot_file_group_size,
-            extract_record_id=extract_record_id,
-            extract_create_time=extract_create_time,
-            extract_update_time=extract_update_time,
-            extract_partition_keys=extract_partition_keys,
+            partition_keys=self.col_partition_keys,
+            create_datalake=self.create_datalake,
             sort_by=self.sort_by,
             descending=self.descending,
             target_parquet_file_size=self.target_parquet_file_size,
-            count_on_column=self.count_on_column,
+            polars_writer=self.writer,
+            gzip_compression=self.gzip_compression,
+            count_column=self.col_record_count,
             tracker_table_name="parquet_dynamodb_tracker",
             aws_region="us-east-1",
             use_case_id=f"{self.table_arn_obj.account_id}_{self.table_arn_obj.region}_{self.table_arn_obj.name}_{self.export_time_str}",
         )
+
+    def _setup_duckdb(
+        self,
+        boto_ses: "boto3.Session",
+        more_duckdb_config: T.Optional[T.List[str]] = None,
+    ):
+        """
+        Set up the DuckDB environment for reading data from S3.
+        """
+        # common SQL snippet
+        # enable the httpfs (HTTP file system plugin https://duckdb.org/docs/extensions/httpfs), so we can read data from AWS S3
+        sql_httpfs = textwrap.dedent(
+            f"""
+        INSTALL httpfs;
+        LOAD httpfs;
+        """
+        )
+
+        # set AWS credential
+        credentials = boto_ses.get_credentials()
+
+        lines = [
+            "SET s3_region='us-east-1';",
+            f"SET s3_access_key_id='{credentials.access_key}';",
+            f"SET s3_secret_access_key='{credentials.secret_key}';",
+        ]
+        if credentials.token:
+            lines.append(f"SET s3_session_token='{credentials.token}';")
+        if more_duckdb_config:
+            lines.extend(more_duckdb_config)
+        sql_credential = "\n".join(lines)
+
+        duckdb.sql(sql_httpfs)
+        duckdb.sql(sql_credential)
+
+    @property
+    def duckdb_from_table(self) -> str:
+        """
+        Derive the "table name" part of the "SELECT FROM ..." SQL query.
+        Basically, it tells duckdb to read the parquet data from the S3 datalake location.
+        """
+        uri = self.s3_loc.s3dir_datalake.uri
+        partition_keys = self.col_partition_keys
+        if partition_keys:
+            hive_partition_part = f", hive_partitioning={len(partition_keys)}"
+        else:
+            hive_partition_part = ""
+        sql_from_table_all_parquet = (
+            f"read_parquet('{uri}**/*.parquet'{hive_partition_part})"
+        )
+        return sql_from_table_all_parquet
+
+    def run_sql(
+        self,
+        boto_ses: "boto3.Session",
+        sql: str,
+        more_duckdb_config: T.Optional[T.List[str]] = None,
+    ):
+        '''
+        Run a SQL query using DuckDB.
+
+        Usage example::
+
+            import textwrap
+
+            sql = textwrap.dedent(
+                f"""
+            SELECT
+                *
+            FROM {sfn_input.duckdb_from_table} t
+            LIMIT 10
+            ;
+            """
+            )
+
+            res = sfn_input.run_sql(sql)
+            res.show()
+        '''
+        self._setup_duckdb(
+            boto_ses=boto_ses,
+            more_duckdb_config=more_duckdb_config,
+        )
+        return duckdb.sql(sql)

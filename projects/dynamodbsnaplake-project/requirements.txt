@@ -28,9 +28,9 @@ botocore==1.33.13 ; python_version >= "3.9" and python_version < "4.0" \
 config-patterns==1.0.6 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:4790c5f86d308c9f587cd6ea6c21f47077d35065d15803f972fac889aecf754a \
     --hash=sha256:8cfe27719bf86022c77336149e4c0aa5e4f247469722c81b509090b18516238a
-dbsnaplake==0.2.1 ; python_version >= "3.9" and python_version < "4.0" \
-    --hash=sha256:4e471a4ef98edf548781f577057ad3d99fa175a4dec07afc7f0cf0ac4f508a2f \
-    --hash=sha256:fb8647b6fd8205ccd70e46470d276f2cc53e9bce98267283aa626d73135cf4e8
+dbsnaplake==0.3.1 ; python_version >= "3.9" and python_version < "4.0" \
+    --hash=sha256:18a22c48667b16ed91f0064e04fe95701a6a37a795bc186d089e091c6c2f6254 \
+    --hash=sha256:2b7bd82e9c9514882dfd03347386c8f29ec056c02033984c4e26706497a3300f
 fast-dynamodb-json==0.1.1 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:0f44a6315ebbd0473e661721288dedc7cfba67eb0709b345b645eb496c1395a3 \
     --hash=sha256:d7a72dff8be490ea86f7ccae29f8d06392795b05188605585ab30005d8913861
@@ -48,9 +48,15 @@ jmespath==1.0.1 ; python_version >= "3.9" and python_version < "4.0" \
 jsonpickle==3.1.0 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:68856117e3f5b79a60e4ed384d42d00da806799c96987ac5e5ed56307df77068 \
     --hash=sha256:ef9787b81c414f42465b84457e87562992449be27456f0428c3cfaefbfcf6e94
+jsonpolars==0.2.1 ; python_version >= "3.9" and python_version < "4.0" \
+    --hash=sha256:061297110e20649535caa5c99f74df921201bc08a5757b1dee86c6ebf6adf29d \
+    --hash=sha256:dfc2267d8638532de38c0130ddbc5e323c86c48da7a13917355ede7b4264a6e6
 pathlib-mate==1.3.2 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:8e16efd03016d4dd2ff0dc5dc05db666bebea6c8528aebd471953287644dd3e6 \
     --hash=sha256:a4b29e0d38abb14e25a8a292856a04c7f48b2eafe9f7ebf36166dec5a13a0b0d
+polars-writer==0.3.1 ; python_version >= "3.9" and python_version < "4.0" \
+    --hash=sha256:74d5f73c80c022e265df79574e52f964b249a56b38bc89715b3f2db8cd1f1fe8 \
+    --hash=sha256:8ab8d297ed41aff3f0b9908b5cbfcded066f29b588c99afabb8963cba33c399c
 polars==1.2.1 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:2094877da694bb59bfb7f5af50471955012b950068dc6f3ef5ecc41653a3b04f \
     --hash=sha256:764c2701b8ca8a27dcd7f23c94ba9031aec4d392061dfa7d1c2fdcbfd132d6ba \
