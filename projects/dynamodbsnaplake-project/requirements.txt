@@ -31,9 +31,6 @@ config-patterns==1.0.6 ; python_version >= "3.9" and python_version < "4.0" \
 dbsnaplake==0.3.1 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:18a22c48667b16ed91f0064e04fe95701a6a37a795bc186d089e091c6c2f6254 \
     --hash=sha256:2b7bd82e9c9514882dfd03347386c8f29ec056c02033984c4e26706497a3300f
-fast-dynamodb-json==0.1.1 ; python_version >= "3.9" and python_version < "4.0" \
-    --hash=sha256:0f44a6315ebbd0473e661721288dedc7cfba67eb0709b345b645eb496c1395a3 \
-    --hash=sha256:d7a72dff8be490ea86f7ccae29f8d06392795b05188605585ab30005d8913861
 fire==0.5.0 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:a6b0d49e98c8963910021f92bba66f65ab440da2982b78eb1bbf95a0a34aacc6
 func-args==0.1.1 ; python_version >= "3.9" and python_version < "4.0" \

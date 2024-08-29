@@ -961,24 +961,6 @@ files = [
 test = ["pytest (>=6)"]
 
 [[package]]
-name = "fast_dynamodb_json"
-version = "0.1.1"
-description = "Blazingly fast DynamoDB Json serialization and deserialization library."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "fast_dynamodb_json-0.1.1-py3-none-any.whl", hash = "sha256:d7a72dff8be490ea86f7ccae29f8d06392795b05188605585ab30005d8913861"},
-    {file = "fast_dynamodb_json-0.1.1.tar.gz", hash = "sha256:0f44a6315ebbd0473e661721288dedc7cfba67eb0709b345b645eb496c1395a3"},
-]
-
-[package.dependencies]
-polars = ">=1.2.1,<2.0.0"
-
-[package.extras]
-docs = ["Sphinx (==5.3.0)", "docfly (==2.0.3)", "furo (==2023.03.27)", "ipython (==8.10.0)", "nbsphinx (==0.8.12)", "pygments (==2.15.1)", "rstobj (==1.2.1)", "sphinx-copybutton (==0.5.1)", "sphinx-design (==0.5.0)", "sphinx-jinja (==2.0.2)"]
-tests = ["dynamodb-json (>=1.4.2,<2.0.0)", "jsonpickle (>=3.1.0,<4.0.0)", "pytest", "pytest-cov", "rich (>=13.4.2,<14.0.0)", "tabulate (>=0.9.0,<1.0.0)"]
-
-[[package]]
 name = "filelock"
 version = "3.15.4"
 description = "A platform independent file lock."
@@ -2959,4 +2941,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "ede19d9da4cab89ffeeba401f1625ea3a43d5f79929f81c63d8d39ec9bf9fc50"
+content-hash = "ceeb0c63f79f1e579d99c70af13236c32013fd953f9874ec2896ee5b6ba369de"
