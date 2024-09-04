@@ -1,0 +1,64 @@
+{
+    "_shared": {
+        // ---------------------------------------------------------------------
+        // shared by all environments
+        // ---------------------------------------------------------------------
+        "*.project_name": "simple_deploy_gate",
+        "*.s3uri_artifacts": "s3://bmt-app-devops-us-east-1-artifacts/projects/monorepo_aws/simple_deploy_gate/",
+        "*.s3uri_docs": "s3://bmt-app-devops-us-east-1-doc-host/projects/monorepo_aws/",
+        // ---------------------------------------------------------------------
+        // Application related
+        //
+        // please read the :class:`simple_deploy_gate.config.define.lbd_func.LambdaFunction`
+        // class to understand the config data model
+        //
+        // note that if a json node been set by two expression multiple times,
+        // the first one will be used
+        // ---------------------------------------------------------------------
+        "*.lambda_functions": {
+            "hello": {},
+            "add_one": {}
+        },
+        "*.lambda_functions.*.layers": [
+            "2"
+        ],
+        "*.lambda_functions.*.timeout": 3,
+        "*.lambda_functions.*.memory": 128,
+        "*.lambda_functions.*.iam_role": null,
+        "*.lambda_functions.*.subnet_ids": null,
+        "*.lambda_functions.*.security_group_ids": null,
+        "*.lambda_functions.*.reserved_concurrency": null,
+        "*.lambda_functions.*.live_version1": null,
+        "*.lambda_functions.*.live_version2": null,
+        "*.lambda_functions.*.live_version2_percentage": null,
+        "*.lambda_functions.hello.handler": "hello_handler",
+        "*.lambda_functions.add_one.handler": "add_one_handler"
+    },
+    "devops": {
+        "s3uri_data": "s3://bmt-app-devops-us-east-1-data/projects/simple_deploy_gate/"
+    },
+    "sbx": {
+        "username": "sbx.user",
+        "s3uri_data": "s3://bmt-app-dev-us-east-1-data/projects/simple_deploy_gate/",
+        "lambda_functions": {
+            "hello": {},
+            "add_one": {}
+        }
+    },
+    "tst": {
+        "username": "tst.user",
+        "s3uri_data": "s3://bmt-app-test-us-east-1-data/projects/simple_deploy_gate/",
+        "lambda_functions": {
+            "hello": {},
+            "add_one": {}
+        }
+    },
+    "prd": {
+        "username": "prd.user",
+        "s3uri_data": "s3://bmt-app-prod-us-east-1-data/projects/simple_deploy_gate/",
+        "lambda_functions": {
+            "hello": {},
+            "add_one": {}
+        }
+    }
+}

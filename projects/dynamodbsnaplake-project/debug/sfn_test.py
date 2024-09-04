@@ -172,16 +172,16 @@ sfn_input = SfnInput(
     descending=[False],
     writer_options={
         # --- use parquet datalake
-        # "format": "parquet",
-        # "parquet_compression": "snappy",
+        "format": "parquet",
+        "parquet_compression": "snappy",
         # --- use deltalake
-        "format": "delta",
-        "delta_mode": "append",
-        "delta_merge_options": {
-            "predicate": "s.record_id = t.record_id",
-            "source_alias": "s",
-            "target_alias": "t",
-        },
+        # "format": "delta",
+        # "delta_mode": "append",
+        # "delta_merge_options": {
+        #     "predicate": "s.record_id = t.record_id",
+        #     "source_alias": "s",
+        #     "target_alias": "t",
+        # },
     },
     gzip_compression=False,
 )
