@@ -1,43 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from pynamodb.models import Model
-from pynamodb.attributes import UnicodeAttribute, NumberAttribute
-from pynamodb.constants import PAY_PER_REQUEST_BILLING_MODE
-from pynamodb.exceptions import UpdateError
+"""
+This lambda function takes a name as input and echo back ``hello {name}``
+
+Sample input::
+
+    {"name": "Alice}
+
+Sample output::
+
+    {"message": "hello Alice"}
+"""
 
 from ..logger import logger
-from ..config.api import config
-from ..boto_ses import bsm
-
-
-# Define Dynamodb Table and Schema
-class Counter(Model):
-    class Meta:
-        table_name = config.env.dynamodb_table_name
-        region = bsm.aws_region
-        billing_mode = PAY_PER_REQUEST_BILLING_MODE
-
-    key = UnicodeAttribute(hash_key=True)
-    count = NumberAttribute(default=0)
 
 
 @logger.pretty_log()
-def low_level_api(key: str):
-    """
-    If a key not exists, create it and set count to 1. If exists, count + 1
-    """
-    item = Counter(key=key)
-    try:
-        item.update(actions=[Counter.count.set(Counter.count + 1)])
-    except UpdateError:
-        item.count = 1
-        item.save()
-    except Exception as e:  # pragma: no cover
-        return {"message": "error: {}".format(e)}
-    return {"message": "success"}
+def low_level_api(name: str) -> dict:
+    message = f"hello {name}"
+    logger.info(message)
+    return {"message": message}
 
 
-def handler(event, context):  # pragma: no cover
+def lambda_handler(event: dict, context):  # pragma: no cover
     logger.ruler(msg="event")
     logger.info(str(event))
-    return low_level_api(event["key"])
+    return low_level_api(event.get("name", "Mr X"))

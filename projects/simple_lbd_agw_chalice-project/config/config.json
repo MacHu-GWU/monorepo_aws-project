@@ -20,7 +20,7 @@
             "add_one": {}
         },
         "*.lambda_functions.*.layers": [
-            "1"
+            "3"
         ],
         "*.lambda_functions.*.timeout": 3,
         "*.lambda_functions.*.memory": 128,

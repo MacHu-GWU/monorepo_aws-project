@@ -2,9 +2,10 @@
 
 from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, NumberAttribute
-from pynamodb.models import PAY_PER_REQUEST_BILLING_MODE
+from pynamodb.constants import PAY_PER_REQUEST_BILLING_MODE
 from pynamodb.exceptions import UpdateError
 
+from ..logger import logger
 from ..config.api import config
 from ..boto_ses import bsm
 
@@ -20,6 +21,7 @@ class Counter(Model):
     count = NumberAttribute(default=0)
 
 
+@logger.pretty_log()
 def low_level_api(key: str):
     """
     If a key not exists, create it and set count to 1. If exists, count + 1
