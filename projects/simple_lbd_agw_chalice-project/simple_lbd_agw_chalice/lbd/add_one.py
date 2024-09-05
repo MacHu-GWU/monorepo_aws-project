@@ -36,4 +36,6 @@ def low_level_api(key: str):
 
 
 def handler(event, context):  # pragma: no cover
+    logger.ruler(msg="event")
+    logger.info(str(event))
     return low_level_api(event["key"])

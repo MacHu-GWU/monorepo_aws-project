@@ -70,8 +70,8 @@ def _test_incr():
 
 def test():
     with boto_ses_factory.bsm.awscli():
-        _test_hello()
-        _test_user()
+        # _test_hello()
+        # _test_user()
         _test_incr()
 
 

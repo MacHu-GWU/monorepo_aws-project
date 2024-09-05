@@ -23,4 +23,6 @@ def low_level_api(name: str) -> dict:
 
 
 def lambda_handler(event: dict, context):  # pragma: no cover
+    logger.ruler(msg="event")
+    logger.info(str(event))
     return low_level_api(event.get("name", "Mr X"))
