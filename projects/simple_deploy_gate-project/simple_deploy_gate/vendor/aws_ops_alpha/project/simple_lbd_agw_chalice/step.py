@@ -24,7 +24,7 @@ from ...aws_helpers.api import aws_chalice_helpers
 from ...rule_set import should_we_do_it
 
 # --- modules from this submodule
-from .simple_deploy_gate_truth_table import StepEnum, truth_table as tt
+from .simple_lbd_agw_chalice_truth_table import StepEnum, truth_table as tt
 
 # --- type hint
 if T.TYPE_CHECKING:  # pragma: no cover

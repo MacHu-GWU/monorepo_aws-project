@@ -2,7 +2,7 @@
 
 from ...vendor import semantic_branch as sem_branch
 
-from .simple_deploy_gate_truth_table import SemanticBranchNameEnum
+from .simple_lbd_agw_chalice_truth_table import SemanticBranchNameEnum
 
 semantic_branch_rules = {
     SemanticBranchNameEnum.main.value: ["main", "master"],

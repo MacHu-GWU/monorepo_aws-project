@@ -16,7 +16,7 @@ from pathlib import Path
 import tt4human.api as tt4human
 from aws_ops_alpha.rule_set import ConditionEnum, SHOULD_WE_DO_IT
 
-project_name = "simple_deploy_gate"
+project_name = "simple_lbd_agw_chalice"
 
 # 1. Define enum of ``conditions``
 conditions = {

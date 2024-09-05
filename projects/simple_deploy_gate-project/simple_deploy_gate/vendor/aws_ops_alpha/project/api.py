@@ -27,7 +27,7 @@ try:
 except ImportError:  # pragma: no cover
     pass
 try:
-    from .simple_deploy_gate import api as simple_deploy_gate_project
+    from .simple_lbd_agw_chalice import api as simple_lbd_agw_chalice_project
 except ImportError:  # pragma: no cover
     pass
 try:

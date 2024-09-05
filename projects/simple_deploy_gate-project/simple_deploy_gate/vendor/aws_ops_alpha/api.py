@@ -100,7 +100,7 @@ try:
 except ImportError: # pragma: no cover
     pass
 try:
-    from .project.api import simple_deploy_gate_project
+    from .project.api import simple_lbd_agw_chalice_project
 except ImportError: # pragma: no cover
     pass
 try:
